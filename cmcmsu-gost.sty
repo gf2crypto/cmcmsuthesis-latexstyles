@@ -1,0 +1,420 @@
+% cmcmsu-gost.sty
+\NeedsTeXFormat{LaTeX2e}[2020-10-01]
+\ProvidesPackage{cmcmsu-gost}[2026/03/08 v0.3 Core GOST-like formatting]
+
+\makeatletter
+
+% Цвет
+\RequirePackage[dvipsnames, table]{xcolor}
+
+% Для включения альбомных страниц
+\RequirePackage{pdflscape}
+
+% Добавление внешних pdf файлов
+\RequirePackage{pdfpages}
+
+% Кавычки
+\RequirePackage[style=american]{csquotes}
+
+% Модификация списков
+\RequirePackage{enumitem}
+
+% Интервалы
+\RequirePackage{setspace}
+
+% Геометрия документа
+\RequirePackage{geometry}
+
+% Настройка колонтитулов
+\RequirePackage{fancyhdr}
+
+% Настройка названий разделов, заголовков и прочего
+\RequirePackage{titlesec}
+
+% Поддержка работы с переносами
+\RequirePackage{hyphenat}
+
+
+%  Выравнивание и переносы
+% http://tex.stackexchange.com/questions/241343/what-is-the-meaning-of-fussy-sloppy-emergencystretch-tolerance-hbadness
+% http://www.latex-community.org/forum/viewtopic.php?p=70342%p70342
+\tolerance 1414
+\hbadness 1414
+
+% В случае проблем регулировать в первую очередь
+\emergencystretch 1.5em
+\hfuzz 0.3pt
+\vfuzz \hfuzz
+\raggedbottom
+
+% Избавляемся от переполнений
+\sloppy
+
+% Запрещаем разрыв страницы после первой строки абзаца
+\clubpenalty=10000
+
+% Запрещаем разрыв страницы после последней строки абзаца
+\widowpenalty=10000
+
+% Ограничение на разрыв страницы, если строка заканчивается переносом
+\brokenpenalty=4991
+\pagestyle{fancy}
+\fancyhf{} % clear all header fields
+\fancyhead[C]{\rmfamily\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\fancyheadoffset{3cm}  % left margin (see geometry)
+\setlength{\headheight}{\baselineskip}
+% Оформление заголовков глав, разделов, подразделов
+% Работа должна быть выполнена ... размером шрифта 12-14 пунктов (ГОСТ Р 7.0.11-2011, 5.3.8). То есть не должно быть надписей шрифтом более 14. Так и поставим.
+% Эти установки будут давать одинаковый результат независимо от выбора базовым шрифтом 12 пт или 14 пт
+% Коэффициент кратности к размеру шрифта
+\newcounter{intvl}
+\setcounter{intvl}{3}
+% Установки для размера шрифта 14 pt
+\newlength{\curtextsize}
+\newlength{\bigtextsize}
+\setlength{\bigtextsize}{13.9pt}
+\makeatletter
+\setlength{\curtextsize}{\f@size pt}
+\makeatother
+
+\newcommand{\basegostsectionfont}{\fontsize{14pt}{16pt}\selectfont\bfseries}
+\titleformat{\section}{\basegostsectionfont}{\thesection\space}{0pt}{}[]
+\newcommand{\sectionbreak}{\clearpage}
+\titlespacing{\section}{0pt}{\theintvl\curtextsize}{\theintvl\curtextsize}
+\titleformat{\subsection}{\basegostsectionfont}{\thesubsection\space}{0pt}{}[]
+\titlespacing{\subsection}{0pt}{\theintvl\curtextsize}{\theintvl\curtextsize}
+\titleformat{\subsubsection}{\basegostsectionfont}{\thesubsubsection\space}{0pt}{}[]
+\titlespacing{\subsubsection}{0pt}{\theintvl\curtextsize}{\theintvl\curtextsize}
+% Оформление заголовков глав, разделов, подразделов
+% Работа должна быть выполнена ... размером шрифта 12-14 пунктов (ГОСТ Р 7.0.11-2011, 5.3.8). То есть не должно быть надписей шрифтом более 14. Так и поставим.
+% Эти установки будут давать одинаковый результат независимо от выбора базовым шрифтом 12 пт или 14 пт
+% Коэффициент кратности к размеру шрифта
+\newcounter{intvl}
+\setcounter{intvl}{3}
+% Установки для размера шрифта 14 pt
+\newlength{\curtextsize}
+\newlength{\bigtextsize}
+\setlength{\bigtextsize}{13.9pt}
+\newlength{\titleskip}
+\makeatletter
+\AtBeginDocument{%
+    \setlength{\curtextsize}{\f@size pt}%
+    \setlength{\titleskip}{\dimexpr\c@intvl\curtextsize\relax}%
+}
+\makeatother
+
+\newcommand{\basegostsectionfont}{\fontsize{14pt}{16pt}\selectfont\bfseries}
+\titleformat{\chapter}{\basegostsectionfont}{\chaptertitlename\space\thechapter.\space}{0pt}{}[]
+\titlespacing{\chapter}{0pt}{-\headheight}{\titleskip}
+\titleformat{\section}{\basegostsectionfont}{\thesection\space}{0pt}{}[]
+\titlespacing{\section}{0pt}{\titleskip}{\titleskip}
+\titleformat{\subsection}{\basegostsectionfont}{\thesubsection\space}{0pt}{}[]
+\titlespacing{\subsection}{0pt}{\titleskip}{\titleskip}
+\titleformat{\subsubsection}{\basegostsectionfont}{\thesubsubsection\space}{0pt}{}[]
+\titlespacing{\subsubsection}{0pt}{\titleskip}{\titleskip}
+% Оглавление
+\addto\captionsrussian{% Replace "english" with the language you use
+    \renewcommand{\contentsname}%
+    {Оглавление}%
+}
+% Отбивка точками до номера страницы начала главы/раздела
+\RequirePackage[titles]{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+
+% Переносить слова в заголовке не допускается (ГОСТ Р 7.0.11-2011, 5.3.5). Заголовки в оглавлении должны точно повторять заголовки в тексте (ГОСТ Р 7.0.11-2011, 5.2.3). Прямого указания на запрет переносов в оглавлении нет, но по той же логике невнесения искажений в смысл, лучше в оглавлении не переносить:
+\makeatletter
+\renewcommand\@tocrmarg{2.55em plus1fill} % versus 2.55em
+\makeatother
+
+% Нежирные номера страниц у глав в оглавлении
+\renewcommand{\cftsecpagefont}{\normalfont}
+
+% нежирные точки до номеров страниц у глав в оглавлении
+% \renewcommand{\cftchapterleader}{\cftdotfill{\cftchapterdotsep}}
+
+% добавляет точку с пробелом после номера подраздела в оглавлении
+\renewcommand\cftsecaftersnum{.\space}
+\renewcommand\cftsubsecaftersnum{.\space}
+\renewcommand\cftsubsubsecaftersnum{.\space}
+
+% Слово 'Приложение' в оглавлении
+\makeatletter
+\newcommand\appendix@section[1]{%
+    \refstepcounter{section}%
+    \orig@section*{Приложение \russian@Alph\c@section\space %1}%
+        \addcontentsline{toc}{section}{Приложение \russian@Alph\c@section. %1}%
+        }
+        \let\orig@section\section
+        \g@addto@macro\appendix{\let\section\appendix@section
+            \renewcommand{\thesection}{\russian@Alph{\value{section}}}%
+        }
+        \makeatother
+
+        %+% Стр. над номерами страниц в оглавлении
+        % http://tex.stackexchange.com/a/306950
+        \RequirePackage{afterpage}
+        \newif\ifendTOC
+            %+LATEX_HEADER_EXTRA:
+            \newcommand*{\tocheader}{
+                \ifendTOC\else\hbox to \linewidth%
+                    {\hfill{Стр.}}\par%
+                    \ifnumless{\value{page}}{3}{}{%
+                        \vspace{0.5\baselineskip}
+                    }
+                    \afterpage{\tocheader}
+                \fi%
+            }
+            \let\tableofcontentsORIG\tableofcontents
+            \renewcommand\tableofcontents{
+                \tableofcontentsORIG
+                \addtocontents{toc}{\protect\tocheader}
+                \endTOCtrue
+                \newpage
+            }
+
+            \hypersetup{linktoc=page}
+            % Оглавление
+            \addto\captionsrussian{% Replace "english" with the language you use
+                \renewcommand{\contentsname}%
+                {Оглавление}%
+            }
+            % Отбивка точками до номера страницы начала главы/раздела
+            \RequirePackage[titles]{tocloft}
+            \renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+            \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+
+            % Переносить слова в заголовке не допускается (ГОСТ Р 7.0.11-2011, 5.3.5). Заголовки в оглавлении должны точно повторять заголовки в тексте (ГОСТ Р 7.0.11-2011, 5.2.3). Прямого указания на запрет переносов в оглавлении нет, но по той же логике невнесения искажений в смысл, лучше в оглавлении не переносить:
+            \makeatletter
+            \renewcommand\@tocrmarg{2.55em plus1fill} % versus 2.55em
+            \makeatother
+
+            % Нежирные номера страниц у глав в оглавлении
+            \renewcommand{\cftchappagefont}{\normalfont}
+
+            % нежирные точки до номеров страниц у глав в оглавлении
+            % \renewcommand{\cftchapterleader}{\cftdotfill{\cftchapterdotsep}}
+
+            % добавляет точку с пробелом после номера подраздела в оглавлении
+            \renewcommand\cftchapaftersnum{.\space}
+            \renewcommand\cftsecaftersnum{.\space}
+            \renewcommand\cftsubsecaftersnum{.\space}
+            \renewcommand\cftsubsubsecaftersnum{.\space}
+
+            % Слово 'Приложение' в оглавлении
+            \makeatletter
+            \newcommand\appendix@chapter[1]{%
+            \refstepcounter{chapter}%
+        \orig@chapter*{Приложение \russian@Alph\c@chapter\space %1}%
+            \addcontentsline{toc}{chapter}{Приложение \russian@Alph\c@chapter. %1}%
+            }
+            \let\orig@chapter\chapter
+            \g@addto@macro\appendix{\let\chapter\appendix@chapter
+                \renewcommand{\thechapter}{\russian@Alph{\value{chapter}}}%
+            }
+
+            \makeatother% Используем короткое тире (endash) для ненумерованных списков (ГОСТ 2.105-95, пункт 4.1.7, требует дефиса, но так лучше смотрится)
+            \renewcommand{\labelitemi}{\normalfont\bfseries{--}}
+            \renewcommand{\labelitemii}{\normalfont\bfseries{--}}
+            \renewcommand{\labelitemiii}{\normalfont\bfseries{--}}
+            \renewcommand{\labelitemiv}{\normalfont\bfseries{--}}
+            %+LATEX_HEADER_EXTRA:
+            % Перечисление строчными буквами латинского алфавита (ГОСТ 2.105-95, 4.1.7)
+            \makeatletter
+            \AddEnumerateCounter{\asbuk}{\russian@alph}{щ}
+            \makeatother
+            \renewcommand{\theenumii}{\asbuk{enumii}}
+            \renewcommand{\labelenumii}{\theenumii)}
+            \renewcommand{\theenumiii}{\arabic{enumiii}}
+            \renewcommand{\labelenumiii}{\theenumiii)}
+            \setlist{nosep,                % Единый стиль для всех списков (пакет enumitem), без дополнительных интервалов.
+                labelindent=\parindent,leftmargin=*%            % Каждый пункт, подпункт и перечисление записывают с абзацного отступа (ГОСТ 2.105-95, 4.1.8)
+            }
+            % Рисунки
+            % %%% Пути к рисункам по умолчанию
+            \graphicspath{{./images/}{./pics/}{./img/}}
+            \DeclareCaptionLabelSeparator{figsep}{~---\ } % нумерация рисунков
+            %+LATEX_HEADER_EXTRA:
+            \captionsetup[figure]{
+                format=plain,                     % формат подписи (plain|hang)
+                font=normal,                      % нормальные размер, цвет, стиль шрифта
+                skip=.0pt,                        % отбивка под подписью
+                parskip=.0pt,                     % отбивка между параграфами подписи
+                position=below,                   % положение подписи
+                singlelinecheck=true,             % выравнивание по центру, если умещается в одну строку
+                justification=centerlast,         % центровка
+                labelsep=figsep,                  % разделитель
+            }
+            %+LATEX_HEADER_EXTRA:
+            % Подписи подрисунков
+            \DeclareCaptionSubType{figure}
+            \renewcommand\thesubfigure{\asbuk{subfigure}} % нумерация подрисунков
+            \DeclareCaptionFont{norm}{\fontsize{14pt}{16pt}\selectfont}
+            %+LATEX_HEADER_EXTRA:
+            \captionsetup[subfloat]{
+                labelfont=norm,                 % нормальный размер подписей подрисунков
+                textfont=norm,                  % нормальный размер подписей подрисунков
+                labelsep=space,                 % разделитель
+                labelformat=brace,              % одна скобка справа от номера
+                justification=centering,        % центровка
+                singlelinecheck=true,           % выравнивание по центру, если умещается в одну строку
+                skip=0.pt,            % отбивка над подписью
+                parskip=.0pt,                   % отбивка между параграфами подписи
+                position=below,                 % положение подписи
+            }
+
+            % Таблицы
+            \DeclareCaptionLabelSeparator{tabsep}{~---\ } % нумерация таблиц
+            \DeclareCaptionFormat{split}{\splitformatlabel%1\par\splitformattext%3}
+                %+LATEX_HEADER_EXTRA:
+                \captionsetup[table]{
+                    format=plain,  % формат подписи (plain|hang)
+                    font=normal,                      % нормальные размер, цвет, стиль шрифта
+                    skip=.0pt,                        % отбивка под подписью
+                    parskip=.0pt,                     % отбивка между параграфами подписи
+                    position=above,                   % положение подписи
+                    justification=justified,           % центровка
+                    indent=0cm,                % смещение строк после первой
+                    labelsep=tabsep,                  % разделитель
+                    singlelinecheck=false, % не выравнивать по центру, если умещается в одну строку
+                }
+                % Кириллица в нумерации subequations
+                %  Для правильной работы требуется выполнение сразу после загрузки пакетов
+                \patchcmd{\subequations}{\def\theequation{\theparentequation\alph{equation}}}
+                {\def\theequation{\theparentequation\asbuk{equation}}}
+                {\typeout{subequations patched}}{\typeout{subequations not patched}}
+                % По ГОСТ 2.105, п. 4.3.8 Приложения обозначают заглавными буквами русского алфавита,
+                % начиная с А, за исключением букв Ё, З, Й, О, Ч, Ь, Ы, Ъ.
+                % Здесь также переделаны все нумерации русскими буквами.
+                \makeatletter
+                \if@uni@ode
+                    \def\russian@Alph%1{\ifcase%1\or
+                    А\or Б\or В\or Г\or Д\or Е\or Ж\or
+                    И\or К\or Л\or М\or Н\or
+                    П\or Р\or С\or Т\or У\or Ф\or Х\or
+                    Ц\or Ш\or Щ\or Э\or Ю\or Я\else\@ctrerr\fi}
+        \else
+            \def\russian@Alph%1{\ifcase%1\or
+            \CYRA\or\CYRB\or\CYRV\or\CYRG\or\CYRD\or\CYRE\or\CYRZH\or
+            \CYRI\or\CYRK\or\CYRL\or\CYRM\or\CYRN\or
+            \CYRP\or\CYRR\or\CYRS\or\CYRT\or\CYRU\or\CYRF\or\CYRH\or
+            \CYRC\or\CYRSH\or\CYRSHCH\or\CYREREV\or\CYRYU\or
+            \CYRYA\else\@ctrerr\fi}
+    \fi
+    \if@uni@ode
+        \def\russian@alph%1{\ifcase%1\or
+        а\or б\or в\or г\or д\or е\or ж\or
+        и\or к\or л\or м\or н\or
+        п\or р\or с\or т\or у\or ф\or х\or
+        ц\or ш\or щ\or э\or ю\or я\else\@ctrerr\fi}
+\else
+\def\russian@alph%1{\ifcase%1\or
+\cyra\or\cyrb\or\cyrv\or\cyrg\or\cyrd\or\cyre\or\cyrzh\or
+\cyri\or\cyrk\or\cyrl\or\cyrm\or\cyrn\or
+\cyrp\or\cyrr\or\cyrs\or\cyrt\or\cyru\or\cyrf\or\cyrh\or
+\cyrc\or\cyrsh\or\cyrshch\or\cyrerev\or\cyryu\or
+\cyrya\else\@ctrerr\fi}
+\fi
+\makeatother
+% %% Полуторный интервал везде, даже в таблицах
+\onehalfspacing
+
+% Выставляем значения полей (ГОСТ 7.0.11-2011, 5.3.7)
+\geometry{a4paper, top=2cm, bottom=2cm, left=2.5cm, right=1cm, nofoot, nomarginpar}
+\RequirePackage{indentfirst}
+
+
+% % Option: disable ToC "Стр."
+% \newif\ifcmcmsu@gost@tocpageword
+% \cmcmsu@gost@tocpagewordtrue
+% \DeclareOption{tocpagewordoff}{\cmcmsu@gost@tocpagewordfalse}
+% \DeclareOption{tocpagewordon}{\cmcmsu@gost@tocpagewordtrue}
+% \ProcessOptions\relax
+
+% % Detect chapter presence (requested discriminator)
+% \newif\ifcmcmsu@gost@haschapter
+% \@ifundefined{chapter}{\cmcmsu@gost@haschapterfalse}{\cmcmsu@gost@haschaptertrue}
+
+% % Core formatting packages
+% \RequirePackage{indentfirst}
+% \RequirePackage{setspace}
+% \RequirePackage{tocloft}
+% \RequirePackage{caption}
+% \RequirePackage{enumitem}
+
+% \RequirePackage{geometry}
+% % Geometry (based on the user's legacy templates)
+% \ifcmcmsu@gost@haschapter
+%     \geometry{a4paper, top=2cm, bottom=2cm, left=2.5cm, right=1cm, nomarginpar}
+%     \setstretch{1.4}
+% \else
+%     \geometry{a4paper, top=2cm, bottom=2cm, left=2.5cm, right=1cm, nofoot, nomarginpar}
+%     \onehalfspacing
+% \fi
+
+% % Headers: page number centred; no rule
+% \RequirePackage{fancyhdr}
+% \pagestyle{fancy}
+% \fancyhf{}
+% \fancyhead[C]{\rmfamily\thepage}
+% \renewcommand{\headrulewidth}{0pt}
+% \setlength{\headheight}{\baselineskip}
+% \fancypagestyle{plain}{%
+%     \fancyhf{}\fancyhead[C]{\rmfamily\thepage}\renewcommand{\headrulewidth}{0pt}%
+% }
+
+% % Titlesec headings (note: chapter spacing requires formatting as per titlesec manual)
+% \RequirePackage{titlesec}
+% \newcommand{\cmcmsu@gost@sectionfont}{\fontsize{14pt}{16pt}\selectfont\bfseries}
+% \newlength{\cmcmsu@gost@titleskip}
+% \setlength{\cmcmsu@gost@titleskip}{3\f@size\p@} % 3 * current base font size
+
+% \ifcmcmsu@gost@haschapter
+%     \titleformat{\chapter}{\cmcmsu@gost@sectionfont}{\chaptertitlename\space\thechapter.\space}{0pt}{}[]
+%     \titlespacing{\chapter}{0pt}{-\headheight}{\cmcmsu@gost@titleskip}
+
+% \else
+% \fi
+
+% \titleformat{\section}{\cmcmsu@gost@sectionfont}{\thesection\space}{0pt}{}[]
+% \titlespacing{\section}{0pt}{\cmcmsu@gost@titleskip}{\cmcmsu@gost@titleskip}
+
+% \titleformat{\subsection}{\cmcmsu@gost@sectionfont}{\thesubsection\space}{0pt}{}[]
+% \titlespacing{\subsection}{0pt}{\cmcmsu@gost@titleskip}{\cmcmsu@gost@titleskip}
+% \titleformat{\subsubsection}{\cmcmsu@gost@sectionfont}{\thesubsubsection\space}{0pt}{}[]
+% \titlespacing{\subsubsection}{0pt}{\cmcmsu@gost@titleskip}{\cmcmsu@gost@titleskip}
+
+% % ToC title name (Russian)
+% \@ifundefined{captionsrussian}
+% {\renewcommand{\contentsname}{Оглавление}}
+% {\addto\captionsrussian{\renewcommand{\contentsname}{Оглавление}}}
+
+% % Dotted leaders and punctuation
+% \ifcmcmsu@gost@haschapter
+%     \renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+%     \renewcommand{\cftchappagefont}{\normalfont}
+%     \renewcommand\cftchapaftersnum{.\space}
+% \fi
+% \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+% \renewcommand\cftsecaftersnum{.\space}
+% \renewcommand\cftsubsecaftersnum{.\space}
+% \renewcommand\cftsubsubsecaftersnum{.\space}
+% \renewcommand\@tocrmarg{2.55em plus1fill}
+
+% % ToC "Стр." header line after title, using tocloft's documented hook
+% \ifcmcmsu@gost@tocpageword
+%     \renewcommand{\cftaftertoctitle}{\\[0.5\baselineskip]\mbox{}\hfill{\normalfont Стр.}}
+% \fi
+
+% % Lists (enumitem) and dash bullets
+% \renewcommand{\labelitemi}{\normalfont\bfseries{--}}
+% \renewcommand{\labelitemii}{\normalfont\bfseries{--}}
+% \setlist{nosep, labelindent=\parindent, leftmargin=*}
+
+% % Captions (caption package)
+% \DeclareCaptionLabelSeparator{cmcmsu@sep}{~---\ }
+% \captionsetup[figure]{position=below, justification=centerlast, singlelinecheck=true, labelsep=cmcmsu@sep}
+% \captionsetup[table]{position=above, justification=justified, singlelinecheck=false, labelsep=cmcmsu@sep}
+
+\makeatother
+\endinput
