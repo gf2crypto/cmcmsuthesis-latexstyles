@@ -1,69 +1,63 @@
 % cmcmsu-gost.sty
 \NeedsTeXFormat{LaTeX2e}[2020-10-01]
-\ProvidesPackage{cmcmsu-gost}[2026/03/08 v0.3 Core GOST-like formatting]
+\ProvidesPackage{cmcmsu-gost}[2026/03/08 v0.1 Core GOST-like formatting]
 
 \makeatletter
 
+\RequirePackage{iftex}
+\RequirePackage{kvoptions}
+
+\SetupKeyvalOptions{
+    family = cmcmsugost,
+    prefix = cmcmsugost@
+}
+
 % Цвет
-\RequirePackage[dvipsnames, table]{xcolor}
-
-% Для включения альбомных страниц
-\RequirePackage{pdflscape}
-
-% Добавление внешних pdf файлов
-\RequirePackage{pdfpages}
-
-% Кавычки
-\RequirePackage[style=american]{csquotes}
-
+% \RequirePackage[dvipsnames, table]{xcolor}
 % Модификация списков
 \RequirePackage{enumitem}
-
-% Интервалы
+% Интервал
 \RequirePackage{setspace}
-
 % Геометрия документа
 \RequirePackage{geometry}
-
-% Настройка колонтитулов
-\RequirePackage{fancyhdr}
-
 % Настройка названий разделов, заголовков и прочего
 \RequirePackage{titlesec}
-
 % Поддержка работы с переносами
 \RequirePackage{hyphenat}
 
 
-%  Выравнивание и переносы
-% http://tex.stackexchange.com/questions/241343/what-is-the-meaning-of-fussy-sloppy-emergencystretch-tolerance-hbadness
-% http://www.latex-community.org/forum/viewtopic.php?p=70342%p70342
-\tolerance 1414
-\hbadness 1414
+\newcommand{\cmcmsugost@FixOverfullBoxes}{
+    %  Выравнивание и переносы
+    % http://tex.stackexchange.com/questions/241343/what-is-the-meaning-of-fussy-sloppy-emergencystretch-tolerance-hbadness
+    % http://www.latex-community.org/forum/viewtopic.php?p=70342%p70342
+    \tolerance 1414%
+    \hbadness 1414%
+    % В случае проблем регулировать в первую очередь
+    \emergencystretch 1.5em
+    \hfuzz 0.3pt
+    \vfuzz \hfuzz%
+    \raggedbottom%
+    % Избавляемся от переполнений
+    \sloppy
+    % Запрещаем разрыв страницы после первой строки абзаца
+    \clubpenalty=10000
+    % Запрещаем разрыв страницы после последней строки абзаца
+    \widowpenalty=10000
+    % Ограничение на разрыв страницы, если строка заканчивается переносом
+    \brokenpenalty=4991
+}
 
-% В случае проблем регулировать в первую очередь
-\emergencystretch 1.5em
-\hfuzz 0.3pt
-\vfuzz \hfuzz
-\raggedbottom
+% Настройка колонтитулов
+\RequirePackage{fancyhdr}
+\newcommand{\cmcmsugost@SetHeaderAndFooter}{
+    \pagestyle{fancy}
+    \fancyhf{} % clear all header fields
+    \fancyhead[C]{\rmfamily\thepage}
+    \renewcommand{\headrulewidth}{0pt}
+    \fancyheadoffset{3cm}  % left margin (see geometry)
+    \setlength{\headheight}{\baselineskip}
+}
 
-% Избавляемся от переполнений
-\sloppy
-
-% Запрещаем разрыв страницы после первой строки абзаца
-\clubpenalty=10000
-
-% Запрещаем разрыв страницы после последней строки абзаца
-\widowpenalty=10000
-
-% Ограничение на разрыв страницы, если строка заканчивается переносом
-\brokenpenalty=4991
-\pagestyle{fancy}
-\fancyhf{} % clear all header fields
-\fancyhead[C]{\rmfamily\thepage}
-\renewcommand{\headrulewidth}{0pt}
-\fancyheadoffset{3cm}  % left margin (see geometry)
-\setlength{\headheight}{\baselineskip}
 % Оформление заголовков глав, разделов, подразделов
 % Работа должна быть выполнена ... размером шрифта 12-14 пунктов (ГОСТ Р 7.0.11-2011, 5.3.8). То есть не должно быть надписей шрифтом более 14. Так и поставим.
 % Эти установки будут давать одинаковый результат независимо от выбора базовым шрифтом 12 пт или 14 пт
@@ -74,9 +68,8 @@
 \newlength{\curtextsize}
 \newlength{\bigtextsize}
 \setlength{\bigtextsize}{13.9pt}
-\makeatletter
 \setlength{\curtextsize}{\f@size pt}
-\makeatother
+
 
 \newcommand{\basegostsectionfont}{\fontsize{14pt}{16pt}\selectfont\bfseries}
 \titleformat{\section}{\basegostsectionfont}{\thesection\space}{0pt}{}[]
