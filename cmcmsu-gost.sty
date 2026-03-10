@@ -13,6 +13,12 @@
     prefix = cmcmsugost@
 }
 
+\DeclareBoolOption[false]{tocpageword}
+\DeclareVoidOption{tocpagewordon}{\cmcmsugost@tocpagewordtrue}
+\DeclareVoidOption{tocpagewordof}{\cmcmsugost@tocpagewordfalse}
+
+\ProcessKeyvalOptions*
+
 % Интервал
 \RequirePackage{setspace}
 % Геометрия документа
@@ -293,7 +299,9 @@
     \cmcmsugost@SetListSty
     \cmcmsugost@SetEquationSty
     \cmcmsugost@SetTableSty
-
+    \ifcmcmsugost@tocpageword
+        \cmcmsugost@ToCAddPageWord
+    \fi
     \RequirePackage{indentfirst}
     \RequirePackage{hyperref}
     \hypersetup{linktoc=page}
@@ -306,7 +314,7 @@
         right=1cm,
         nomarginpar
     }%
-    \onehalfspacing
+    \onehalfspacing%
 }
 
 \cmcmsugost@ApplySty%
