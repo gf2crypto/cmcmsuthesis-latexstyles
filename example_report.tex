@@ -1,6 +1,6 @@
-% Created 2026-03-10 Tue 23:44
+% Created 2026-03-10 Tue 23:43
 % Intended LaTeX compiler: pdflatex
-\documentclass[12pt]{extarticle}
+\documentclass[12pt]{extreport}
 \usepackage{iftex}
 \ifxetex
 \fi
@@ -150,9 +150,9 @@ name=\translate{Lemma}]{lemma}
 \maketitle
 \tableofcontents
 
-\section*{Введение}
-\label{sec:org2b8a8a4}
-\addcontentsline{toc}{section}{Введение}
+\chapter*{Введение}
+\label{sec:org1d79bf7}
+\addcontentsline{toc}{chapter}{Введение}
 
 \textbf{Актуальность темы}.
 Обзор, введение в тему, обозначение места данной работы в мировых исследованиях и т.п., можно использовать ссылки на другие
@@ -274,8 +274,8 @@ name=\translate{Lemma}]{lemma}
 четырех глав, заключения, одного приложения, списка литературы.
 Полный объём диссертации составляет XXX страниц с~XX~рисунками и~XX~таблицами.
 Список литературы содержит XXX~наименований.
-\section{Сведения из теории линейных блоковых кодов}
-\label{sec:org4db74c0}
+\chapter{Сведения из теории линейных блоковых кодов}
+\label{sec:org4404a9c}
 Теория кодов, исправляющих ошибки, обязана своему появлению классическим работам Клода Шеннона.
 В 50-е года XX века в связи с появлением работ Шеннона возник большой поток исследований,
 посвящённых построению эффективных схем кодирования информации для передачи по реальным каналам с шумами.
@@ -295,8 +295,8 @@ name=\translate{Lemma}]{lemma}
 Например, таким свойством является линейность.
 Линейные коды, т.~е. коды, которые образуют линейное пространство над полем Галуа, на сегодняшний день изучены наиболее полно по сравнению с другими классами кодов.
 Именно такие коды находят приложения в современной криптографии.
-\subsection{Базовые термины и определения}
-\label{sec:org18349ad}
+\section{Базовые термины и определения}
+\label{sec:orgf599b69}
 Рассмотрим конечное поле \(\mathbb{F}_q\) порядка \(q\).
 Тогда векторное пространство размерности \(n\) над полем \(\mathbb{F}_q\) будем обозначать через \(\mathbb{F}^n_q\).
 Элементами \(\mathbb{F}^{n}_{q}\), как это принято в теории кодов, исправляющих ошибки, являются векторы-строки \(\vect{v} = \left(v_{1}, v_{2}, \dotsc, v_{n}\right)\).
@@ -386,8 +386,8 @@ name=\translate{Lemma}]{lemma}
 Получается, что если \(\vect{v}_{T}= \left(u_{1}, u_{2}, \dotsc, u_{n}\right)\), то для всех \(i\in [\![n]\!]\setminus T\) выполняется равенство \(u_{i}=v_{i}\), а для \(i\in T\)~--- равенство \(u_{i}=0\), т.е. \((\vect{v}_{T})\vert_{T}=\vect{0}^{|T|}\) и \((\vect{v}_{T})_{\setminus T}=v_{\setminus T}\).
 
 Аналогичную систему обозначений перенесем и на матрицы.
-\subsection{Линейные коды}
-\label{sec:org89164f4}
+\section{Линейные коды}
+\label{sec:org58ee3ba}
 Линейные коды впервые появились в работах Киясу и Слепяна.
 В силу того, что эти коды образуют такую хорошо изученную структуру как линейное пространство, они стали основным объектом исследований.
 Линейные коды могут быть определены над любым конечным полем.
@@ -598,8 +598,8 @@ d=\min_{\vect{c}\in \code{C},\;\vect{c}\neq \vect{0}}\operatorname{wt}(\vect{c})
 A_{i}=\left|\left\{\vect{c}\in\code{C}|\ \operatorname{wt}(\vect{c})=i\right\}\right|,\ \ i=0\ldots n.
 \]
 \end{definition}
-\section{Форматирование текста}
-\label{sec:org557c046}
+\chapter{Форматирование текста}
+\label{sec:org4ac74c9}
 Можно использовать:
 \begin{description}
 \item[{Жирный шрифт:}] \textbf{Это жирный шрифт}
@@ -610,9 +610,9 @@ A_{i}=\left|\left\{\vect{c}\in\code{C}|\ \operatorname{wt}(\vect{c})=i\right\}\r
 \end{description}
 
 Но лучше не баловаться подобными украшательствами.
-\section{Формулы}
+\chapter{Формулы}
 \label{sec:ch1/sec3}
-\subsection{Ненумерованные одиночные формулы}
+\section{Ненумерованные одиночные формулы}
 \label{subsec:ch1/sec3/sub1}
 Вот так может выглядеть формула, которую необходимо вставить в строку по тексту: \(x \approx \sin x\) при \(x \to 0\).
 
@@ -634,8 +634,8 @@ A_{i}=\left|\left\{\vect{c}\in\code{C}|\ \operatorname{wt}(\vect{c})=i\right\}\r
 \boldsymbol{\alpha\beta\gamma\delta\epsilon\zeta\eta\theta\vartheta\iota\kappa\varkappa\lambda\mu\nu\xi\pi\varpi\rho\varrho\sigma\varsigma\tau\upsilon\phi\chi\psi\omega\Gamma\Delta\Theta\Lambda\Xi\Pi\Sigma\Upsilon\Phi\Psi\Omega}\]
 
 Для добавления формул нужно использовать команды \texttt{\textbackslash{}(...\textbackslash{})} и \texttt{\textbackslash{}[...\textbackslash{}]}.
-\subsection{Ненумерованные многострочные формулы}
-\label{sec:orgae888e2}
+\section{Ненумерованные многострочные формулы}
+\label{sec:org838501f}
 
 Вот так можно написать две формулы, не нумеруя их, чтобы знаки {}<<равно>>{} были строго друг под другом:
 \[\begin{aligned}
@@ -725,7 +725,7 @@ a_{n1} & \ldots & a_{nn} \\
 \end{array} \right).\]
 
 В следующем разделе поговорим про нумерованные формулы.
-\subsection{Нумерованные формулы}
+\section{Нумерованные формулы}
 \label{subsec:ch1/sec3/sub3}
 А вот так пишется нумерованная формула:
 \begin{equation}
@@ -778,10 +778,10 @@ a_{n1} & \ldots & a_{nn} \\
 Такого переноса можно достичь с помощью пакет \texttt{rmathbr}.
 
 На этом с уравнениями мы закончим.
-\section{Верстка таблиц}
-\label{sec:org38fe5ff}
-\subsection{Таблицы и прочее}
-\label{sec:org3d1ff90}
+\chapter{Верстка таблиц}
+\label{sec:org855019b}
+\section{Таблицы и прочее}
+\label{sec:org5eb8f22}
 В разделе мы рассмотрим способ оформления таблиц.
 Начнем с самой простой таблицы, которую легко можно сверстать в \texttt{org-mode}.
 \begin{table}[htbp]
@@ -852,22 +852,22 @@ Sim. Shaft + {}<<bearings>>{} (without package) & 12000\\
 Sim. Shaft + {}<<bearings>>{} 10 mm & 20030\\
 \bottomrule
 \end{longtable}
-\section{Очень крутая глава}
-\label{sec:orgf977b10}
+\chapter{Очень крутая глава}
+\label{sec:org0e13daa}
 Это очень крутая глава.
-\subsection{Раздел опять и не очень}
-\label{sec:org6b3ee79}
+\section{Раздел опять и не очень}
+\label{sec:orgb0abf83}
 
 Это раздел
-\subsubsection{Это подраздел}
-\label{sec:org119efa2}
+\subsection{Это подраздел}
+\label{sec:org1c52e52}
 
 Это подраздел.
-\subsection{Демонстрируем работу со списками}
-\label{sec:org5b00f24}
+\section{Демонстрируем работу со списками}
+\label{sec:orgb3934e9}
 
-\subsubsection{Нумерованный список}
-\label{sec:org3354a70}
+\subsection{Нумерованный список}
+\label{sec:org363556b}
 
 Рассмотрим список:
 \begin{enumerate}
@@ -887,8 +887,8 @@ Sim. Shaft + {}<<bearings>>{} 10 mm & 20030\\
 \end{enumerate}
 \end{enumerate}
 \end{enumerate}
-\subsubsection{Ненумерованный список}
-\label{sec:org3ea04e6}
+\subsection{Ненумерованный список}
+\label{sec:orgec57769}
 
 Вот пример списка без номеров:
 \begin{itemize}
@@ -909,8 +909,8 @@ Sim. Shaft + {}<<bearings>>{} 10 mm & 20030\\
 \end{itemize}
 \end{itemize}
 Конец списка.
-\subsection{Математические окружения}
-\label{sec:orgd562767}
+\section{Математические окружения}
+\label{sec:org9d7a61b}
 
 Начнем с определения прямоугольного треугольника.
 
@@ -947,57 +947,41 @@ Sim. Shaft + {}<<bearings>>{} 10 mm & 20030\\
 \end{problem}
 
 Вот ссылки на теорему~\ref{thm:triangle} и ссылка на определение~\ref{def:traingle1}.
-\subsection{Добавляем немного ссылок}
-\label{sec:orgfb760fd}
+\section{Добавляем немного ссылок}
+\label{sec:org24eea5f}
 
 Смотри статью~(Чижов, И. В., 2023) там написано про квадрат Адамара линейных кодов.
 Кроме того, хорошей статьей является источник~(Mora, Rocco and Tillich, Jean-Pierre, 2023), а книга~({Ф. Дж. Мак-Вильямс} and Слоэн, Н. {\relax Дж}. А., 1979) вообще является классикой теории кодирования.
 
 Здесь демонстрируем много ссылок~(Атья, М. and Макдональд, И., 1972, Думер, И.И., 1989, Kim, Jon-Lark and Kim, Young-Sik and Galvez, Lucky and Kim, Myeong Jae and Lee, Nari, 2019, Legeay, Matthieu and Loidreau, Pierre, 2012)~--- это ссылки на какие-то источники.
-\section*{Заключение}
-\label{sec:org380bc63}
-\addcontentsline{toc}{section}{Заключение}
-
-Основные результаты работы заключаются в следующем.
-\begin{enumerate}
-\item На основе анализа \ldots
-\item Численные исследования показали, что \ldots
-\item Математическое моделирование показало \ldots
-\item Для выполнения поставленных задач был создан \ldots
-\end{enumerate}
-И какая-нибудь заключающая фраза.
-
-Последний параграф может включать благодарности.
-В заключение автор выражает благодарность и большую признательность научному руководителю Иванову~И.~И. за поддержку, помощь, обсуждение результатов и научное руководство.
-Также автор благодарит Сидорова~А.А. и Петрова~Б.Б.
-за помощь в работе с образцами, Рабиновича~В.В. за предоставленные образцы и обсуждение результатов, Занудятину~Г.Г. и авторов шаблона за помощь в оформлении
-диссертации.
-Автор также благодарит много разных людей и всех, кто сделал настоящую работу автора возможной.
+\clearpage
+\listoffigures
+\addcontentsline{toc}{chapter}{Список рисунков}
 \clearpage
 \listoftables
-\addcontentsline{toc}{section}{Список таблиц}
+\addcontentsline{toc}{chapter}{Список таблиц}
 \appendix
-\section{Хорошее приложение}
-\label{sec:orgfc12571}
+\chapter{Хорошее приложение}
+\label{sec:org38c9191}
 Это просто хорошее приложение.
-\subsection{Подраздел в первом приложении}
-\label{sec:org515f280}
+\section{Подраздел в первом приложении}
+\label{sec:org71199ef}
 Подраздел.
-\subsection{Второй подраздел в первом приложении}
-\label{sec:orge34deb0}
+\section{Второй подраздел в первом приложении}
+\label{sec:org6605df8}
 И опять подраздел.
-\subsubsection{Подраздел в подразделе первого приложения}
-\label{sec:orgd75886c}
+\subsection{Подраздел в подразделе первого приложения}
+\label{sec:orgd31f1da}
 
 Подраздел
-\section{Отличное приложение}
-\label{sec:org13cd6fd}
+\chapter{Отличное приложение}
+\label{sec:org9d8d0f7}
 Это отличное приложение, которое демонстрирует важность и нужность расчетов.
-\subsection{Это вторая часть приложения, проверяем как нумеруются подразделы в приложениях}
-\label{sec:orgfc0c2d5}
+\section{Это вторая часть приложения, проверяем как нумеруются подразделы в приложениях}
+\label{sec:org0aa0440}
 
 Подраздел.
-\subsection{Еще подраздел}
-\label{sec:org97dec9a}
+\section{Еще подраздел}
+\label{sec:org0c138b1}
 Еще один подраздел
 \end{document}

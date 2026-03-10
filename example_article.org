@@ -2,7 +2,7 @@
 #+LATEX_CLASS_OPTIONS: [12pt]
 #+setupfile: ~/.emacs.d/org-latex-setupfiles/lang/ru.org
 #+setupfile: ~/.emacs.d/org-latex-setupfiles/theorem/plain.org
-#+LATEX_HEADER_EXTRA: \usepackage{cmcmsu-gost}
+#+LATEX_HEADER_EXTRA: \usepackage[tocpageword=true]{cmcmsu-gost}
 #+title: Произведение Шура--Адамара линейных кодов в анализе теоретико-кодовых криптосистем
 #+author: Чижов Иван Владимирович
 
