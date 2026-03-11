@@ -17,7 +17,26 @@
 \DeclareVoidOption{tocpagewordon}{\cmcmsugost@tocpagewordtrue}
 \DeclareVoidOption{tocpagewordof}{\cmcmsugost@tocpagewordfalse}
 
+\DeclareBoolOption[true]{rumath}
+\DeclareVoidOption{rumathon}{\cmcmsugost@rumathtrue}
+\DeclareVoidOption{rumathof}{\cmcmsugost@rumathfalse}
+
+\DeclareBoolOption[true]{rumathop}
+\DeclareVoidOption{rumathopon}{\cmcmsugost@rumathoptrue}
+\DeclareVoidOption{rumathopof}{\cmcmsugost@rumathopfalse}
+
+\DeclareBoolOption[true]{upgreek}
+\DeclareVoidOption{upgreekon}{\cmcmsugost@upgreektrue}
+\DeclareVoidOption{upgreekof}{\cmcmsugost@upgreekfalse}
+
+
 \ProcessKeyvalOptions*
+
+\ifcmcmsugost@rumath%
+\else
+    \cmcmsugost@rumathopfalse%
+    \cmcmsugost@upgreekfalse%
+\fi
 
 % Интервал
 \RequirePackage{setspace}
@@ -297,45 +316,45 @@
 \newcommand{\cmcmsugost@upgreek}{
     \ifPDFTeX%
         \@ifundefined{upalpha}{\RequirePackage{upgreek}}{}
-        \let\alpha\upalpha%
-        \let\beta\upbeta%
-        \let\gamma\upgamma%
-        \let\delta\updelta%
-        \let\epsilon\upepsilon%
-        \let\varepsilon\upvarepsilon%
-        \let\theta\uptheta%
-        \let\vartheta\upvartheta%
-        \let\lambda\uplambda%
-        \let\mu\upmu%
-        \let\pi\uppi%
-        \let\varpi\upvarpi%
-        \let\rho\uprho%
-        \let\varrho\upvarrho%
-        \let\sigma\upsigma%
-        \let\varsigma\upvarsigma%
-        \let\phi\upphi%
-        \let\varphi\upvarphi%
-        \let\omega\upomega%
-        \let\Gamma\Upgamma%
-        \let\Delta\Updelta%
-        \let\Theta\Uptheta%
-        \let\Lambda\Uplambda%
-        \let\Xi\Upxi%
-        \let\Pi\Uppi%
-        \let\Sigma\Upsigma%
-        \let\Upsilon\Upupsilon%
-        \let\Phi\Upphi%
-        \let\Psi\Uppsi%
-        \let\Omega\Upomega%
+        \AtEndPreamble{
+            \let\alpha\upalpha%
+            \let\beta\upbeta%
+            \let\gamma\upgamma%
+            \let\delta\updelta%
+            \let\epsilon\upepsilon%
+            \let\varepsilon\upvarepsilon%
+            \let\theta\uptheta%
+            \let\vartheta\upvartheta%
+            \let\lambda\uplambda%
+            \let\mu\upmu%
+            \let\pi\uppi%
+            \let\varpi\upvarpi%
+            \let\rho\uprho%
+            \let\varrho\upvarrho%
+            \let\sigma\upsigma%
+            \let\varsigma\upvarsigma%
+            \let\phi\upphi%
+            \let\varphi\upvarphi%
+            \let\omega\upomega%
+            \let\Gamma\Upgamma%
+            \let\Delta\Updelta%
+            \let\Theta\Uptheta%
+            \let\Lambda\Uplambda%
+            \let\Xi\Upxi%
+            \let\Pi\Uppi%
+            \let\Sigma\Upsigma%
+            \let\Upsilon\Upupsilon%
+            \let\Phi\Upphi%
+            \let\Psi\Uppsi%
+            \let\Omega\Upomega%
+        }
     \else
         \RequirePackage{unicode-math}
-        \unimathsetup{math-style=ISO}
+        \unimathsetup{math-style=french}
     \fi
 }
 
-\newcommand{\cmcmsugost@mathrutradition}{
-    %% Break math symbol and repeat it in next line
-    \RequirePackage{rmathbr}
+\newcommand{\cmcmsugost@mathruop}{
     %%% Русская традиция начертания математических функций
     \renewcommand{\tan}{\operatorname{tg}}
     \renewcommand{\cot}{\operatorname{ctg}}
@@ -353,6 +372,17 @@
     }
 }
 
+\newcommand{\cmcmsugost@mathrutradition}{
+    %% Break math symbol and repeat it in next line
+    \RequirePackage{rmathbr}
+    \ifcmcmsugost@rumathop%
+        \cmcmsugost@mathruop%
+    \fi
+    \ifcmcmsugost@upgreek%
+        \cmcmsugost@upgreek%
+    \fi
+}
+
 \newcommand{\cmcmsugost@ApplySty}{%
     \cmcmsugost@patchrualpha%
     \cmcmsugost@FixOverfullBoxes%
@@ -364,8 +394,19 @@
     \cmcmsugost@SetListSty%
     \cmcmsugost@SetEquationSty%
     \cmcmsugost@SetTableSty%
+    \ifcmcmsugost@rumath%
+        \cmcmsugost@mathrutradition%
+    \else
+        \ifcmcmsugost@rumathop%
+            \cmcmsugost@mathruop%
+        \fi
+        \ifcmcmsugost@upgreek%
+            \cmcmsugost@upgreek%
+        \fi
+    \fi
     \ifcmcmsugost@tocpageword%
         \cmcmsugost@ToCAddPageWord%
+
     \fi
     \RequirePackage{indentfirst}
     \RequirePackage{hyperref}
