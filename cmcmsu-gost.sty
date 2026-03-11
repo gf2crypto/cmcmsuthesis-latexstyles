@@ -21,22 +21,16 @@
 \DeclareVoidOption{rumathon}{\cmcmsugost@rumathtrue}
 \DeclareVoidOption{rumathof}{\cmcmsugost@rumathfalse}
 
-\DeclareBoolOption[true]{rumathop}
+\DeclareBoolOption[false]{rumathop}
 \DeclareVoidOption{rumathopon}{\cmcmsugost@rumathoptrue}
 \DeclareVoidOption{rumathopof}{\cmcmsugost@rumathopfalse}
 
-\DeclareBoolOption[true]{upgreek}
+\DeclareBoolOption[false]{upgreek}
 \DeclareVoidOption{upgreekon}{\cmcmsugost@upgreektrue}
 \DeclareVoidOption{upgreekof}{\cmcmsugost@upgreekfalse}
 
 
 \ProcessKeyvalOptions*
-
-\ifcmcmsugost@rumath%
-\else
-    \cmcmsugost@rumathopfalse%
-    \cmcmsugost@upgreekfalse%
-\fi
 
 % Интервал
 \RequirePackage{setspace}
@@ -350,17 +344,17 @@
         }
     \else
         \RequirePackage{unicode-math}
-        \unimathsetup{math-style=french}
+        \AtEndPreamble{\unimathsetup{math-style=french}}
     \fi
 }
 
 \newcommand{\cmcmsugost@mathruop}{
-    %%% Русская традиция начертания математических функций
-    \renewcommand{\tan}{\operatorname{tg}}
-    \renewcommand{\cot}{\operatorname{ctg}}
-    \renewcommand{\csc}{\operatorname{cosec}}
     %%% Русская традиция начертания математических знаков
     \AtBeginDocument{
+        %%% Русская традиция начертания математических функций
+        \renewcommand{\tan}{\operatorname{tg}}
+        \renewcommand{\cot}{\operatorname{ctg}}
+        \renewcommand{\csc}{\operatorname{cosec}}
         \let\le\leqslant%
         \let\leq\leqslant%
         \let\ge\geqslant%
@@ -375,12 +369,8 @@
 \newcommand{\cmcmsugost@mathrutradition}{
     %% Break math symbol and repeat it in next line
     \RequirePackage{rmathbr}
-    \ifcmcmsugost@rumathop%
-        \cmcmsugost@mathruop%
-    \fi
-    \ifcmcmsugost@upgreek%
-        \cmcmsugost@upgreek%
-    \fi
+    \cmcmsugost@upgreek%
+    \cmcmsugost@mathruop%
 }
 
 \newcommand{\cmcmsugost@ApplySty}{%
@@ -397,11 +387,11 @@
     \ifcmcmsugost@rumath%
         \cmcmsugost@mathrutradition%
     \else
-        \ifcmcmsugost@rumathop%
-            \cmcmsugost@mathruop%
-        \fi
         \ifcmcmsugost@upgreek%
             \cmcmsugost@upgreek%
+        \fi
+        \ifcmcmsugost@rumathop%
+            \cmcmsugost@mathruop%
         \fi
     \fi
     \ifcmcmsugost@tocpageword%
