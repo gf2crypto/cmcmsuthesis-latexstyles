@@ -1,8 +1,17 @@
 #+LATEX_CLASS: extarticle
+# #+LATEX_COMPILER: xelatex
 #+LATEX_CLASS_OPTIONS: [12pt]
 #+setupfile: ~/.emacs.d/org-latex-setupfiles/lang/ru.org
 #+setupfile: ~/.emacs.d/org-latex-setupfiles/theorem/plain.org
-#+LATEX_HEADER_EXTRA: \usepackage[tocpageword=true]{cmcmsu-gost}
+# #+LATEX_HEADER_EXTRA: \setmainfont[
+# #+LATEX_HEADER_EXTRA: ItalicFont     = STIXTwoText-Italic.otf,
+# #+LATEX_HEADER_EXTRA:  BoldFont       = STIXTwoText-Bold.otf,
+# #+LATEX_HEADER_EXTRA:  BoldItalicFont = STIXTwoText-BoldItalic.otf]{STIXTwoText-Regular.otf}
+# #+LATEX_HEADER_EXTRA: \setsansfont{texgyreheros-regular.otf}
+# #+LATEX_HEADER_EXTRA: \setmonofont{Inconsolatazi4-Regular.otf}
+# #+LATEX_HEADER_EXTRA: \usepackage{unicode-math}
+# #+LATEX_HEADER_EXTRA: \setmathfont{STIXTwoMath-Regular.otf}
+#+LATEX_HEADER_EXTRA: \usepackage[tocpageword=true, rumath=false]{cmcmsu-gost}
 #+title: Произведение Шура--Адамара линейных кодов в анализе теоретико-кодовых криптосистем
 #+author: Чижов Иван Владимирович
 
@@ -11,7 +20,7 @@
 :UNNUMBERED: t
 :END:
 #+latex: \addcontentsline{toc}{section}{Введение}
-
+\( \epsilon, \varepsilon \)
 *Актуальность темы*.
 Обзор, введение в тему, обозначение места данной работы в мировых исследованиях и т.п., можно использовать ссылки на другие
 работы.
@@ -516,12 +525,27 @@ A_{i}=\left|\left\{\vect{c}\in\code{C}|\ \operatorname{wt}(\vect{c})=i\right\}\r
         \displaystyle\frac{1}{\sqrt{2}+
             \displaystyle\frac{1}{\sqrt{2}+\cdots}}}\]
 
+Разные операторы, которые в русском наборе должны выглядеть по-другому:
+1. \( \tan\alpha \), ~tan~ (английская традиция), ~tg~ (русская традиция);
+2. \( \cot\beta \), ~cot~ (английская традиция), ~ctg~ (русская традиция);
+3. \( \csc\gamma \), ~csc~ (английская традиция), ~cosec~ (русская традиция);
+4. \( \le \), \(\leqslant\);
+5. \( \ge,\ \geqslant \);
+6. \( \geq,\ \geqslant \);
+7. \( \phi,\ \varphi \);
+8. \( \epsilon,\ \varepsilon \);
+9. \( \kappa,\ \varkappa \);
+10. \( \emptyset,\ \varnothing \)
+
 В формулах можно использовать греческие буквы:
 \[\alpha\beta\gamma\delta\epsilon\zeta\eta\theta\vartheta\iota\kappa\varkappa\lambda\mu\nu\xi\pi\varpi\rho\varrho\sigma\varsigma\tau\upsilon\phi\chi\psi\omega\Gamma\Delta\Theta\Lambda\Xi\Pi\Sigma\Upsilon\Phi\Psi\Omega,\]
-а также и жирные греческие буквы с помощью команды =\boldsymbol= (см. ссылку https://texfaq.org/FAQ-boldgreek):
+прямые греческие буквы
+\[ \symup{\alpha}\symup{\beta}\symup{\gamma}\symup{\delta}\symup{\epsilon}\symup{\zeta}\symup{\eta}\symup{\theta}\symup{\vartheta}\symup{\iota}\symup{\kappa}\symup{\varkappa}\symup{\lambda}\symup{\mu}\symup{\nu}\symup{\xi}\symup{\pi}\symup{\varpi}\symup{\rho}\symup{\varrho}\symup{\sigma}\symup{\varsigma}\symup{\tau}\symup{\upsilon}\symup{\phi}\symup{\chi}\symup{\psi}\symup{\omega}\symup{\Gamma}\symup{\Delta}\symup{\Theta}\symup{\Lambda}\symup{\Xi}\symup{\Pi}\symup{\Sigma}\symup{\Upsilon}\symup{\Phi}\symup{\Psi}\symup{\Omega} \]
+а также и жирные греческие буквы с помощью команды =\symbf= (см. ссылку https://texfaq.org/FAQ-boldgreek):
 \[
-\boldsymbol{\alpha\beta\gamma\delta\epsilon\zeta\eta\theta\vartheta\iota\kappa\varkappa\lambda\mu\nu\xi\pi\varpi\rho\varrho\sigma\varsigma\tau\upsilon\phi\chi\psi\omega\Gamma\Delta\Theta\Lambda\Xi\Pi\Sigma\Upsilon\Phi\Psi\Omega}\]
-
+\symbf{\alpha\beta\gamma\delta\epsilon\zeta\eta\theta\vartheta\iota\kappa\varkappa\lambda\mu\nu\xi\pi\varpi\rho\varrho\sigma\varsigma\tau\upsilon\phi\chi\psi\omega\Gamma\Delta\Theta\Lambda\Xi\Pi\Sigma\Upsilon\Phi\Psi\Omega}\]
+также жирные прямые с помощью =\symbfup=
+\[ \symbfup{\alpha}\symbfup{\beta}\symbfup{\gamma}\symbfup{\delta}\symbfup{\epsilon}\symbfup{\zeta}\symbfup{\eta}\symbfup{\theta}\symbfup{\vartheta}\symbfup{\iota}\symbfup{\kappa}\symbfup{\varkappa}\symbfup{\lambda}\symbfup{\mu}\symbfup{\nu}\symbfup{\xi}\symbfup{\pi}\symbfup{\varpi}\symbfup{\rho}\symbfup{\varrho}\symbfup{\sigma}\symbfup{\varsigma}\symbfup{\tau}\symbfup{\upsilon}\symbfup{\phi}\symbfup{\chi}\symbfup{\psi}\symbfup{\omega}\symbfup{\Gamma}\symbfup{\Delta}\symbfup{\Theta}\symbfup{\Lambda}\symbfup{\Xi}\symbfup{\Pi}\symbfup{\Sigma}\symbfup{\Upsilon}\symbfup{\Phi}\symbfup{\Psi}\symbfup{\Omega} \]
 Для добавления формул нужно использовать команды =\(...\)= и =\[...\]=.
 
 ** Ненумерованные многострочные формулы
@@ -653,8 +677,8 @@ a_{n1} & \ldots & a_{nn} \\
     \end{gather}
 \end{subequations}
 
-Ссылки на отдельные уравнения\nbsp{}\ref{eq:subeq_1-1},\nbsp{}\ref{eq:subeq_1-2} и\nbsp{}\ref{eq:subeq_2-1} и вот\nbsp{}\ref{eq:subeq_1-3}.
-Нужно использовать команду =\ref=, а не стандартную ссылку ~[[eq:subseq_1-1]]~.
+Ссылки на отдельные уравнения\nbsp{}\eqref{eq:subeq_1-1},\nbsp{}\eqref{eq:subeq_1-2} и\nbsp{}\eqref{eq:subeq_2-1} и вот\nbsp{}\eqref{eq:subeq_1-3}.
+Нужно использовать команду =\eqref=, а не стандартную ссылку ~[[eq:subseq_1-1]]~.
 #+name: eq:subeq_2
 \begin{subequations}
 \begin{align}
