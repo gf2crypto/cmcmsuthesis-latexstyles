@@ -1,0 +1,248 @@
+% cmcmsugost-extra.sty
+\NeedsTeXFormat{LaTeX2e}[2020-10-01]
+\ProvidesPackage{cmcmsugost-extra}[2026/03/10 v0.1 extra packages]
+
+
+\usepackage{amsthm}
+\usepackage{thmtools}
+%% Определения
+\declaretheorem[style=definition, numberwithin=section,
+    name=\translate{Definition}]{definition}
+\declaretheorem[style=definition, numbered=no,
+    name=\translate{Definition}]{definition*}
+%% Замечание
+\declaretheorem[style=remark, numberwithin=section,
+    name=\translate{Remark}]{remark}
+\declaretheorem[style=remark, numbered=no, name=\translate{Remark}]{remark*}
+%% Пример
+\declaretheorem[style=definition, numberwithin=section,
+    name=\translate{Example}]{example}
+\declaretheorem[name=\translate{Example},sibling=example]{exmpl}
+\declaretheorem[style=definition, numbered=no,
+    name=\translate{Example}]{example*}
+%% Задача
+\declaretheorem[style=remark, numberwithin=section,
+    name=\translate{Task}]{task}
+\declaretheorem[style=remark, numbered=no, name=\translate{Task}]{task*}
+%% Упражнение
+\declaretheorem[style=remark, numberwithin=section,
+    name=\translate{Exercise}]{exercise}
+\declaretheorem[style=remark, numbered=no,
+    name=\translate{Exercise}]{exercise*}
+%% Проблема
+\declaretheorem[style=remark, numberwithin=section,
+    name=\translate{Problem}]{problem}
+\declaretheorem[style=remark, numbered=no, name=\translate{Problem}]{problem*}
+%% Вопрос
+\declaretheorem[style=remark, numberwithin=section,
+    name=\translate{Question}]{question}
+\declaretheorem[style=remark, numbered=no, name=\translate{Question}]{question*}
+%% Теорема
+\declaretheorem[style=plain, numberwithin=section,
+    name=\translate{Theorem}]{theorem}
+\declaretheorem[style=plain, numbered=no, name=\translate{Theorem}]{theorem*}
+%% Утверждение
+\declaretheorem[style=plain, numberwithin=section,
+    name=\translate{Proposition}]{proposition}
+\declaretheorem[style=plain, numbered=no,
+    name=\translate{Proposition}]{proposition*}
+\declaretheorem[style=plain, numberwithin=section,
+    name=\translate{Assertion}]{assertion}
+\declaretheorem[style=plain, numbered=no, name=\translate{Assertion}]{assertion*}
+%% Лемма
+\declaretheorem[style=plain, numberwithin=section,
+    name=\translate{Lemma}]{lemma}
+\declaretheorem[style=plain, numbered=no, name=\translate{Lemma}]{lemma*}
+%% Следствие
+\declaretheorem[style=plain, numberwithin=section, name=\translate{Corollary}]{corollary}
+\declaretheorem[style=plain, numbered=no, name=\translate{Corollary}]{corollary*}
+\SetKwInput{KwData}{\translate{Input}}
+\SetKwInput{KwInput}{\translate{Input}}
+\SetKwInput{KwOutput}{\translate{Output}}
+\SetKwInput{KwResult}{\translate{Output}}
+\SetAlgorithmName{\translate{Algorithm}}{\translate{algorithm}}{\translate{List of algorithms}}
+
+\SetKwComment{Comment}{/* }{ */}
+\usepackage[%
+    linesnumbered,
+    titlenumbered
+]{algorithm2e}
+# Включение в документ листингов
+\usepackage{listings}
+
+# Ширина текста минус ширина надписи 999
+\newlength{\twless}
+\newlength{\lmarg}
+\setlength{\lmarg}{\widthof{999}}   % ширина надписи 999
+\setlength{\twless}{\textwidth-\lmarg}
+\lstset{ %
+    numbers=left,                   % where to put the line-numbers
+    numberstyle=\fontsize{12pt}{14pt}\selectfont\color{Gray},  % the style that is used for the line-numbers
+    firstnumber=1,                  % в этой и следующей строках задаётся поведение нумерации 5, 10, 15...
+    stepnumber=5,                   % the step between two line-numbers. If it's 1, each line will be numbered
+    numbersep=5pt,                  % how far the line-numbers are from the code
+    backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+    showspaces=false,               % show spaces adding particular underscores
+    showstringspaces=false,         % underline spaces within strings
+    showtabs=false,                 % show tabs within strings adding particular underscores
+    frame=leftline,                 % adds a frame of different types around the code
+    rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+    tabsize=2,                      % sets default tabsize to 2 spaces
+    captionpos=t,                   % sets the caption-position to top
+    breaklines=true,                % sets automatic line breaking
+    breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+    title=\lstname,                 % show the filename of files included with \lstinputlisting; also try caption instead of title
+    basicstyle=\fontsize{12pt}{14pt}\selectfont\ttfamily,% the size of the fonts that are used for the code
+    keywordstyle=\color{blue},      % keyword style
+    commentstyle=\color{ForestGreen}\emph,% comment style
+    stringstyle=\color{Mahogany},   % string literal style
+    escapeinside={\%*}{*)},         % if you want to add a comment within your code
+    morekeywords={*,...},           % if you want to add more keywords to the set
+    inputencoding=utf8,             % кодировка кода
+    xleftmargin={\lmarg},           % Чтобы весь код и полоска с номерами строк была смещена влево, так чтобы цифры не вылезали за пределы текста слева
+}
+
+\renewcommand{\lstlistingname}{\translate{Listing}}
+\newtranslation[to=Russian]{Listing}{Листинг}
+
+\usepackage{csquotes}
+\usepackage[%
+    backend=biber,
+    bibencoding=utf8,
+    sorting=none,
+    style=gost-numeric,
+    language=autobib,
+    autolang=other,
+    clearlang=true,
+    defernumbers=true,
+    sortcites=true,
+    doi=false,
+    isbn=false,
+]{biblatex}
+% # Исправление случая неподдержки знака номера в pdflatex
+\DefineBibliographyStrings{russian}{number={\textnumero}}
+
+
+\DeclareSourcemap{ % модификация bib-файла перед тем, как им займётся biblatex
+    \maps{
+        \map{% используем media=text по умолчанию
+            \step[fieldset=media, fieldvalue=text]
+        }
+        \map{% перекидываем значения поля language в поле langid, которым пользуется biblatex
+            \step[fieldsource=language, fieldset=langid, origfieldval, final]
+            \step[fieldset=language, null]
+        }
+        \map{% перекидываем значения поля numpages в поле pagetotal, которым пользуется biblatex
+            \step[fieldsource=numpages, fieldset=pagetotal, origfieldval, final]
+            \step[fieldset=numpages, null]
+        }
+        \map{% перекидываем значения поля pagestotal в поле pagetotal, которым пользуется biblatex
+            \step[fieldsource=pagestotal, fieldset=pagetotal, origfieldval, final]
+            \step[fieldset=pagestotal, null]
+        }
+        \map[overwrite]{% если есть shortjournal, используем его вместо journal
+            \step[fieldsource=shortjournal, final]
+            \step[fieldset=journal, origfieldval]
+            \step[fieldset=shortjournal, null]
+        }
+        \map[overwrite]{% если есть shortbooktitle, используем его вместо booktitle
+            \step[fieldsource=shortbooktitle, final]
+            \step[fieldset=booktitle, origfieldval]
+            \step[fieldset=shortbooktitle, null]
+        }
+        \map[overwrite]{% если в поле medium написано "Электронный ресурс", устанавливаем media=eresource
+            \step[fieldsource=medium,
+                match=\regexp{Электронный\s+ресурс},
+                final]
+            \step[fieldset=media, fieldvalue=eresource]
+            \step[fieldset=medium, null]
+        }
+        \map[overwrite]{% стираем значения всех полей issn
+            \step[fieldset=issn, null]
+        }
+        \map[overwrite]{% стираем значения поля abstract, поскольку им не пользуемся, а там бывают проблемные символы
+            \step[fieldsource=abstract]
+            \step[fieldset=abstract, null]
+        }
+        \map[overwrite]{% переделка формата записи даты обращения
+            \step[fieldsource=urldate,
+                match=\regexp{([0-9]{2})\.([0-9]{2})\.([0-9]{4})},
+                replace={$3-$2-$1$4},
+                final]
+        }
+        \map[overwrite]{% стираем ключевые слова
+            \step[fieldsource=keywords]
+            \step[fieldset=keywords, null]
+        }
+        \map[overwrite]{% для типа online перекидываем howpublished в organization
+            \step[typesource=online, typetarget=online, final]
+            \step[fieldsource=howpublished, fieldset=organization, origfieldval]
+            \step[fieldset=howpublished, null]
+        }
+    }
+}
+
+% # В списке литературы обозначение одной буквой диапазона страниц англоязычного источника %%%
+\DefineBibliographyStrings{english}{%
+    pages = {p\adddot} %заглавность буквы затем по месту определяется работой самого biblatex
+}
+% # Set higher penalty for breaking in number, dates and pages ranges
+\setcounter{abbrvpenalty}{10000} % default is \hyphenpenalty which is 12
+% # Set higher penalty for breaking in names
+\setcounter{highnamepenalty}{10000} % If you prefer the traditional BibTeX behavior (no linebreaks at highnamepenalty breakpoints), set it to ‘infinite’ (10 000 or higher).
+\setcounter{lownamepenalty}{10000}
+\AtEndPreamble{
+    \@ifpackageloaded{unicode-math}{}{%
+        \newcommand{\symbf}[1]{\ensuremath{\boldsymbol{#1}}}
+        \newcommand{\symbfit}[1]{\ensuremath{\boldsymbol{#1}}}
+        \usepackage{upgreek}
+        \newcommand{\symup}[1]{%
+            \begingroup
+            \edef\symup@name{\expandafter\@gobble\string#1}% alpha from \alpha
+            \ifcsname up\symup@name\endcsname
+                \csname up\symup@name\endcsname
+            \else
+                \mathrm{#1}%
+            \fi
+            \endgroup
+        }
+        \newcommand{\symbfup}[1]{\ensuremath{\boldsymbol{\symup{#1}}}}
+    }
+}
+\makeatother
+\newcommand{\vect}[1]{\symbfup{#1}}
+\newcommand{\matr}[1]{\symbfup{#1}}
+\newcommand{\code}[1]{\mathcal{#1}}
+\newcommand{\str}[1]{\symup{#1}}
+\newcommand{\elt}[1]{\symup{#1}}
+\newcommand{\crypto}[1]{\mathsf{#1}}
+\newcommand{\algo}[1]{\mathsf{#1}}
+\newcommand{\compl}[1]{\mathsf{#1}}
+\pdfstringdefDisableCommands{\def\ell{ℓ}}
+\newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
+\usepackage{amsthm}
+\usepackage{thmtools}
+\RequirePackage{translator}
+\uselanguage{Russian}
+\languagepath{Russian}
+\newtranslation[to=Russian]{Outline}{План}
+\newtranslation[to=Russian]{Definition}{Определение}
+\newtranslation[to=Russian]{Remark}{Замечание}
+\newtranslation[to=Russian]{Theorem}{Теорема}
+\newtranslation[to=Russian]{Lemma}{Лемма}
+\newtranslation[to=Russian]{Proposition}{Утверждение}
+\newtranslation[to=Russian]{Assertion}{Утверждение}
+\newtranslation[to=Russian]{Statement}{Утверждение}
+\newtranslation[to=Russian]{Problem}{Проблема}
+\newtranslation[to=Russian]{Task}{Задача}
+\newtranslation[to=Russian]{Excercise}{Упражнение}
+\newtranslation[to=Russian]{Question}{Вопрос}
+\newtranslation[to=Russian]{Corollary}{Следствие}
+\newtranslation[to=Russian]{Input}{Вход}
+\newtranslation[to=Russian]{Output}{Выход}
+\newtranslation[to=Russian]{Algorithm}{Алгоритм}
+\newtranslation[to=Russian]{algorithm}{алгоритм}
+\newtranslation[to=Russian]{List of algorithms}{Список алгоритмов}
+\newtranslation[to=Russian]{Bibliography}{Список литературы}
+\newtranslation[to=Russian]{UDK}{УДК}
+\newtranslation[to=Russian]{Keywords}{Ключевые слова}
