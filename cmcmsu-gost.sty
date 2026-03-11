@@ -288,19 +288,84 @@
     }%
 }
 
+
+
+% ------------------------------------------------
+% Upright Greek by default in math mode
+% Works with XeLaTeX/LuaLaTeX and pdfLaTeX
+% ------------------------------------------------
+\newcommand{\cmcmsugost@upgreek}{
+    \ifPDFTeX%
+        \@ifundefined{upalpha}{\RequirePackage{upgreek}}{}
+        \let\alpha\upalpha%
+        \let\beta\upbeta%
+        \let\gamma\upgamma%
+        \let\delta\updelta%
+        \let\epsilon\upepsilon%
+        \let\varepsilon\upvarepsilon%
+        \let\theta\uptheta%
+        \let\vartheta\upvartheta%
+        \let\lambda\uplambda%
+        \let\mu\upmu%
+        \let\pi\uppi%
+        \let\varpi\upvarpi%
+        \let\rho\uprho%
+        \let\varrho\upvarrho%
+        \let\sigma\upsigma%
+        \let\varsigma\upvarsigma%
+        \let\phi\upphi%
+        \let\varphi\upvarphi%
+        \let\omega\upomega%
+        \let\Gamma\Upgamma%
+        \let\Delta\Updelta%
+        \let\Theta\Uptheta%
+        \let\Lambda\Uplambda%
+        \let\Xi\Upxi%
+        \let\Pi\Uppi%
+        \let\Sigma\Upsigma%
+        \let\Upsilon\Upupsilon%
+        \let\Phi\Upphi%
+        \let\Psi\Uppsi%
+        \let\Omega\Upomega%
+    \else
+        \RequirePackage{unicode-math}
+        \unimathsetup{math-style=ISO}
+    \fi
+}
+
+\newcommand{\cmcmsugost@mathrutradition}{
+    %% Break math symbol and repeat it in next line
+    \RequirePackage{rmathbr}
+    %%% Русская традиция начертания математических функций
+    \renewcommand{\tan}{\operatorname{tg}}
+    \renewcommand{\cot}{\operatorname{ctg}}
+    \renewcommand{\csc}{\operatorname{cosec}}
+    %%% Русская традиция начертания математических знаков
+    \AtBeginDocument{
+        \let\le\leqslant%
+        \let\leq\leqslant%
+        \let\ge\geqslant%
+        \let\geq\geqslant%
+        \let\phi\varphi%
+        \let\epsilon\varepsilon%
+        \let\kappa\varkappa%
+        \let\emptyset\varnothing%
+    }
+}
+
 \newcommand{\cmcmsugost@ApplySty}{%
-    \cmcmsugost@patchrualpha
-    \cmcmsugost@FixOverfullBoxes
-    \cmcmsugost@SetTitleSty
-    \cmcmsugost@SetHeaderAndFooterSty
-    \cmcmsugost@SetToCSty
-    \cmcmsugost@SetAppendixSty
-    \cmcmsugost@SetFigureSty
-    \cmcmsugost@SetListSty
-    \cmcmsugost@SetEquationSty
-    \cmcmsugost@SetTableSty
-    \ifcmcmsugost@tocpageword
-        \cmcmsugost@ToCAddPageWord
+    \cmcmsugost@patchrualpha%
+    \cmcmsugost@FixOverfullBoxes%
+    \cmcmsugost@SetTitleSty%
+    \cmcmsugost@SetHeaderAndFooterSty%
+    \cmcmsugost@SetToCSty%
+    \cmcmsugost@SetAppendixSty%
+    \cmcmsugost@SetFigureSty%
+    \cmcmsugost@SetListSty%
+    \cmcmsugost@SetEquationSty%
+    \cmcmsugost@SetTableSty%
+    \ifcmcmsugost@tocpageword%
+        \cmcmsugost@ToCAddPageWord%
     \fi
     \RequirePackage{indentfirst}
     \RequirePackage{hyperref}
