@@ -3,72 +3,191 @@
 \ProvidesPackage{cmcmsugost-extra}[2026/03/10 v0.1 extra packages]
 
 
-\usepackage{amsthm}
-\usepackage{thmtools}
-%% Определения
-\declaretheorem[style=definition, numberwithin=section,
-    name=\translate{Definition}]{definition}
-\declaretheorem[style=definition, numbered=no,
-    name=\translate{Definition}]{definition*}
-%% Замечание
-\declaretheorem[style=remark, numberwithin=section,
-    name=\translate{Remark}]{remark}
-\declaretheorem[style=remark, numbered=no, name=\translate{Remark}]{remark*}
-%% Пример
-\declaretheorem[style=definition, numberwithin=section,
-    name=\translate{Example}]{example}
-\declaretheorem[name=\translate{Example},sibling=example]{exmpl}
-\declaretheorem[style=definition, numbered=no,
-    name=\translate{Example}]{example*}
-%% Задача
-\declaretheorem[style=remark, numberwithin=section,
-    name=\translate{Task}]{task}
-\declaretheorem[style=remark, numbered=no, name=\translate{Task}]{task*}
-%% Упражнение
-\declaretheorem[style=remark, numberwithin=section,
-    name=\translate{Exercise}]{exercise}
-\declaretheorem[style=remark, numbered=no,
-    name=\translate{Exercise}]{exercise*}
-%% Проблема
-\declaretheorem[style=remark, numberwithin=section,
-    name=\translate{Problem}]{problem}
-\declaretheorem[style=remark, numbered=no, name=\translate{Problem}]{problem*}
-%% Вопрос
-\declaretheorem[style=remark, numberwithin=section,
-    name=\translate{Question}]{question}
-\declaretheorem[style=remark, numbered=no, name=\translate{Question}]{question*}
-%% Теорема
-\declaretheorem[style=plain, numberwithin=section,
-    name=\translate{Theorem}]{theorem}
-\declaretheorem[style=plain, numbered=no, name=\translate{Theorem}]{theorem*}
-%% Утверждение
-\declaretheorem[style=plain, numberwithin=section,
-    name=\translate{Proposition}]{proposition}
-\declaretheorem[style=plain, numbered=no,
-    name=\translate{Proposition}]{proposition*}
-\declaretheorem[style=plain, numberwithin=section,
-    name=\translate{Assertion}]{assertion}
-\declaretheorem[style=plain, numbered=no, name=\translate{Assertion}]{assertion*}
-%% Лемма
-\declaretheorem[style=plain, numberwithin=section,
-    name=\translate{Lemma}]{lemma}
-\declaretheorem[style=plain, numbered=no, name=\translate{Lemma}]{lemma*}
-%% Следствие
-\declaretheorem[style=plain, numberwithin=section, name=\translate{Corollary}]{corollary}
-\declaretheorem[style=plain, numbered=no, name=\translate{Corollary}]{corollary*}
-\SetKwInput{KwData}{\translate{Input}}
-\SetKwInput{KwInput}{\translate{Input}}
-\SetKwInput{KwOutput}{\translate{Output}}
-\SetKwInput{KwResult}{\translate{Output}}
-\SetAlgorithmName{\translate{Algorithm}}{\translate{algorithm}}{\translate{List of algorithms}}
+\makeatletter
 
-\SetKwComment{Comment}{/* }{ */}
-\usepackage[%
-    linesnumbered,
-    titlenumbered
-]{algorithm2e}
+\RequirePackage{iftex}
+\RequirePackage{kvoptions}
+\RequirePackage{etoolbox}
+
+\SetupKeyvalOptions{
+    family = cmcmsugost,
+    prefix = cmcmsugost@
+}
+
+\DeclareBoolOption[true]{thm}
+\DeclareVoidOption{thmon}{\cmcmsugost@thmtrue}
+\DeclareVoidOption{thmof}{\cmcmsugost@thmfalse}
+
+\DeclareStringOption[off]{alg}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Translations
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{translator}
+\uselanguage{Russian}  % default language is Russian
+\languagepath{Russian}
+
+\newtranslation[to=Russian]{Outline}{План}
+\newtranslation[to=Russian]{Definition}{Определение}
+\newtranslation[to=Russian]{Remark}{Замечание}
+\newtranslation[to=Russian]{Theorem}{Теорема}
+\newtranslation[to=Russian]{Lemma}{Лемма}
+\newtranslation[to=Russian]{Proposition}{Утверждение}
+\newtranslation[to=Russian]{Assertion}{Утверждение}
+\newtranslation[to=Russian]{Statement}{Утверждение}
+\newtranslation[to=Russian]{Problem}{Проблема}
+\newtranslation[to=Russian]{Task}{Задача}
+\newtranslation[to=Russian]{Excercise}{Упражнение}
+\newtranslation[to=Russian]{Question}{Вопрос}
+\newtranslation[to=Russian]{Corollary}{Следствие}
+\newtranslation[to=Russian]{Input}{Вход}
+\newtranslation[to=Russian]{Output}{Выход}
+\newtranslation[to=Russian]{Algorithm}{Алгоритм}
+\newtranslation[to=Russian]{algorithm}{алгоритм}
+\newtranslation[to=Russian]{List of algorithms}{Список алгоритмов}
+\newtranslation[to=Russian]{Listing}{Алгоритм}
+\newtranslation[to=Russian]{Bibliography}{Список литературы}
+\newtranslation[to=Russian]{UDK}{УДК}
+\newtranslation[to=Russian]{Keywords}{Ключевые слова}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\cmcmsugost@EnableTheorems{
+    \RequirePackage{amsthm}
+    \RequirePackage{thmtools}
+    %% Определения
+    \declaretheorem[
+        style=definition,
+        numberwithin=section,
+        name=\translate{Definition}]{definition}
+
+    \declaretheorem[
+        style=definition,
+        numbered=no,
+        name=\translate{Definition}]{definition*}
+    %% Замечание
+    \declaretheorem[
+        style=remark,
+        numberwithin=section,
+        name=\translate{Remark}]{remark}
+    \declaretheorem[
+        style=remark,
+        numbered=no,
+        name=\translate{Remark}]{remark*}
+    %% Пример
+    \declaretheorem[
+        style=definition,
+        numberwithin=section,
+        name=\translate{Example}]{example}
+    \declaretheorem[
+        name=\translate{Example},
+        sibling=example]{exmpl}
+    \declaretheorem[
+        style=definition,
+        numbered=no,
+        name=\translate{Example}]{example*}
+    %% Задача
+    \declaretheorem[
+        style=remark,
+        numberwithin=section,
+        name=\translate{Task}]{task}
+    \declaretheorem[
+        style=remark,
+        numbered=no,
+        name=\translate{Task}]{task*}
+    %% Упражнение
+    \declaretheorem[
+        style=remark,
+        numberwithin=section,
+        name=\translate{Exercise}]{exercise}
+    \declaretheorem[
+        style=remark,
+        numbered=no,
+        name=\translate{Exercise}]{exercise*}
+    %% Проблема
+    \declaretheorem[
+        style=remark,
+        numberwithin=section,
+        name=\translate{Problem}]{problem}
+    \declaretheorem[
+        style=remark,
+        numbered=no,
+        name=\translate{Problem}]{problem*}
+    %% Вопрос
+    \declaretheorem[
+        style=remark,
+        numberwithin=section,
+        name=\translate{Question}]{question}
+    \declaretheorem[
+        style=remark,
+        numbered=no,
+        name=\translate{Question}]{question*}
+    %% Теорема
+    \declaretheorem[
+        style=plain,
+        numberwithin=section,
+        name=\translate{Theorem}]{theorem}
+    \declaretheorem[
+        style=plain,
+        numbered=no,
+        name=\translate{Theorem}]{theorem*}
+    %% Утверждение
+    \declaretheorem[
+        style=plain,
+        numberwithin=section,
+        name=\translate{Proposition}]{proposition}
+    \declaretheorem[
+        style=plain,
+        numbered=no,
+        name=\translate{Proposition}]{proposition*}
+    \declaretheorem[
+        style=plain,
+        numberwithin=section,
+        name=\translate{Assertion}]{assertion}
+    \declaretheorem[
+        style=plain,
+        numbered=no,
+        name=\translate{Assertion}]{assertion*}
+    %% Лемма
+    \declaretheorem[
+        style=plain,
+        numberwithin=section,
+        name=\translate{Lemma}]{lemma}
+    \declaretheorem[
+        style=plain,
+        numbered=no,
+        name=\translate{Lemma}]{lemma*}
+    %% Следствие
+    \declaretheorem[
+        style=plain,
+        numberwithin=section,
+        name=\translate{Corollary}]{corollary}
+    \declaretheorem[
+        style=plain,
+        numbered=no,
+        name=\translate{Corollary}]{corollary*}
+}
+
+\cmcmsugost@SetAlgorithm2e{
+    \RequirePackage[%
+        linesnumbered,
+        titlenumbered
+    ]{algorithm2e}
+    \SetKwInput{KwData}{\translate{Input}}
+    \SetKwInput{KwInput}{\translate{Input}}
+    \SetKwInput{KwOutput}{\translate{Output}}
+    \SetKwInput{KwResult}{\translate{Output}}
+    \SetAlgorithmName{\translate{Algorithm}}{
+        \translate{algorithm}}{\translate{List of algorithms}}
+
+    \SetKwComment{Comment}{/* }{ */}
+}
+
 # Включение в документ листингов
-\usepackage{listings}
+\RequirePackage{listings}
 
 # Ширина текста минус ширина надписи 999
 \newlength{\twless}
@@ -81,7 +200,7 @@
     firstnumber=1,                  % в этой и следующей строках задаётся поведение нумерации 5, 10, 15...
     stepnumber=5,                   % the step between two line-numbers. If it's 1, each line will be numbered
     numbersep=5pt,                  % how far the line-numbers are from the code
-    backgroundcolor=\color{white},  % choose the background color. You must add \usepackage{color}
+    backgroundcolor=\color{white},  % choose the background color. You must add \RequirePackage{color}
     showspaces=false,               % show spaces adding particular underscores
     showstringspaces=false,         % underline spaces within strings
     showtabs=false,                 % show tabs within strings adding particular underscores
@@ -103,10 +222,10 @@
 }
 
 \renewcommand{\lstlistingname}{\translate{Listing}}
-\newtranslation[to=Russian]{Listing}{Листинг}
 
-\usepackage{csquotes}
-\usepackage[%
+
+\RequirePackage{csquotes}
+\RequirePackage[%
     backend=biber,
     bibencoding=utf8,
     sorting=none,
@@ -195,7 +314,7 @@
     \@ifpackageloaded{unicode-math}{}{%
         \newcommand{\symbf}[1]{\ensuremath{\boldsymbol{#1}}}
         \newcommand{\symbfit}[1]{\ensuremath{\boldsymbol{#1}}}
-        \usepackage{upgreek}
+        \RequirePackage{upgreek}
         \newcommand{\symup}[1]{%
             \begingroup
             \edef\symup@name{\expandafter\@gobble\string#1}% alpha from \alpha
@@ -209,7 +328,7 @@
         \newcommand{\symbfup}[1]{\ensuremath{\boldsymbol{\symup{#1}}}}
     }
 }
-\makeatother
+
 \newcommand{\vect}[1]{\symbfup{#1}}
 \newcommand{\matr}[1]{\symbfup{#1}}
 \newcommand{\code}[1]{\mathcal{#1}}
@@ -220,29 +339,7 @@
 \newcommand{\compl}[1]{\mathsf{#1}}
 \pdfstringdefDisableCommands{\def\ell{ℓ}}
 \newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
-\usepackage{amsthm}
-\usepackage{thmtools}
-\RequirePackage{translator}
-\uselanguage{Russian}
-\languagepath{Russian}
-\newtranslation[to=Russian]{Outline}{План}
-\newtranslation[to=Russian]{Definition}{Определение}
-\newtranslation[to=Russian]{Remark}{Замечание}
-\newtranslation[to=Russian]{Theorem}{Теорема}
-\newtranslation[to=Russian]{Lemma}{Лемма}
-\newtranslation[to=Russian]{Proposition}{Утверждение}
-\newtranslation[to=Russian]{Assertion}{Утверждение}
-\newtranslation[to=Russian]{Statement}{Утверждение}
-\newtranslation[to=Russian]{Problem}{Проблема}
-\newtranslation[to=Russian]{Task}{Задача}
-\newtranslation[to=Russian]{Excercise}{Упражнение}
-\newtranslation[to=Russian]{Question}{Вопрос}
-\newtranslation[to=Russian]{Corollary}{Следствие}
-\newtranslation[to=Russian]{Input}{Вход}
-\newtranslation[to=Russian]{Output}{Выход}
-\newtranslation[to=Russian]{Algorithm}{Алгоритм}
-\newtranslation[to=Russian]{algorithm}{алгоритм}
-\newtranslation[to=Russian]{List of algorithms}{Список алгоритмов}
-\newtranslation[to=Russian]{Bibliography}{Список литературы}
-\newtranslation[to=Russian]{UDK}{УДК}
-\newtranslation[to=Russian]{Keywords}{Ключевые слова}
+
+
+\makeatother
+\endinput
