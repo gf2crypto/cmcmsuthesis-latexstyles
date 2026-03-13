@@ -12,6 +12,8 @@
 # #+LATEX_HEADER_EXTRA: \usepackage{unicode-math}
 # #+LATEX_HEADER_EXTRA: \setmathfont{STIXTwoMath-Regular.otf}
 #+LATEX_HEADER_EXTRA: \usepackage[tocpageword=true, rumath=false]{cmcmsu-gost}
+#+LATEX_HEADER_EXTRA: \usepackage{cmcmsu-extra}
+#+LATEX_HEADER_EXTRA: \addbibresource{refs.bib}
 #+title: Произведение Шура--Адамара линейных кодов в анализе теоретико-кодовых криптосистем
 #+author: Чижов Иван Владимирович
 
@@ -836,6 +838,129 @@ a_{n1} & \ldots & a_{nn} \\
 Кроме того, хорошей статьей является источник\nbsp{}[cite:@mora2023], а книга\nbsp{}[cite:@macwilliams1979] вообще является классикой теории кодирования.
 
 Здесь демонстрируем много ссылок\nbsp{}[cite:@atya1972;@dumer1989;@kim2019;@legeay2012]\nbsp{}--- это ссылки на какие-то источники.
+* Работа с листингами и псевдокодом в разных пакетах
+Ниже идут четыре теста: код Python с русскими комментариями, код C с русскими
+комментариями, псевдокод через ~listings~, псевдокод через =algorithm2e=.
+
+** Python в listings с русскими комментариями}
+
+\begin{lstlisting}[style=mypython,caption={Тест Python-кода с русскими комментариями}]
+def gcd(a, b):
+    # Находим наибольший общий делитель
+    while b != 0:
+        # Меняем местами значения
+        a, b = b, a % b
+    return a
+
+n = 84
+m = 30
+print("НОД =", gcd(n, m))  # Ожидается 6
+\end{lstlisting}
+
+** C в listings с русскими комментариями}
+
+\begin{lstlisting}[style=base,language=C,caption={Тест C-кода с русскими комментариями}]
+#include <stdio.h>
+
+/* Простая функция суммы */
+int sum_upto(int n) {
+    int s = 0;
+    // Суммируем числа от 1 до n
+    for (int i = 1; i <= n; ++i) {
+        s += i;
+    }
+    return s;
+}
+
+int main(void) {
+    printf("%d\n", sum_upto(10)); // Должно вывести 55
+    return 0;
+}
+\end{lstlisting}
+
+** Псевдокод средствами listings
+
+\begin{lstlisting}[style=pseudocodestyle,caption={Псевдокод через listings}]
+procedure BinarySearch(A, x)
+begin
+    // A -- отсортированный массив
+    left  := 0
+    right := length(A) - 1
+
+    while left <= right do
+    begin
+        mid := floor((left + right) / 2)
+
+        if A[mid] = x then
+            return mid
+        else
+            if A[mid] < x then
+                left := mid + 1
+            else
+                right := mid - 1
+    end
+
+    return -1
+end
+\end{lstlisting}
+
+** Псевдокод средствами algorithm2e
+
+\begin{algorithm}[h]
+\caption{Бинарный поиск}
+\KwInput{Отсортированный массив $A[0 \dots n-1]$, значение $x$}
+\KwOutput{Индекс элемента или $-1$}
+
+$left \gets 0$\;
+$right \gets n - 1$\;
+
+\While{$left \le right$}{
+    $mid \gets \lfloor (left + right)/2 \rfloor$\;
+    \Comment{Проверяем средний элемент}
+
+    \uIf{$A[mid] = x$}{
+        \KwRet $mid$\;
+    }
+    \uElseIf{$A[mid] < x$}{
+        $left \gets mid + 1$\;
+    }
+    \Else{
+        $right \gets mid - 1$\;
+    }
+}
+
+\KwRet $-1$\;
+\end{algorithm}
+
+** Ещё один тест algorithm2e с русскими комментариями}
+
+\begin{algorithm}[h]
+\caption{Евклидов алгоритм}
+\KwInput{Целые числа $a,b$}
+\KwOutput{$\gcd(a,b)$}
+
+\While{$b \ne 0$}{
+    $r \gets a \bmod b$\; \Comment{Остаток от деления}
+    $a \gets b$\;
+    $b \gets r$\;
+}
+\KwRet $a$\;
+\end{algorithm}
+
+* Тестируем оформление и работу с библиографией
+
+Теория информации была впервые строго сформулирована в работе
+[[cite:Shannon1948]].
+
+Классический учебник по системе TeX можно найти в книге [[cite:Knuth1984]].
+
+Основы теории алгоритмов изложены в русском учебнике [[cite:Aho1979]].
+
+Для знакомства с теорией кодирования полезна монография [[cite:MacWilliamsSloane1977]].
+
+Эти источники часто используются в математике и информатике.
+
+
 * Заключение
 :PROPERTIES:
 :UNNUMBERED: t
@@ -866,6 +991,10 @@ a_{n1} & \ldots & a_{nn} \\
 \clearpage
 \listoftables
 \addcontentsline{toc}{section}{Список таблиц}
+
+* Список литературы (biblatex) :ignore:
+
+#+LATEX: \printbibliography
 
 * Приложения :ignore:
 #+latex: \appendix

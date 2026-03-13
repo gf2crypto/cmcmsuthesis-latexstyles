@@ -16,9 +16,26 @@
 
 \DeclareBoolOption[true]{thm}
 \DeclareVoidOption{thmon}{\cmcmsugost@thmtrue}
-\DeclareVoidOption{thmof}{\cmcmsugost@thmfalse}
+\DeclareVoidOption{thmoff}{\cmcmsugost@thmfalse}
 
-\DeclareStringOption[off]{alg}
+%%% alg=off (no algorithms)
+%%% alg=2e -> loading algorithm2e
+\DeclareStringOption[off]{alg}[2e]
+\def\cmcmsugost@algoff{off}
+\def\cmcmsugost@algtwoe{2e}
+
+\DeclareBoolOption[true]{listings}
+\DeclareVoidOption{listingson}{\cmcmsugost@listingstrue}
+\DeclareVoidOption{listingsoff}{\cmcmsugost@listingsfalse}
+
+\DeclareBoolOption[false]{extramath}
+\DeclareVoidOption{extramathon}{\cmcmsugost@extramathtrue}
+\DeclareVoidOption{extramathoff}{\cmcmsugost@extramathfalse}
+
+\DeclareBoolOption[false]{biber}
+\DeclareVoidOption{biberon}{\cmcmsugost@bibertrue}
+\DeclareVoidOption{biberoff}{\cmcmsugost@biberfalse}
+
 
 
 
@@ -55,7 +72,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\cmcmsugost@EnableTheorems{
+\cmcmsugost@SetTheorems{
     \RequirePackage{amsthm}
     \RequirePackage{thmtools}
     %% Определения
@@ -171,7 +188,7 @@
         name=\translate{Corollary}]{corollary*}
 }
 
-\cmcmsugost@SetAlgorithm2e{
+\cmcmsugost@SetAlgorithmE{
     \RequirePackage[%
         linesnumbered,
         rules,
@@ -459,8 +476,25 @@
 %     }
 % }
 
+\ifcmcmsugost@thm%
+    \cmcmsugost@SetTheorems%
+\fi
 
+\ifcmcmsugost@listings%
+    \cmcmsugost@SetListings%
+\fi
 
+\ifcmcmsugost@extramath%
+    \cmcmsugost@SetExtraMath%
+\fi
+
+\ifcmcmsugost@biber%
+    \cmcmsugost@SetBibLaTeX%
+\fi
+
+\ifx\cmcmsugost@algo\cmcmsugost@algtwoe%
+    \cmcmsugost@SetAlgorithmE%
+\fi
 
 \makeatother
 \endinput
