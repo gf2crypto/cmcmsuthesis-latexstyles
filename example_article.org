@@ -1,6 +1,12 @@
 #+LATEX_CLASS: extarticle
 # #+LATEX_COMPILER: xelatex
 #+LATEX_CLASS_OPTIONS: [12pt]
+# #+LATEX_HEADER_EXTRA: \usepackage{dejavu}
+# #+LATEX_HEADER_EXTRA: \renewcommand{\rmdefault}{cmr}
+# #+LATEX_HEADER_EXTRA: \renewcommand{\sfdefault}{cmss}
+# #+LATEX_HEADER_EXTRA: \renewcommand{\ttdefault}{DejaVuSansMono-TLF}
+# # #+LATEX_HEADER_EXTRA: \usepackage{PTMono}
+# #+LATEX_HEADER_EXTRA: \renewcommand{\ttdefault}{PTMono-TLF}
 #+LANGUAGE: ru
 # #+setupfile: ~/.emacs.d/org-latex-setupfiles/lang/ru.org
 # #+setupfile: ~/.emacs.d/org-latex-setupfiles/theorem/plain.org
@@ -24,7 +30,7 @@
 :UNNUMBERED: t
 :END:
 #+latex: \addcontentsline{toc}{section}{Введение}
-\( \epsilon, \varepsilon \)
+
 *Актуальность темы*.
 Обзор, введение в тему, обозначение места данной работы в мировых исследованиях и т.п., можно использовать ссылки на другие
 работы.
