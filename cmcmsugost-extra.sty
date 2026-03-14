@@ -36,8 +36,7 @@
 \DeclareVoidOption{biberon}{\cmcmsugost@bibertrue}
 \DeclareVoidOption{biberoff}{\cmcmsugost@biberfalse}
 
-
-
+\ProcessKeyvalOptions*
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Translations
@@ -72,7 +71,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\cmcmsugost@SetTheorems{
+\newcommand{\cmcmsugost@SetTheorems}{
     \RequirePackage{amsthm}
     \RequirePackage{thmtools}
     %% Определения
@@ -188,12 +187,12 @@
         name=\translate{Corollary}]{corollary*}
 }
 
-\cmcmsugost@SetAlgorithmE{
+\newcommand{\cmcmsugost@SetAlgorithmE}{
     \RequirePackage[%
         linesnumbered,
-        rules,
         titlenumbered
     ]{algorithm2e}
+    \RequirePackage{xcolor}
     \definecolor{AlgoRule}{gray}{0.35}
     \definecolor{AlgoNumbers}{gray}{0.45}
     \definecolor{AlgoText}{gray}{0.05}
@@ -206,13 +205,13 @@
         \translate{algorithm}}{\translate{List of algorithms}}
     \SetKwComment{Comment}{/* }{ */}
     \SetAlgoNlRelativeSize{0} % номера строк того же размера
-    \SetAlgoNlSty{\fontsize{12pt}{14pt}\selectfont\color{AlgoNumbers}}{}{}
-
+    \newcommand{\cmcmsugost@AlgoNlSty}[1]{%
+        \fontsize{12pt}{14pt}\selectfont\color{AlgoNumbers}##1%
+    }
+    \SetNlSty{cmcmsugost@AlgoNlSty}{}{}%
     \SetAlgoCaptionLayout{centerline}
-
     \SetAlgoInsideSkip{smallskip}
     \SetAlgoSkip{smallskip}
-
     \SetAlgoVlined% вертикальные линии блоков (как в книгах)
 
     \SetAlCapFnt{\fontsize{12pt}{14pt}\selectfont}
@@ -220,134 +219,204 @@
 
     \SetAlFnt{\fontsize{12pt}{14pt}\selectfont\ttfamily\color{AlgoText}}
 
-    \SetCommentSty{\itshape\color{AlgoComment}}
+    \newcommand{\cmcmsugost@AlgoCommentStyle}[1]{%
+        \itshape\color{AlgoComment}##1%
+    }%
+    \SetCommentSty{cmcmsugost@AlgoCommentStyle}%
+
 }
 
-\cmcmsugost@SetListings{
-    \RequirePackage{listings}
+\newcommand{\cmcmsugost@SetListings}{
+\RequirePackage{listings}
 
-    % Ширина текста минус ширина надписи 999
-    \newlength{\twless}
-    \newlength{\lmarg}
-    \setlength{\lmarg}{\widthof{999}}   % ширина надписи 999
-    \setlength{\twless}{\textwidth-\lmarg}
-    \RequirePackage{listings}
-    \RequirePackage{xcolor}
-    \RequirePackage{color}
-    % если \widthof у вас уже работает, extra package можно не трогать
+% Ширина текста минус ширина надписи 999
+\newlength{\twless}
+\newlength{\lmarg}
+\setlength{\lmarg}{\widthof{999}}   % ширина надписи 999
+\setlength{\twless}{\textwidth-\lmarg}
+\RequirePackage{listings}
+\RequirePackage{xcolor}
+\RequirePackage{color}
+\RequirePackage{calc}
+% --- Нейтральные серые тона для печати и экрана ---
+\definecolor{ListingRule}{gray}{0.35}      % рамка / левая линия
+\definecolor{ListingNumbers}{gray}{0.45}   % номера строк
+\definecolor{ListingText}{gray}{0.05}      % основной текст
+\definecolor{ListingBackground}{gray}{0.98}% едва заметный фон
+\definecolor{ListingEmph}{gray}{0.00}      % ключевые слова — просто чёрные
+\definecolor{ListingComment}{gray}{0.35}   % комментарии — серые
+\definecolor{ListingString}{gray}{0.20}    % строки — тёмно-серые
 
-    % --- Нейтральные серые тона для печати и экрана ---
-    \definecolor{ListingRule}{gray}{0.35}      % рамка / левая линия
-    \definecolor{ListingNumbers}{gray}{0.45}   % номера строк
-    \definecolor{ListingText}{gray}{0.05}      % основной текст
-    \definecolor{ListingBackground}{gray}{0.98}% едва заметный фон
-    \definecolor{ListingEmph}{gray}{0.00}      % ключевые слова — просто чёрные
-    \definecolor{ListingComment}{gray}{0.35}   % комментарии — серые
-    \definecolor{ListingString}{gray}{0.20}    % строки — тёмно-серые
-
-    % Ширина текста минус ширина надписи 999
-    \newlength{\twless}
-    \newlength{\lmarg}
-    \setlength{\lmarg}{\widthof{999}}
-    \setlength{\twless}{\textwidth-\lmarg}
-
-    \lstdefinestyle{blackandwhite}{
-        numbers=left,
-        numberstyle=\fontsize{12pt}{14pt}\selectfont\color{ListingNumbers},
-        firstnumber=1,
-        stepnumber=1,
-        numbersep=8pt,
-
-        backgroundcolor=\color{ListingBackground},
-        showspaces=false,
-        showstringspaces=false,
-        showtabs=false,
-
-        frame=leftline,
-        framerule=0.8pt,
-        rulecolor=\color{ListingRule},
-
-        tabsize=2,
-        captionpos=t,
-        breaklines=true,
-        breakatwhitespace=false,
-        breakautoindent=true,
-        postbreak=\mbox{\textcolor{ListingNumbers}{$\hookrightarrow$}\space},
-
-        title=\lstname,
-
-        basicstyle=\fontsize{12pt}{14pt}\selectfont\ttfamily\color{ListingText},
-        keywordstyle=\bfseries\color{ListingEmph},
-        commentstyle=\itshape\color{ListingComment},
-        stringstyle=\color{ListingString},
-
-        escapeinside={\%*}{*)},
-        morekeywords={*,...},
-        inputencoding=utf8,
-
-        xleftmargin=\lmarg,
-
-        keepspaces=true,
-        columns=fullflexible,
-        upquote=true
-    }
-
-    \lstset{style=blackandwhite}
-
-    %%% Listing for pseudocodes
-    \lstdefinelanguage{pseudocode}{
-        morekeywords={
-                if,then,else,elseif,endif,
-                for,to,do,endfor,
-                while,endwhile,
-                repeat,until,
-                return,break,continue,
-                function,procedure,
-                input,output,
-                and,or,not,
-                nil
-            },
-        sensitive=false,
-        morecomment=[l]{//},
-        morecomment=[l]{\#},
-        morestring=[b]"%
-    }
-
-    \lstdefinestyle{pseudocode}{
-        language=pseudocode,
-        numbers=left,
-        numberstyle=\fontsize{12pt}{14pt}\selectfont\color{ListingNumbers},
-        stepnumber=1,
-        numbersep=8pt,
-        frame=leftline,
-        framerule=0.8pt,
-        rulecolor=\color{ListingRule},
-        backgroundcolor=\color{ListingBackground}, basicstyle=\fontsize{12pt}{14pt}\selectfont\ttfamily\color{ListingText},
-        keywordstyle=\bfseries,
-        commentstyle=\itshape\color{ListingComment},
-        stringstyle=\color{ListingString},
-        showspaces=false,
-        showstringspaces=false,
-        showtabs=false,
-        breaklines=true,
-        breakatwhitespace=false,
-        mathescape = true,
-        keepspaces=true,
-        columns=fullflexible,
-        tabsize=2,
-        xleftmargin=\lmarg%
-    }%
-    \renewcommand{\lstlistingname}{\translate{Listing}}
+\lstdefinestyle{blackandwhite}{
+extendedchars=true,
+numbers=left,
+numberstyle=\fontsize{12pt}{14pt}\selectfont\color{ListingNumbers},
+firstnumber=1,
+stepnumber=1,
+numbersep=8pt,
+backgroundcolor=\color{ListingBackground},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+frame=leftline,
+framerule=0.8pt,
+rulecolor=\color{ListingRule},
+tabsize=2,
+captionpos=t,
+breaklines=true,
+breakatwhitespace=false,
+breakautoindent=true, postbreak=\mbox{\textcolor{ListingNumbers}{$\hookrightarrow$}\space},
+title=\lstname,
+basicstyle=\fontsize{12pt}{14pt}\selectfont\ttfamily\color{ListingText},
+keywordstyle=\bfseries\color{ListingEmph},
+commentstyle=\itshape\color{ListingComment},
+stringstyle=\color{ListingString},
+escapeinside={\%*}{*)},
+morekeywords={*,...},
+inputencoding=utf8,
+xleftmargin=\lmarg,
+keepspaces=true,
+columns=fullflexible,
+upquote=true,
+literate={Ö}{{\"O}}1
+{Ä}{{\"A}}1
+{Ü}{{\"U}}1
+{ß}{{\ss}}1
+{ü}{{\"u}}1
+{ä}{{\"a}}1
+{ö}{{\"o}}1
+{~}{{\textasciitilde}}1
+{а}{{\selectfont\char224}}1
+{б}{{\selectfont\char225}}1
+{в}{{\selectfont\char226}}1
+{г}{{\selectfont\char227}}1
+{д}{{\selectfont\char228}}1
+{е}{{\selectfont\char229}}1
+{ё}{{\"e}}1
+{ж}{{\selectfont\char230}}1
+{з}{{\selectfont\char231}}1
+{и}{{\selectfont\char232}}1
+{й}{{\selectfont\char233}}1
+{к}{{\selectfont\char234}}1
+{л}{{\selectfont\char235}}1
+{м}{{\selectfont\char236}}1
+{н}{{\selectfont\char237}}1
+{о}{{\selectfont\char238}}1
+{п}{{\selectfont\char239}}1
+{р}{{\selectfont\char240}}1
+{с}{{\selectfont\char241}}1
+{т}{{\selectfont\char242}}1
+{у}{{\selectfont\char243}}1
+{ф}{{\selectfont\char244}}1
+{х}{{\selectfont\char245}}1
+{ц}{{\selectfont\char246}}1
+{ч}{{\selectfont\char247}}1
+{ш}{{\selectfont\char248}}1
+{щ}{{\selectfont\char249}}1
+{ъ}{{\selectfont\char250}}1
+{ы}{{\selectfont\char251}}1
+{ь}{{\selectfont\char252}}1
+{э}{{\selectfont\char253}}1
+{ю}{{\selectfont\char254}}1
+{я}{{\selectfont\char255}}1
+{А}{{\selectfont\char192}}1
+{Б}{{\selectfont\char193}}1
+{В}{{\selectfont\char194}}1
+{Г}{{\selectfont\char195}}1
+{Д}{{\selectfont\char196}}1
+{Е}{{\selectfont\char197}}1
+{Ё}{{\"E}}1
+{Ж}{{\selectfont\char198}}1
+{З}{{\selectfont\char199}}1
+{И}{{\selectfont\char200}}1
+{Й}{{\selectfont\char201}}1
+{К}{{\selectfont\char202}}1
+{Л}{{\selectfont\char203}}1
+{М}{{\selectfont\char204}}1
+{Н}{{\selectfont\char205}}1
+{О}{{\selectfont\char206}}1
+{П}{{\selectfont\char207}}1
+{Р}{{\selectfont\char208}}1
+{С}{{\selectfont\char209}}1
+{Т}{{\selectfont\char210}}1
+{У}{{\selectfont\char211}}1
+{Ф}{{\selectfont\char212}}1
+{Х}{{\selectfont\char213}}1
+{Ц}{{\selectfont\char214}}1
+{Ч}{{\selectfont\char215}}1
+{Ш}{{\selectfont\char216}}1
+{Щ}{{\selectfont\char217}}1
+{Ъ}{{\selectfont\char218}}1
+{Ы}{{\selectfont\char219}}1
+{Ь}{{\selectfont\char220}}1
+{Э}{{\selectfont\char221}}1
+{Ю}{{\selectfont\char222}}1
+{Я}{{\selectfont\char223}}1
+{і}{{\selectfont\char105}}1
+{ї}{{\selectfont\char168}}1
+{є}{{\selectfont\char185}}1
+{ґ}{{\selectfont\char160}}1
+{І}{{\selectfont\char73}}1
+{Ї}{{\selectfont\char136}}1
+{Є}{{\selectfont\char153}}1
+{Ґ}{{\selectfont\char128}}1
 }%
 
-\cmcmsugost@SetBibLaTeX{
+\lstset{style=blackandwhite}
+
+%%% Listing for pseudocodes
+\lstdefinelanguage{pseudocode}{
+    morekeywords={
+            if,then,else,elseif,endif,
+            for,to,do,endfor,
+            while,endwhile,
+            repeat,until,
+            return,break,continue,
+            function,procedure,
+            input,output,
+            and,or,not,
+            nil
+        },
+    sensitive=false,
+    morecomment=[l]{//},
+    morecomment=[l]{\#},
+    morestring=[b]"
+}
+
+\lstdefinestyle{pseudocode}{
+    language=pseudocode,
+    numbers=left,
+    numberstyle=\fontsize{12pt}{14pt}\selectfont\color{ListingNumbers},
+    stepnumber=1,
+    numbersep=8pt,
+    frame=leftline,
+    framerule=0.8pt,
+    rulecolor=\color{ListingRule},
+    backgroundcolor=\color{ListingBackground}, basicstyle=\fontsize{12pt}{14pt}\selectfont\ttfamily\color{ListingText},
+    keywordstyle=\bfseries,
+    commentstyle=\itshape\color{ListingComment},
+    stringstyle=\color{ListingString},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    breaklines=true,
+    breakatwhitespace=false,
+    mathescape = true,
+    keepspaces=true,
+    columns=fullflexible,
+    tabsize=2,
+    xleftmargin=\lmarg%
+}%
+\renewcommand{\lstlistingname}{\translate{Listing}}
+}%
+
+\newcommand{\cmcmsugost@SetBibLaTeX}{
     \RequirePackage{csquotes}
     \RequirePackage[%
         backend=biber,
         bibencoding=utf8,
         sorting=none,
         style=gost-numeric,
-        Language=autobib,
         autolang=other,
         clearlang=true,
         defernumbers=true,
@@ -428,36 +497,35 @@
 }
 
 
-\cmcmsugost@SetExtraMath{
+\newcommand{\cmcmsugost@SetExtraMath}{
     \AtEndPreamble{
         \@ifpackageloaded{unicode-math}{}{%
-            \newcommand{\symbf}[1]{\ensuremath{\boldsymbol{#1}}}
-            \newcommand{\symbfit}[1]{\ensuremath{\boldsymbol{#1}}}
+            \newcommand{\symbf}[1]{\ensuremath{\boldsymbol{##1}}}
+            \newcommand{\symbfit}[1]{\ensuremath{\boldsymbol{##1}}}
             \RequirePackage{upgreek}
             \newcommand{\symup}[1]{%
                 \begingroup
-                \edef\symup@name{\expandafter\@gobble\string#1}% alpha from \alpha
+                \edef\symup@name{\expandafter\@gobble\string##1}% alpha from \alpha
                 \ifcsname up\symup@name\endcsname
                     \csname up\symup@name\endcsname
                 \else
-                    \mathrm{#1}%
+                    \mathrm{##1}%
                 \fi
                 \endgroup
             }
-            \newcommand{\symbfup}[1]{\ensuremath{\boldsymbol{\symup{#1}}}}
+            \newcommand{\symbfup}[1]{\ensuremath{\boldsymbol{\symup{##1}}}}
         }
     }
 
-    \newcommand{\vect}[1]{\symbfup{#1}}
-    \newcommand{\matr}[1]{\symbfup{#1}}
-    \newcommand{\code}[1]{\mathcal{#1}}
-    \newcommand{\str}[1]{\symup{#1}}
-    \newcommand{\elt}[1]{\symup{#1}}
-    \newcommand{\crypto}[1]{\mathsf{#1}}
-    \newcommand{\algo}[1]{\mathsf{#1}}
-    \newcommand{\compl}[1]{\mathsf{#1}}
-    \pdfstringdefDisableCommands{\def\ell{ℓ}}
-    \newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
+    \newcommand{\vect}[1]{\symbfup{##1}}
+    \newcommand{\matr}[1]{\symbfup{##1}}
+    \newcommand{\code}[1]{\mathcal{##1}}
+    \newcommand{\str}[1]{\symup{##1}}
+    \newcommand{\elt}[1]{\symup{##1}}
+    \newcommand{\crypto}[1]{\mathsf{##1}}
+    \newcommand{\algo}[1]{\mathsf{##1}}
+    \newcommand{\compl}[1]{\mathsf{##1}}
+    \newcommand\scalemath[2]{\scalebox{##1}{\mbox{\ensuremath{\displaystyle ##2}}}}
 }
 
 
@@ -492,7 +560,7 @@
     \cmcmsugost@SetBibLaTeX%
 \fi
 
-\ifx\cmcmsugost@algo\cmcmsugost@algtwoe%
+\ifx\cmcmsugost@alg\cmcmsugost@algtwoe%
     \cmcmsugost@SetAlgorithmE%
 \fi
 

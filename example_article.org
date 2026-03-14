@@ -1,8 +1,9 @@
 #+LATEX_CLASS: extarticle
 # #+LATEX_COMPILER: xelatex
 #+LATEX_CLASS_OPTIONS: [12pt]
-#+setupfile: ~/.emacs.d/org-latex-setupfiles/lang/ru.org
-#+setupfile: ~/.emacs.d/org-latex-setupfiles/theorem/plain.org
+#+LANGUAGE: ru
+# #+setupfile: ~/.emacs.d/org-latex-setupfiles/lang/ru.org
+# #+setupfile: ~/.emacs.d/org-latex-setupfiles/theorem/plain.org
 # #+LATEX_HEADER_EXTRA: \setmainfont[
 # #+LATEX_HEADER_EXTRA: ItalicFont     = STIXTwoText-Italic.otf,
 # #+LATEX_HEADER_EXTRA:  BoldFont       = STIXTwoText-Bold.otf,
@@ -12,8 +13,9 @@
 # #+LATEX_HEADER_EXTRA: \usepackage{unicode-math}
 # #+LATEX_HEADER_EXTRA: \setmathfont{STIXTwoMath-Regular.otf}
 #+LATEX_HEADER_EXTRA: \usepackage[tocpageword=true, rumath=false]{cmcmsu-gost}
-#+LATEX_HEADER_EXTRA: \usepackage{cmcmsu-extra}
+#+LATEX_HEADER_EXTRA: \usepackage[alg, biberon]{cmcmsugost-extra}
 #+LATEX_HEADER_EXTRA: \addbibresource{refs.bib}
+#+CITE_EXPORT: bibtex
 #+title: Произведение Шура--Адамара линейных кодов в анализе теоретико-кодовых криптосистем
 #+author: Чижов Иван Владимирович
 
@@ -842,9 +844,9 @@ a_{n1} & \ldots & a_{nn} \\
 Ниже идут четыре теста: код Python с русскими комментариями, код C с русскими
 комментариями, псевдокод через ~listings~, псевдокод через =algorithm2e=.
 
-** Python в listings с русскими комментариями}
+** Python в listings с русскими комментариями
 
-\begin{lstlisting}[style=mypython,caption={Тест Python-кода с русскими комментариями}]
+\begin{lstlisting}[language=Python, caption={Тест Python-кода с русскими комментариями}]
 def gcd(a, b):
     # Находим наибольший общий делитель
     while b != 0:
@@ -857,9 +859,9 @@ m = 30
 print("НОД =", gcd(n, m))  # Ожидается 6
 \end{lstlisting}
 
-** C в listings с русскими комментариями}
+** C в listings с русскими комментариями
 
-\begin{lstlisting}[style=base,language=C,caption={Тест C-кода с русскими комментариями}]
+\begin{lstlisting}[language=C,caption={Тест C-кода с русскими комментариями}]
 #include <stdio.h>
 
 /* Простая функция суммы */
@@ -880,7 +882,7 @@ int main(void) {
 
 ** Псевдокод средствами listings
 
-\begin{lstlisting}[style=pseudocodestyle,caption={Псевдокод через listings}]
+\begin{lstlisting}[style=pseudocode,caption={Псевдокод через listings}]
 procedure BinarySearch(A, x)
 begin
     // A -- отсортированный массив
@@ -932,7 +934,7 @@ $right \gets n - 1$\;
 \KwRet $-1$\;
 \end{algorithm}
 
-** Ещё один тест algorithm2e с русскими комментариями}
+** Ещё один тест algorithm2e с русскими комментариями
 
 \begin{algorithm}[h]
 \caption{Евклидов алгоритм}
@@ -950,13 +952,13 @@ $right \gets n - 1$\;
 * Тестируем оформление и работу с библиографией
 
 Теория информации была впервые строго сформулирована в работе
-[[cite:Shannon1948]].
+[cite:@Shannon1948].
 
-Классический учебник по системе TeX можно найти в книге [[cite:Knuth1984]].
+Классический учебник по системе TeX можно найти в книге [cite:@Knuth1984].
 
-Основы теории алгоритмов изложены в русском учебнике [[cite:Aho1979]].
+Основы теории алгоритмов изложены в русском учебнике [cite:@Aho1979].
 
-Для знакомства с теорией кодирования полезна монография [[cite:MacWilliamsSloane1977]].
+Для знакомства с теорией кодирования полезна монография [cite:@MacWilliamsSloane1977].
 
 Эти источники часто используются в математике и информатике.
 
