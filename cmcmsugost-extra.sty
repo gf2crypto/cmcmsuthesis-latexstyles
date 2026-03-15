@@ -217,13 +217,21 @@
     \SetAlCapFnt{\fontsize{12pt}{14pt}\selectfont}
     \SetAlCapNameFnt{\fontsize{12pt}{14pt}\selectfont}
 
-    \SetAlFnt{\fontsize{12pt}{14pt}\selectfont\ttfamily\color{AlgoText}}
+    \newcommand{\cmcmsugost@AlgoTextSty}[1]{%
+        \fontsize{12pt}{14pt}\selectfont\ttfamily\color{AlgoText}##1%
+    }
+    \SetAlFnt{\cmcmsugost@AlgoTextSty}
 
     \newcommand{\cmcmsugost@AlgoCommentStyle}[1]{%
         \itshape\color{AlgoComment}##1%
     }%
     \SetCommentSty{cmcmsugost@AlgoCommentStyle}%
-
+    \SetArgSty{cmcmsugost@AlgoTextSty}
+    \SetAlCapNameFnt{\normalfont}
+    \SetAlCapFnt{\normalfont}
+    \renewcommand{\@algocf@capt@plain}{above} % caption сверху для plain-стиля
+    \SetAlgoCaptionSeparator{~---\ }
+    \RequirePackage{caption}
 }
 
 \newcommand{\cmcmsugost@SetListings}{
@@ -241,11 +249,11 @@
 % --- Нейтральные серые тона для печати и экрана ---
 \definecolor{ListingRule}{gray}{0.35}      % рамка / левая линия
 \definecolor{ListingNumbers}{gray}{0.45}   % номера строк
-\definecolor{ListingText}{gray}{0.05}      % основной текст
+\definecolor{ListingText}{gray}{0.10}      % основной текст
 \definecolor{ListingBackground}{gray}{0.98}% едва заметный фон
-\definecolor{ListingEmph}{gray}{0.00}      % ключевые слова — просто чёрные
-\definecolor{ListingComment}{gray}{0.35}   % комментарии — серые
-\definecolor{ListingString}{gray}{0.20}    % строки — тёмно-серые
+\definecolor{ListingEmph}{gray}{0.35}      % ключевые слова — просто чёрные
+\definecolor{ListingComment}{gray}{0.65}   % комментарии — серые
+\definecolor{ListingString}{gray}{0.45}    % строки — тёмно-серые
 
 \lstdefinestyle{blackandwhite}{
 extendedchars=true,
@@ -253,6 +261,7 @@ numbers=left,
 numberstyle=\fontsize{12pt}{14pt}\selectfont\color{ListingNumbers},
 firstnumber=1,
 stepnumber=1,
+lineskip=1pt,
 numbersep=8pt,
 backgroundcolor=\color{ListingBackground},
 showspaces=false,
@@ -375,6 +384,7 @@ literate={Ö}{{\"O}}1
             function,procedure,
             input,output,
             and,or,not,
+            begin, end,
             nil
         },
     sensitive=false,
@@ -385,29 +395,23 @@ literate={Ö}{{\"O}}1
 
 \lstdefinestyle{pseudocode}{
     language=pseudocode,
-    numbers=left,
-    numberstyle=\fontsize{12pt}{14pt}\selectfont\color{ListingNumbers},
-    stepnumber=1,
-    numbersep=8pt,
-    frame=leftline,
-    framerule=0.8pt,
-    rulecolor=\color{ListingRule},
-    backgroundcolor=\color{ListingBackground}, basicstyle=\fontsize{12pt}{14pt}\selectfont\ttfamily\color{ListingText},
-    keywordstyle=\bfseries,
-    commentstyle=\itshape\color{ListingComment},
-    stringstyle=\color{ListingString},
-    showspaces=false,
-    showstringspaces=false,
-    showtabs=false,
-    breaklines=true,
-    breakatwhitespace=false,
+    style=blackandwhite,
     mathescape = true,
-    keepspaces=true,
-    columns=fullflexible,
-    tabsize=2,
-    xleftmargin=\lmarg%
 }%
 \renewcommand{\lstlistingname}{\translate{Listing}}
+\RequirePackage{caption}
+\DeclareCaptionLabelSeparator{listingsep}{~---\ }%
+\captionsetup[lstlisting]{%
+    format=plain,
+    font=normal,
+    skip=0pt,
+    parskip=0pt,
+    position=below,
+    singlelinecheck=true,
+    justification=centerlast,
+    labelsep=listingsep
+}%
+
 }%
 
 \newcommand{\cmcmsugost@SetBibLaTeX}{
