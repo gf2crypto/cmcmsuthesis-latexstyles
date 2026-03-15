@@ -889,33 +889,36 @@ int main(void) {
 ** Псевдокод средствами listings
 
 \begin{lstlisting}[style=pseudocode,caption={Псевдокод через listings}]
-procedure BinarySearch(A, x)
+Вход: Отсортированный массив $A[0 \dots n-1]$, значение $x$
+Выход: Индекс элемента или $-1$
+procedure BinarySearch($A$, $x$)
 begin
     // A -- отсортированный массив
-    left  := 0
-    right := length(A) - 1
-
+    left  $\gets$ 0
+    right $\gets$ length($A$) - 1
     while left <= right do
     begin
-        mid := floor((left + right) / 2)
+        mid := $\lfloor$(left + right) / 2$\rfloor$
 
-        if A[mid] = x then
+        if $A$[mid] = $x$ then
             return mid
         else
-            if A[mid] < x then
-                left := mid + 1
+            if $A$[mid] < $x$ then
+                left $\gets$ mid + 1
             else
-                right := mid - 1
+                right $\gets$ mid - 1
     end
-
-    return -1
+    return $-1$
 end
 \end{lstlisting}
 
 ** Псевдокод средствами algorithm2e
 
-\begin{algorithm}[h]
-\caption{Бинарный поиск}
+Основная идея бинарного поиска (деления отрезка пополам) описана в алгоритме\nbsp{}[[alg:binary-search]].
+
+#+caption: Бинарный поиск
+#+name: alg:binary-search
+\begin{algorithm}[H]
 \KwInput{Отсортированный массив $A[0 \dots n-1]$, значение $x$}
 \KwOutput{Индекс элемента или $-1$}
 
@@ -942,8 +945,11 @@ right $\gets n - 1$\;
 
 ** Ещё один тест algorithm2e с русскими комментариями
 
-\begin{algorithm}[h]
-\caption{Алгоритм Евклида}
+Алгоритм Евклида\nbsp{}[[alg:euclid]] позволяет найти наибольший делитель двух чисел или проверить их простоту.
+
+#+caption: Алгоритм Евклида
+#+name: alg:euclid
+\begin{algorithm}[H]
 \KwInput{Целые числа $a,b$}
 \KwOutput{$\gcd(a,b)$}
 
