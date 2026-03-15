@@ -919,21 +919,21 @@ end
 \KwInput{Отсортированный массив $A[0 \dots n-1]$, значение $x$}
 \KwOutput{Индекс элемента или $-1$}
 
-$left \gets 0$\;
-$right \gets n - 1$\;
+left $\gets 0$\;
+right $\gets n - 1$\;
 
-\While{$left \le right$}{
-    $mid \gets \lfloor (left + right)/2 \rfloor$\;
+\While{left $\le$ right}{
+    mid $\gets$ $\lfloor$(left + right)/2$\rfloor$\;
     \Comment{Проверяем средний элемент}
 
-    \uIf{$A[mid] = x$}{
-        \KwRet $mid$\;
+    \uIf{$A$[mid] = $x$}{
+        \KwRet mid\;
     }
-    \uElseIf{$A[mid] < x$}{
-        $left \gets mid + 1$\;
+    \uElseIf{$A$[mid] < $x$}{
+        left $\gets$ mid + 1\;
     }
     \Else{
-        $right \gets mid - 1$\;
+        right $\gets$ mid - 1\;
     }
 }
 
@@ -943,7 +943,7 @@ $right \gets n - 1$\;
 ** Ещё один тест algorithm2e с русскими комментариями
 
 \begin{algorithm}[h]
-\caption{Евклидов алгоритм}
+\caption{Алгоритм Евклида}
 \KwInput{Целые числа $a,b$}
 \KwOutput{$\gcd(a,b)$}
 
