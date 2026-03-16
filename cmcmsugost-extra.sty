@@ -285,6 +285,7 @@ xleftmargin=\lmarg,
 keepspaces=true,
 columns=fullflexible,
 upquote=true,
+texcl=true,
 literate={Ö}{{\"O}}1
 {Ä}{{\"A}}1
 {Ü}{{\"U}}1
@@ -396,11 +397,6 @@ literate={Ö}{{\"O}}1
     \normalfont\fontsize{12pt}{14pt}\selectfont\bfseries\color{black}%
 }
 
-\def\cmcmsugost@RussianKeywords{%
-{Вход}{{{\cmcmsugost@KeywordStylePseudocode\char194\char245\char238\char228}}}4
-{Выход}{{{\cmcmsugost@KeywordStylePseudocode\char194\char251\char245\char238\char228}}}5
-}
-
 \lstdefinestyle{pseudocode}{
 language=pseudocode,
 style=blackandwhite,
@@ -486,11 +482,16 @@ literate={Ö}{{\"O}}1
 {І}{{\selectfont\char73}}1
 {Ї}{{\selectfont\char136}}1
 {Є}{{\selectfont\char153}}1
-{Ґ}{{\selectfont\char128}}1
-{Вход}{{{\cmcmsugost@KeywordStylePseudocode\char194\char245\char238\char228}}}4
-{Выход}{{{\cmcmsugost@KeywordStylePseudocode\char194\char251\char245\char238\char228}}}5,
+{Ґ}{{\selectfont\char128}}1,
+escapeinside={(*@}{@*)},
 mathescape = true
 }%
+\newcommand{\lstInput}{%
+    \cmcmsugost@KeywordStylePseudocode\translate{Input}%
+}
+\newcommand{\lstOutput}{%
+    \cmcmsugost@KeywordStylePseudocode\translate{Output}%
+}
 \renewcommand{\lstlistingname}{\translate{Listing}}
 \RequirePackage{caption}
 \DeclareCaptionLabelSeparator{listingsep}{~---\ }%

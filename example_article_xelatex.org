@@ -1,30 +1,33 @@
 #+LATEX_CLASS: extarticle
-#+LATEX_COMPILER: xelatex
+# #+LATEX_COMPILER: xelatex
 #+LATEX_CLASS_OPTIONS: [12pt]
 # #+LATEX_HEADER_EXTRA: \usepackage{dejavu}
 # #+LATEX_HEADER_EXTRA: \renewcommand{\rmdefault}{cmr}
 # #+LATEX_HEADER_EXTRA: \renewcommand{\sfdefault}{cmss}
 # #+LATEX_HEADER_EXTRA: \renewcommand{\ttdefault}{DejaVuSansMono-TLF}
-# #+LATEX_HEADER_EXTRA: \usepackage{PTMono}
-# #+LATEX_HEADER_EXTRA: \renewcommand{\ttdefault}{PTMono-TLF}
+#+LATEX_HEADER_EXTRA: \usepackage{PTMono}
+#+LATEX_HEADER_EXTRA: \renewcommand{\ttdefault}{PTMono-TLF}
 #+LANGUAGE: ru
 # #+setupfile: ~/.emacs.d/org-latex-setupfiles/lang/ru.org
 # #+setupfile: ~/.emacs.d/org-latex-setupfiles/theorem/plain.org
-#+LATEX_HEADER_EXTRA: \setmainfont[
-#+LATEX_HEADER_EXTRA: ItalicFont     = STIXTwoText-Italic.otf,
-#+LATEX_HEADER_EXTRA:  BoldFont       = STIXTwoText-Bold.otf,
-#+LATEX_HEADER_EXTRA:  BoldItalicFont = STIXTwoText-BoldItalic.otf]{STIXTwoText-Regular.otf}
-#+LATEX_HEADER_EXTRA: \setsansfont{texgyreheros-regular.otf}
-#+LATEX_HEADER_EXTRA: % DejaVu Sans Mono
-#+LATEX_HEADER_EXTRA: \setmonofont{DejaVuSansMono}[
-#+LATEX_HEADER_EXTRA:   Extension      = .ttf,
-#+LATEX_HEADER_EXTRA:   UprightFont    = *,
-#+LATEX_HEADER_EXTRA:   ItalicFont     = *-Oblique,
-#+LATEX_HEADER_EXTRA:   BoldFont       = *-Bold,
-#+LATEX_HEADER_EXTRA:   BoldItalicFont = *-BoldOblique
-#+LATEX_HEADER_EXTRA: ]
-#+LATEX_HEADER_EXTRA: \usepackage{unicode-math}
-#+LATEX_HEADER_EXTRA: \setmathfont{STIXTwoMath-Regular.otf}
+# #+LATEX_HEADER_EXTRA: % DejaVu Sans Mono
+# #+LATEX_HEADER_EXTRA: \setmonofont{DejaVuSansMono}[
+# #+LATEX_HEADER_EXTRA:   Extension      = .ttf,
+# #+LATEX_HEADER_EXTRA:   UprightFont    = *,
+# #+LATEX_HEADER_EXTRA:   ItalicFont     = *-Oblique,
+# #+LATEX_HEADER_EXTRA:   BoldFont       = *-Bold,
+# #+LATEX_HEADER_EXTRA:   BoldItalicFont = *-BoldOblique
+# #+LATEX_HEADER_EXTRA: ]
+# #+LATEX_HEADER_EXTRA: \setmainfont[
+# #+LATEX_HEADER_EXTRA:  Extension      = .otf,
+# #+LATEX_HEADER_EXTRA:  UprightFont    = *-Regular,
+# #+LATEX_HEADER_EXTRA:  ItalicFont     = *-Italic,
+# #+LATEX_HEADER_EXTRA:  BoldFont       = *-Bold,
+# #+LATEX_HEADER_EXTRA:  BoldItalicFont = *-BoldItalic]{STIXTwoText}
+# #+LATEX_HEADER_EXTRA: \setsansfont{texgyreheros-regular.otf}
+# #+LATEX_HEADER_EXTRA: \setmonofont{Inconsolatazi4-Regular.otf}
+# #+LATEX_HEADER_EXTRA: \usepackage{unicode-math}
+# #+LATEX_HEADER_EXTRA: \setmathfont{STIXTwoMath-Regular.otf}
 #+LATEX_HEADER_EXTRA: \usepackage[tocpageword=true, rumath=false]{cmcmsu-gost}
 #+LATEX_HEADER_EXTRA: \usepackage[alg, biberon]{cmcmsugost-extra}
 #+LATEX_HEADER_EXTRA: \addbibresource{refs.bib}
@@ -859,9 +862,11 @@ a_{n1} & \ldots & a_{nn} \\
 
 ** Python в listings с русскими комментариями
 
+#+latex: \texttt{\itshape\color{red} Привет! Это я}
 \begin{lstlisting}[language=Python, caption={Тест Python-кода с русскими комментариями}]
 def gcd(a, b):
     # Находим наибольший общий делитель
+    # It is my comment in English
     while b != 0:
         # Меняем местами значения
         a, b = b, a % b
@@ -877,7 +882,7 @@ print("НОД =", gcd(n, m))  # Ожидается 6
 \begin{lstlisting}[language=C,caption={Тест C-кода с русскими комментариями}]
 #include <stdio.h>
 
-/* Простая функция суммы */
+// Простая функция суммы
 int sum_upto(int n) {
     int s = 0;
     // Суммируем числа от 1 до n
@@ -896,8 +901,8 @@ int main(void) {
 ** Псевдокод средствами listings
 
 \begin{lstlisting}[style=pseudocode,caption={Псевдокод через listings}]
-(*@\lstInput@*): Отсортированный массив $A[0 \dots n-1]$, значение $x$
-(*@\lstOutput@*): Индекс элемента или $-1$
+Вход: Отсортированный массив $A[0 \dots n-1]$, значение $x$
+Выход: Индекс элемента или $-1$
 procedure BinarySearch($A$, $x$)
 begin
     // A -- отсортированный массив
