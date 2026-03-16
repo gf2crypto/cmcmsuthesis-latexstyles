@@ -240,6 +240,7 @@
 
 % Подписи
 \RequirePackage{caption}
+\RequirePackage{chngcntr}
 
 \newcommand{\cmcmsugost@SetFigureSty}{%
     \DeclareCaptionLabelSeparator{figsep}{~---\ }%
@@ -268,6 +269,11 @@
         parskip=0pt,
         position=below
     }%
+    \@ifundefined{c@chapter}{%
+        \counterwithin{figure}{section}
+    }{%
+        \counterwithin{figure}{chapter}
+    }
 }
 
 \newcommand{\cmcmsugost@SetTableSty}{%
@@ -283,6 +289,11 @@
         labelsep=tabsep,
         singlelinecheck=false
     }%
+    \@ifundefined{c@chapter}{%
+        \counterwithin{table}{section}
+    }{%
+        \counterwithin{table}{chapter}
+    }
 }
 
 % Кириллица в subequations
@@ -299,6 +310,11 @@
             {}{}%
         }%
     }%
+    \@ifundefined{c@chapter}{%
+        \counterwithin{equation}{section}
+    }{%
+        \counterwithin{equation}{chapter}
+    }
 }
 
 
