@@ -73,118 +73,37 @@
 
 \newcommand{\cmcmsugost@SetTheorems}{
     \RequirePackage{amsthm}
-    \RequirePackage{thmtools}
-    %% Определения
-    \declaretheorem[
-        style=definition,
-        numberwithin=section,
-        name=\translate{Definition}]{definition}
+    \@ifundefined{c@chapter}
+    {%
+        % Если нет глав: нумерация по section
+        \newtheorem{theorem}{Теорема}[section]
+        \newtheorem{lemma}{Лемма}[section]
+        \newtheorem{proposition}{Утверждение}[section]
+        \newtheorem{corollary}{Следствие}[section]
 
-    \declaretheorem[
-        style=definition,
-        numbered=no,
-        name=\translate{Definition}]{definition*}
-    %% Замечание
-    \declaretheorem[
-        style=remark,
-        numberwithin=section,
-        name=\translate{Remark}]{remark}
-    \declaretheorem[
-        style=remark,
-        numbered=no,
-        name=\translate{Remark}]{remark*}
-    %% Пример
-    \declaretheorem[
-        style=definition,
-        numberwithin=section,
-        name=\translate{Example}]{example}
-    \declaretheorem[
-        name=\translate{Example},
-        sibling=example]{exmpl}
-    \declaretheorem[
-        style=definition,
-        numbered=no,
-        name=\translate{Example}]{example*}
-    %% Задача
-    \declaretheorem[
-        style=remark,
-        numberwithin=section,
-        name=\translate{Task}]{task}
-    \declaretheorem[
-        style=remark,
-        numbered=no,
-        name=\translate{Task}]{task*}
-    %% Упражнение
-    \declaretheorem[
-        style=remark,
-        numberwithin=section,
-        name=\translate{Exercise}]{exercise}
-    \declaretheorem[
-        style=remark,
-        numbered=no,
-        name=\translate{Exercise}]{exercise*}
-    %% Проблема
-    \declaretheorem[
-        style=remark,
-        numberwithin=section,
-        name=\translate{Problem}]{problem}
-    \declaretheorem[
-        style=remark,
-        numbered=no,
-        name=\translate{Problem}]{problem*}
-    %% Вопрос
-    \declaretheorem[
-        style=remark,
-        numberwithin=section,
-        name=\translate{Question}]{question}
-    \declaretheorem[
-        style=remark,
-        numbered=no,
-        name=\translate{Question}]{question*}
-    %% Теорема
-    \declaretheorem[
-        style=plain,
-        numberwithin=section,
-        name=\translate{Theorem}]{theorem}
-    \declaretheorem[
-        style=plain,
-        numbered=no,
-        name=\translate{Theorem}]{theorem*}
-    %% Утверждение
-    \declaretheorem[
-        style=plain,
-        numberwithin=section,
-        name=\translate{Proposition}]{proposition}
-    \declaretheorem[
-        style=plain,
-        numbered=no,
-        name=\translate{Proposition}]{proposition*}
-    \declaretheorem[
-        style=plain,
-        numberwithin=section,
-        name=\translate{Assertion}]{assertion}
-    \declaretheorem[
-        style=plain,
-        numbered=no,
-        name=\translate{Assertion}]{assertion*}
-    %% Лемма
-    \declaretheorem[
-        style=plain,
-        numberwithin=section,
-        name=\translate{Lemma}]{lemma}
-    \declaretheorem[
-        style=plain,
-        numbered=no,
-        name=\translate{Lemma}]{lemma*}
-    %% Следствие
-    \declaretheorem[
-        style=plain,
-        numberwithin=section,
-        name=\translate{Corollary}]{corollary}
-    \declaretheorem[
-        style=plain,
-        numbered=no,
-        name=\translate{Corollary}]{corollary*}
+        \theoremstyle{definition}
+        \newtheorem{definition}{Определение}[section]
+        \newtheorem{example}{Пример}[section]
+        \newtheorem{problem}{Задача}[section]
+
+        \theoremstyle{remark}
+        \newtheorem{remark}{Замечание}[section]
+    }
+    {%
+        % Если есть главы: нумерация по chapter
+        \newtheorem{theorem}{Теорема}[chapter]
+        \newtheorem{lemma}{Лемма}[chapter]
+        \newtheorem{proposition}{Утверждение}[chapter]
+        \newtheorem{corollary}{Следствие}[chapter]
+
+        \theoremstyle{definition}
+        \newtheorem{definition}{Определение}[chapter]
+        \newtheorem{example}{Пример}[chapter]
+        \newtheorem{problem}{Задача}[chapter]
+
+        \theoremstyle{remark}
+        \newtheorem{remark}{Замечание}[chapter]
+    }
 }
 
 \newcommand{\cmcmsugost@SetAlgorithmE}{
@@ -238,7 +157,6 @@
     }{%
         \counterwithin{algocf}{chapter}
         \renewcommand{\thealgocf}{\thechapter.\arabic{algocf}}
-        \renewcommand{\thelstlisting}{\thechapter.\arabic{lstlisting}}
     }
 }
 
