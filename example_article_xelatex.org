@@ -1,33 +1,24 @@
 #+LATEX_CLASS: extarticle
-# #+LATEX_COMPILER: xelatex
+#+LATEX_COMPILER: xelatex
 #+LATEX_CLASS_OPTIONS: [12pt]
-# #+LATEX_HEADER_EXTRA: \usepackage{dejavu}
-# #+LATEX_HEADER_EXTRA: \renewcommand{\rmdefault}{cmr}
-# #+LATEX_HEADER_EXTRA: \renewcommand{\sfdefault}{cmss}
-# #+LATEX_HEADER_EXTRA: \renewcommand{\ttdefault}{DejaVuSansMono-TLF}
-#+LATEX_HEADER_EXTRA: \usepackage{PTMono}
-#+LATEX_HEADER_EXTRA: \renewcommand{\ttdefault}{PTMono-TLF}
 #+LANGUAGE: ru
-# #+setupfile: ~/.emacs.d/org-latex-setupfiles/lang/ru.org
-# #+setupfile: ~/.emacs.d/org-latex-setupfiles/theorem/plain.org
-# #+LATEX_HEADER_EXTRA: % DejaVu Sans Mono
-# #+LATEX_HEADER_EXTRA: \setmonofont{DejaVuSansMono}[
-# #+LATEX_HEADER_EXTRA:   Extension      = .ttf,
-# #+LATEX_HEADER_EXTRA:   UprightFont    = *,
-# #+LATEX_HEADER_EXTRA:   ItalicFont     = *-Oblique,
-# #+LATEX_HEADER_EXTRA:   BoldFont       = *-Bold,
-# #+LATEX_HEADER_EXTRA:   BoldItalicFont = *-BoldOblique
-# #+LATEX_HEADER_EXTRA: ]
-# #+LATEX_HEADER_EXTRA: \setmainfont[
-# #+LATEX_HEADER_EXTRA:  Extension      = .otf,
-# #+LATEX_HEADER_EXTRA:  UprightFont    = *-Regular,
-# #+LATEX_HEADER_EXTRA:  ItalicFont     = *-Italic,
-# #+LATEX_HEADER_EXTRA:  BoldFont       = *-Bold,
-# #+LATEX_HEADER_EXTRA:  BoldItalicFont = *-BoldItalic]{STIXTwoText}
-# #+LATEX_HEADER_EXTRA: \setsansfont{texgyreheros-regular.otf}
-# #+LATEX_HEADER_EXTRA: \setmonofont{Inconsolatazi4-Regular.otf}
-# #+LATEX_HEADER_EXTRA: \usepackage{unicode-math}
-# #+LATEX_HEADER_EXTRA: \setmathfont{STIXTwoMath-Regular.otf}
+#+LATEX_HEADER_EXTRA: % DejaVu Sans Mono
+#+LATEX_HEADER_EXTRA: \setmonofont{DejaVuSansMono}[
+#+LATEX_HEADER_EXTRA:   Extension      = .ttf,
+#+LATEX_HEADER_EXTRA:   UprightFont    = *,
+#+LATEX_HEADER_EXTRA:   ItalicFont     = *-Oblique,
+#+LATEX_HEADER_EXTRA:   BoldFont       = *-Bold,
+#+LATEX_HEADER_EXTRA:   BoldItalicFont = *-BoldOblique
+#+LATEX_HEADER_EXTRA: ]
+#+LATEX_HEADER_EXTRA: \setmainfont[
+#+LATEX_HEADER_EXTRA:  Extension      = .otf,
+#+LATEX_HEADER_EXTRA:  UprightFont    = *-Regular,
+#+LATEX_HEADER_EXTRA:  ItalicFont     = *-Italic,
+#+LATEX_HEADER_EXTRA:  BoldFont       = *-Bold,
+#+LATEX_HEADER_EXTRA:  BoldItalicFont = *-BoldItalic]{STIXTwoText}
+#+LATEX_HEADER_EXTRA: \setsansfont{texgyreheros-regular.otf}
+#+LATEX_HEADER_EXTRA: \usepackage{unicode-math}
+#+LATEX_HEADER_EXTRA: \setmathfont{STIXTwoMath-Regular.otf}
 #+LATEX_HEADER_EXTRA: \usepackage[tocpageword=true, rumath=false]{cmcmsu-gost}
 #+LATEX_HEADER_EXTRA: \usepackage[alg, biberon]{cmcmsugost-extra}
 #+LATEX_HEADER_EXTRA: \addbibresource{refs.bib}
@@ -901,8 +892,8 @@ int main(void) {
 ** Псевдокод средствами listings
 
 \begin{lstlisting}[style=pseudocode,caption={Псевдокод через listings}]
-Вход: Отсортированный массив $A[0 \dots n-1]$, значение $x$
-Выход: Индекс элемента или $-1$
+(*@\lstInput@*): Отсортированный массив $A[0 \dots n-1]$, значение $x$
+(*@\lstOutput@*): Индекс элемента или $-1$
 procedure BinarySearch($A$, $x$)
 begin
     // A -- отсортированный массив
@@ -966,7 +957,7 @@ right $\gets n - 1$\;
 \KwOutput{$\gcd(a,b)$}
 
 \While{$b \ne 0$}{
-    $r \gets a \bmod b$\; \Comment{Остаток от деления}
+    $r \gets a \bmod b$\tcp*{Остаток от деления}
     $a \gets b$\;
     $b \gets r$\;
 }

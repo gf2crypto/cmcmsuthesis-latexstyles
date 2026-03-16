@@ -196,14 +196,14 @@
     \definecolor{AlgoRule}{gray}{0.35}
     \definecolor{AlgoNumbers}{gray}{0.45}
     \definecolor{AlgoText}{gray}{0.05}
-    \definecolor{AlgoComment}{gray}{0.35}
+    \definecolor{AlgoComment}{gray}{0.65}
     \SetKwInput{KwData}{\translate{Input}}
     \SetKwInput{KwInput}{\translate{Input}}
     \SetKwInput{KwOutput}{\translate{Output}}
     \SetKwInput{KwResult}{\translate{Output}}
     \SetAlgorithmName{\translate{Algorithm}}{
         \translate{algorithm}}{\translate{List of algorithms}}
-    \SetKwComment{Comment}{/* }{ */}
+    \SetKwComment{Comment}{// }{}
     \SetAlgoNlRelativeSize{0} % номера строк того же размера
     \newcommand{\cmcmsugost@AlgoNlSty}[1]{%
         \fontsize{12pt}{14pt}\selectfont\color{AlgoNumbers}##1%
@@ -223,7 +223,7 @@
     \SetAlFnt{\cmcmsugost@AlgoTextSty}
 
     \newcommand{\cmcmsugost@AlgoCommentStyle}[1]{%
-        \itshape\color{AlgoComment}##1%
+        \ttfamily\color{AlgoComment}##1%
     }%
     \SetCommentSty{cmcmsugost@AlgoCommentStyle}%
     \SetArgSty{cmcmsugost@AlgoTextSty}
@@ -276,7 +276,7 @@ breakautoindent=true, postbreak=\mbox{\textcolor{ListingNumbers}{$\hookrightarro
 title=\lstname,
 basicstyle=\fontsize{12pt}{14pt}\selectfont\ttfamily\color{ListingText},
 keywordstyle=\color{ListingEmph},
-commentstyle=\itshape\color{ListingComment},
+commentstyle=\color{ListingComment},
 stringstyle=\color{ListingString},
 escapeinside={\%*}{*)},
 morekeywords={*,...},
