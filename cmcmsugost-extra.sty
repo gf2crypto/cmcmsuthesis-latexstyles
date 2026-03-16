@@ -455,6 +455,9 @@ mathescape = true
         \def\ext@lstlisting{loa}%
         % если нужны float-возможности listings, можно и это подменить
         \let\ftype@lstlisting\ftype@algocf%
+        \@ifundefined{theHalgocf}
+        {\def\theHlstlisting{alg.\thealgocf}}
+        {\edef\theHlstlisting{alg.\theHalgocf}}
         \lstset{style=pseudocode, ##1}%
     }%
     {}
