@@ -229,8 +229,17 @@
     \SetArgSty{cmcmsugost@AlgoTextSty}
     \SetAlCapNameFnt{\normalfont}
     \SetAlCapFnt{\normalfont}
-    \renewcommand{\@algocf@capt@plain}{above} % caption сверху для plain-стиля
+    % \renewcommand{\@algocf@capt@plain}{above} % caption сверху для plain-стиля
     \SetAlgoCaptionSeparator{~---\ }
+    \RequirePackage{chngcntr}
+    \@ifundefined{c@chapter}{%
+        \counterwithin{algocf}{section}
+        \renewcommand{\thealgocf}{\thesection.\arabic{algocf}}
+    }{%
+        \counterwithin{algocf}{chapter}
+        \renewcommand{\thealgocf}{\thechapter.\arabic{algocf}}
+        \renewcommand{\thelstlisting}{\thechapter.\arabic{lstlisting}}
+    }
 }
 
 \newcommand{\cmcmsugost@SetListings}{
@@ -269,7 +278,7 @@ frame=leftline,
 framerule=0.8pt,
 rulecolor=\color{ListingRule},
 tabsize=2,
-captionpos=t,
+captionpos=b,
 breaklines=true,
 breakatwhitespace=false,
 breakautoindent=true, postbreak=\mbox{\textcolor{ListingNumbers}{$\hookrightarrow$}\space},
@@ -498,13 +507,24 @@ mathescape = true
 \captionsetup[lstlisting]{%
     format=plain,
     font=normal,
-    skip=0pt,
+    skip=\baselineskip,
     parskip=0pt,
-    position=below,
     singlelinecheck=true,
     justification=centerlast,
     labelsep=listingsep
 }%
+\RequirePackage{chngcntr}
+\@ifundefined{c@chapter}{%
+    \AtBeginDocument{
+        \counterwithin{lstlisting}{section}
+        \renewcommand{\thelstlisting}{\thesection.\arabic{lstlisting}}
+
+    }}{%
+    \AtBeginDocument{
+        \counterwithin{lstlisting}{chapter}
+        \renewcommand{\thelstlisting}{\thechapter.\arabic{lstlisting}}
+    }
+}
 }%
 
 \newcommand{\cmcmsugost@SetBibLaTeX}{
