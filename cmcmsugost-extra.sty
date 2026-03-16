@@ -436,13 +436,29 @@ mathescape = true
     \AtBeginDocument{
         \counterwithin{lstlisting}{section}
         \renewcommand{\thelstlisting}{\thesection.\arabic{lstlisting}}
-
     }}{%
     \AtBeginDocument{
         \counterwithin{lstlisting}{chapter}
         \renewcommand{\thelstlisting}{\thechapter.\arabic{lstlisting}}
     }
 }
+\ifx\cmcmsugost@alg\cmcmsugost@algtwoe%
+    \lstnewenvironment{lstpseudocode}[1][]%
+    {%
+        % listings внутри этого окружения будет считать себя "алгоритмом"
+        \let\c@lstlisting\c@algocf%
+        \let\thelstlisting\thealgocf%
+        \let\p@lstlisting\p@algocf%
+        % подпись и имя
+        \let\lstlistingname\algorithmcfname%
+        % писать не в list of listings, а в list of algorithms
+        \def\ext@lstlisting{loa}%
+        % если нужны float-возможности listings, можно и это подменить
+        \let\ftype@lstlisting\ftype@algocf%
+        \lstset{style=pseudocode, ##1}%
+    }%
+    {}
+\fi
 }%
 
 \newcommand{\cmcmsugost@SetBibLaTeX}{
