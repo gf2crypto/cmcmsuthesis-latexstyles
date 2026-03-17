@@ -1,0 +1,62 @@
+% cmcmsugost-fontselector.sty
+\NeedsTeXFormat{LaTeX2e}[2020-10-01]
+\ProvidesPackage{cmcmsugost-extra}[2026/03/10 v0.1 package to make easy selecting fonts]
+
+\makeatletter
+
+\RequirePackage{iftex}
+\RequirePackage{kvoptions}
+\RequirePackage{etoolbox}
+
+\SetupKeyvalOptions{
+    family = cmcmsugost,
+    prefix = cmcmsugost@
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% font - либо название настроек для группы шрифтов, либо pdflatex
+%%      - шрифт
+%% mathfont - математический шрифт (LaTeX/XeLaTeX/LuaLaTeX)
+%% mathfont_scale - коэффициент масштабирования для математического
+%%                - шрифта, применимо только для XeLaTeX/LuaLaTeX
+%% serif - шрифт с засечками (только для XeLaTeX/LuaLaTeX),
+%% serif_scale - коэффициент масштабирования для шрифта serif
+%% sans  - шрифт без засечек, sans serif (только XeLaTeX/LuaLaTeX)
+%%       - это шрифты обычно используюся в документов, пример
+%%       - Times, Times New Roman и т.п.
+%% sans_scale - коэффициент масштабирования для шрифта sans
+%%       - это шрифты обычно используюся в презентациях, пример
+%%       - Arial, PType Sans и т.п., также нужны для команд \textsf
+%% mono  - шрифт моноширинный (только для XeLaTeX/LuaLaTeX)
+%%       - это шрифты обычно используюся для набора кода
+%%       - и листингов, пример Courier, Inconsolata, JetBrains Mono
+%% mono_scale - коэффициент масштабирования для шрифта mono
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DeclareBoolOption[true]{thm}
+\DeclareVoidOption{thmon}{\cmcmsugost@thmtrue}
+\DeclareVoidOption{thmoff}{\cmcmsugost@thmfalse}
+
+%%% alg=off (no algorithms)
+%%% alg=2e -> loading algorithm2e
+\DeclareStringOption[off]{alg}[2e]
+\def\cmcmsugost@algoff{off}
+\def\cmcmsugost@algtwoe{2e}
+
+\DeclareBoolOption[true]{listings}
+\DeclareVoidOption{listingson}{\cmcmsugost@listingstrue}
+\DeclareVoidOption{listingsoff}{\cmcmsugost@listingsfalse}
+
+\DeclareBoolOption[false]{extramath}
+\DeclareVoidOption{extramathon}{\cmcmsugost@extramathtrue}
+\DeclareVoidOption{extramathoff}{\cmcmsugost@extramathfalse}
+
+\DeclareBoolOption[false]{biber}
+\DeclareVoidOption{biberon}{\cmcmsugost@bibertrue}
+\DeclareVoidOption{biberoff}{\cmcmsugost@biberfalse}
+
+\ProcessKeyvalOptions*
+
+
+\makeatother
+\endinput
