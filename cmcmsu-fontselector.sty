@@ -15,47 +15,142 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% font - либо название настроек для группы шрифтов, либо pdflatex
-%%      - шрифт
+%%      - шрифт,
+%%      - либо шрифт с засечками (только для XeLaTeX/LuaLaTeX),
+%%      - пример: Times New Roman
 %% mathfont - математический шрифт (LaTeX/XeLaTeX/LuaLaTeX)
-%% mathfont_scale - коэффициент масштабирования для математического
+%% mathfontscale - коэффициент масштабирования для математического
 %%                - шрифта, применимо только для XeLaTeX/LuaLaTeX
-%% serif - шрифт с засечками (только для XeLaTeX/LuaLaTeX),
-%% serif_scale - коэффициент масштабирования для шрифта serif
+%% fontscale - коэффициент масштабирования для шрифта serif
 %% sans  - шрифт без засечек, sans serif (только XeLaTeX/LuaLaTeX)
-%%       - это шрифты обычно используюся в документов, пример
-%%       - Times, Times New Roman и т.п.
-%% sans_scale - коэффициент масштабирования для шрифта sans
 %%       - это шрифты обычно используюся в презентациях, пример
 %%       - Arial, PType Sans и т.п., также нужны для команд \textsf
+%% sansscale - коэффициент масштабирования для шрифта sans
 %% mono  - шрифт моноширинный (только для XeLaTeX/LuaLaTeX)
 %%       - это шрифты обычно используюся для набора кода
 %%       - и листингов, пример Courier, Inconsolata, JetBrains Mono
-%% mono_scale - коэффициент масштабирования для шрифта mono
+%% monoscale - коэффициент масштабирования для шрифта mono
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\DeclareBoolOption[true]{thm}
-\DeclareVoidOption{thmon}{\cmcmsugost@thmtrue}
-\DeclareVoidOption{thmoff}{\cmcmsugost@thmfalse}
+\DeclareStringOption[default]{font}
+\DeclareStringOption[1]{fontscale}
 
-%%% alg=off (no algorithms)
-%%% alg=2e -> loading algorithm2e
-\DeclareStringOption[off]{alg}[2e]
-\def\cmcmsugost@algoff{off}
-\def\cmcmsugost@algtwoe{2e}
+\DeclareStringOption[default]{mathfont}
+\DeclareStringOption[1]{mathfontscale}
 
-\DeclareBoolOption[true]{listings}
-\DeclareVoidOption{listingson}{\cmcmsugost@listingstrue}
-\DeclareVoidOption{listingsoff}{\cmcmsugost@listingsfalse}
+\DeclareStringOption[default]{sans}
+\DeclareStringOption[1]{sansscale}
 
-\DeclareBoolOption[false]{extramath}
-\DeclareVoidOption{extramathon}{\cmcmsugost@extramathtrue}
-\DeclareVoidOption{extramathoff}{\cmcmsugost@extramathfalse}
-
-\DeclareBoolOption[false]{biber}
-\DeclareVoidOption{biberon}{\cmcmsugost@bibertrue}
-\DeclareVoidOption{biberoff}{\cmcmsugost@biberfalse}
+\DeclareStringOption[default]{mono}
+\DeclareStringOption[1]{monoscale}
 
 \ProcessKeyvalOptions*
+
+%% #################################################################
+%%  TeX Fonts
+%% #################################################################
+%% =================================================================
+%%     Text
+%% =================================================================
+
+\newcommand{\cmcmsugost@tex@font@default}{
+}
+
+%% =================================================================
+%% =================================================================
+%%     Math
+%% =================================================================
+
+\newcommand{\cmcmsugost@tex@mathfont@default}{
+
+}
+%% #################################################################
+
+
+%% #################################################################
+%%  XeTeX Fonts
+%% #################################################################
+%% =================================================================
+%%     Main
+%% =================================================================
+\newcommand{\cmcmsugost@xetex@font@default}[1]{
+}
+
+%% =================================================================
+%% =================================================================
+%%     Sans
+%% =================================================================
+\newcommand{\cmcmsugost@xetex@sans@default}[1]{
+}
+
+%% =================================================================
+%% =================================================================
+%%     Mono
+%% =================================================================
+
+\newcommand{\cmcmsugost@xetex@mono@default}[1]{
+}
+
+%% =================================================================
+%% =================================================================
+%%     Math
+%% =================================================================
+
+\newcommand{\cmcmsugost@xetex@mathfont@default}[1]{
+}
+
+%% #################################################################
+
+\RequirePackage{iftex}
+
+\ifPDFTeX%
+    \@ifundefined{cmcmsugost@tex@\cmcmsugost@font}{
+        \PackageError{cmcmsugost-fontselector}{
+            Unknown font '\cmcmsugost@font' in TeX mode}{}
+    }{
+        \csname \cmcmsugost@tex@\cmcmsugost@font\endcsname
+    }
+    \@ifundefined{cmcmsugost@tex@\cmcmsugost@mathfont}{
+        \PackageError{cmcmsugost-fontselector}{
+            Unknown math font '\cmcmsugost@mathfont' in TeX mode}{}
+    }{
+        \csname \cmcmsugost@tex@\cmcmsugost@mathfont\endcsname
+    }
+\else%
+    % XeTeX/LuaLaTeX
+    \@ifundefined{cmcmsugost@xetex@\cmcmsugost@font}{
+        \PackageError{cmcmsugost-fontselector}{
+            Unknown font '\cmcmsugost@font' in XeTeX/LuaTeX mode}{}
+    }{
+        \csname%
+        \cmcmsugost@xetex@\cmcmsugost@font%
+        \endcsname{\cmcmsugost@fontscale}
+    }
+    \@ifundefined{cmcmsugost@xetex@\cmcmsugost@sans}{
+        \PackageError{cmcmsugost-fontselector}{
+            Unknown sans font '\cmcmsugost@sans' in XeTeX/LuaTeX mode}{}
+    }{
+        \csname%
+        \cmcmsugost@xetex@\cmcmsugost@sans%
+        \endcsname{\cmcmsugost@sansscale}
+    }
+    \@ifundefined{cmcmsugost@xetex@\cmcmsugost@mono}{
+        \PackageError{cmcmsugost-fontselector}{
+            Unknown mono font '\cmcmsugost@mono' in XeTeX/LuaTeX mode}{}
+    }{
+        \csname%
+        \cmcmsugost@xetex@\cmcmsugost@mono%
+        \endcsname{\cmcmsugost@monoscale}
+    }
+    \@ifundefined{cmcmsugost@xetex@\cmcmsugost@mathfont}{
+        \PackageError{cmcmsugost-fontselector}{
+            Unknown math font '\cmcmsugost@mathfont' in XeTeX/LuaTeX mode}{}
+    }{
+        \csname%
+        \cmcmsugost@tex@\cmcmsugost@mathfont%
+        \endcsname{\cmcmsugost@mathfontscale}
+    }
+\fi
 
 
 \makeatother
