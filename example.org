@@ -1,16 +1,42 @@
 #+LATEX_CLASS: extarticle
+# #+LATEX_CLASS: extreport
 #+LATEX_CLASS_OPTIONS: [12pt]
-#+LATEX_HEADER_EXTRA: \usepackage{dejavu}
-#+LATEX_HEADER_EXTRA: \renewcommand{\rmdefault}{cmr}
-#+LATEX_HEADER_EXTRA: \renewcommand{\sfdefault}{cmss}
-#+LATEX_HEADER_EXTRA: \renewcommand{\ttdefault}{DejaVuSansMono-TLF}
-# #+LATEX_HEADER_EXTRA: \usepackage{PTMono}
-# #+LATEX_HEADER_EXTRA: \renewcommand{\ttdefault}{PTMono-TLF}
-#+LANGUAGE: ru
-#+LATEX_HEADER_EXTRA: \usepackage[tocpageword=true, rumath=false]{cmcmsu-gost}
-#+LATEX_HEADER_EXTRA: \usepackage[alg,biberon]{cmcmsugost-extra}
-#+LATEX_HEADER_EXTRA: \addbibresource{refs.bib}
 #+CITE_EXPORT: bibtex
+#+LANGUAGE: ru
+#+OPTIONS: tags:nil
+
+# #+LATEX_COMPILER: xelatex
+
+
+#+LATEX_HEADER_EXTRA: \usepackage[
+#+LATEX_HEADER_EXTRA: % false/true включает отключает слово Стр. в оглавлении
+#+LATEX_HEADER_EXTRA:     tocpageword=false,
+#+LATEX_HEADER_EXTRA: % false/true русская традиция начертания операторов
+#+LATEX_HEADER_EXTRA:     rumathop=false,
+#+LATEX_HEADER_EXTRA: % false/true русская традиция начертания  греческих букв
+#+LATEX_HEADER_EXTRA:     upgreek=false,
+#+LATEX_HEADER_EXTRA: % true/false русская мат. традиция, включает rumathop, upgreek и добавляет автоматическое удвоение оператора при переносе на другую строку
+#+LATEX_HEADER_EXTRA:     rumath=true,
+#+LATEX_HEADER_EXTRA: ]{cmcmsu-gost}
+
+#+LATEX_HEADER_EXTRA: \usepackage[
+#+LATEX_HEADER_EXTRA: % true/false теоремы, леммы и пр.
+#+LATEX_HEADER_EXTRA:     thm=true,
+#+LATEX_HEADER_EXTRA: % true/false листинги, также определено окружение lstpseudocode, которая встраивается в список алгоритмов (но нужна подключенная опция alg)
+#+LATEX_HEADER_EXTRA:     listings=true,
+#+LATEX_HEADER_EXTRA: % off/2e алгоритмы (пакет algorithm2e)
+#+LATEX_HEADER_EXTRA:     alg=off,
+#+LATEX_HEADER_EXTRA: % false/true библиография средствами biber, поддержка ГОСТ, рекомендуется использовать, но для финального текста, так как возможна медленная компиляция при больших списках литературы
+#+LATEX_HEADER_EXTRA:     biber=false
+#+LATEX_HEADER_EXTRA: ]{cmcmsugost-extra}
+
+#+LATEX_HEADER_EXTRA: % Для работы BIBER
+#+LATEX_HEADER_EXTRA: % \addbibresource{refs.bib}
+
+# #+SELECT_TAGS:
+# #+EXCLUDE_TAGS: LISTING ALGORITHM BIBER BIBTEX EXTCHAPTER EXTRARTICLE
+#+EXCLUDE_TAGS: BIBER ALGORITHM
+
 #+title: Произведение Шура--Адамара линейных кодов в анализе теоретико-кодовых криптосистем
 #+author: Чижов Иван Владимирович
 
@@ -853,7 +879,7 @@ a_{n1} & \ldots & a_{nn} \\
 Ниже идут четыре теста: код Python с русскими комментариями, код C с русскими
 комментариями, псевдокод через ~listings~, псевдокод через =algorithm2e=.
 
-** Python в listings с русскими комментариями
+** Python в listings с русскими комментариями :LISTING:
 
 
 \begin{lstlisting}[language=Python, caption={Тест Python-кода с русскими комментариями}]
@@ -870,7 +896,7 @@ print("НОД =", gcd(n, m))  # Ожидается 6
 \end{lstlisting}
 
 
-** C в listings с русскими комментариями
+** C в listings с русскими комментариями :LISTING:
 
 \begin{lstlisting}[language=C,caption={Тест C-кода с русскими комментариями}]
 #include <stdio.h>
@@ -891,7 +917,7 @@ int main(void) {
 }
 \end{lstlisting}
 
-** Псевдокод средствами listings
+** Псевдокод средствами listings :ALGORITHM:
 
 \begin{lstlisting}[style=pseudocode,caption={Псевдокод через listings}]
 (*@\lstInput@*): Отсортированный массив $A[0 \dots n-1]$, значение $x$
@@ -943,7 +969,7 @@ begin
 end
 \end{lstpseudocode}
 
-** Псевдокод средствами algorithm2e
+** Псевдокод средствами algorithm2e :ALGORITHM:
 
 Основная идея бинарного поиска (деления отрезка пополам) описана в алгоритме\nbsp{}[[alg:binary-search]].
 
@@ -974,7 +1000,7 @@ right $\gets n - 1$\;
 \KwRet $-1$\;
 \end{algorithm}
 
-** Ещё один тест algorithm2e с русскими комментариями
+** Ещё один тест algorithm2e с русскими комментариями :ALGORITHM:
 
 Алгоритм Евклида\nbsp{}[[alg:euclid]] позволяет найти наибольший делитель двух чисел или проверить их простоту.
 
@@ -1037,9 +1063,20 @@ right $\gets n - 1$\;
 \listoftables
 \addcontentsline{toc}{section}{Список таблиц}
 
-* Список литературы (biblatex) :ignore:
-
+* Список литературы :ignore:
+** Biber (biblatex) :BIBER:ignore:
 #+LATEX: \printbibliography[heading=bibintoc]
+
+** Bibtex :EXTARTICLE:BIBTEX:ignore:
+#+latex: \bibliographystyle{ugost2008}
+#+latex: \bibliography{refs}
+#+LATEX: \addcontentsline{toc}{section}{\refname}
+
+** Bibtex (REPORT) :EXTREPORT:BIBTEX:ignore:
+#+latex: \bibliographystyle{ugost2008}
+#+latex: \bibliography{refs}
+#+LATEX: \addcontentsline{toc}{chapter}{\refname}
+
 
 * Приложения :ignore:
 #+latex: \appendix
