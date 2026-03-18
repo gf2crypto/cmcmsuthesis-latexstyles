@@ -1,7 +1,7 @@
 % cmcmsugost-fontselector.sty
 \NeedsTeXFormat{LaTeX2e}[2020-10-01]
-\ProvidesPackage{cmcmsugost-extra}[2026/03/10 v0.1 package to make easy selecting fonts]
-
+\ProvidesPackage{cmcmsugost-fontselector}[2026/03/10 v0.1 package to make easy selecting fonts]
+\PassOptionsToPackage{LGR,T2A,T1}{fontenc}
 \makeatletter
 
 \RequirePackage{iftex}
@@ -35,13 +35,13 @@
 \DeclareStringOption[default]{font}
 \DeclareStringOption[1]{fontscale}
 
-\DeclareStringOption[default]{mathfont}
+\DeclareStringOption[]{mathfont}
 \DeclareStringOption[1]{mathfontscale}
 
-\DeclareStringOption[default]{sans}
+\DeclareStringOption[]{sans}
 \DeclareStringOption[1]{sansscale}
 
-\DeclareStringOption[default]{mono}
+\DeclareStringOption[]{mono}
 \DeclareStringOption[1]{monoscale}
 
 \ProcessKeyvalOptions*
@@ -49,107 +49,162 @@
 %% #################################################################
 %%  TeX Fonts
 %% #################################################################
+
+%% =================================================================
+%%     Font Set
+%% =================================================================
+
+\newcommand{\cmcmsugost@tex@set@default}{}
+
+\newcommand{\cmcmsugost@tex@set@tempora}{
+    \cmcmsugost@tex@tempora%
+    \cmcmsugost@tex@mathfont@newtx%
+}
+
+
+
 %% =================================================================
 %%     Text
 %% =================================================================
 
-\newcommand{\cmcmsugost@tex@font@default}{
+\newcommand{\cmcmsugost@tex@font}{}
+
+\newcommand{\cmcmsugost@tex@tempora}{
+    \RequirePackage{tempora}
 }
+
 
 %% =================================================================
 %% =================================================================
 %%     Math
 %% =================================================================
 
-\newcommand{\cmcmsugost@tex@mathfont@default}{
+\newcommand{\cmcmsugost@tex@mathfont}{}
 
+\newcommand{\cmcmsugost@tex@mathfont@newtx}{
+    \RequirePackage{newtxmath}
+    %% Patch to prevent openbox error
+    \AddToHook{package/amsthm/before}{%
+        \@ifpackageloaded{newtxmath}{
+            \let\openbox\undefined%
+        }
+    }
 }
 %% #################################################################
 
 
 %% #################################################################
 %%  XeTeX Fonts
-%% #################################################################
+%%  #################################################################
+
+%% =================================================================
+%%     Font Set
+%% =================================================================
+
+\newcommand{\cmcmsugost@xetex@set@default}{
+    \RequirePackage[default]{fontsetup}
+}
+
+%% =================================================================
 %% =================================================================
 %%     Main
 %% =================================================================
-\newcommand{\cmcmsugost@xetex@font@default}[1]{
-}
+\newcommand{\cmcmsugost@xetex@font}[1]{#1}
 
 %% =================================================================
 %% =================================================================
 %%     Sans
 %% =================================================================
-\newcommand{\cmcmsugost@xetex@sans@default}[1]{
-}
+\newcommand{\cmcmsugost@xetex@sans}[1]{#1}
 
 %% =================================================================
 %% =================================================================
 %%     Mono
 %% =================================================================
 
-\newcommand{\cmcmsugost@xetex@mono@default}[1]{
-}
+\newcommand{\cmcmsugost@xetex@mono}[1]{}
 
 %% =================================================================
 %% =================================================================
 %%     Math
 %% =================================================================
 
-\newcommand{\cmcmsugost@xetex@mathfont@default}[1]{
-}
+\newcommand{\cmcmsugost@xetex@mathfont}[1]{#1}
 
 %% #################################################################
 
 \RequirePackage{iftex}
 
 \ifPDFTeX%
-    \@ifundefined{cmcmsugost@tex@\cmcmsugost@font}{
-        \PackageError{cmcmsugost-fontselector}{
-            Unknown font '\cmcmsugost@font' in TeX mode}{}
+    \@ifundefined{cmcmsugost@tex@set@\cmcmsugost@font}{
+        \@ifundefined{cmcmsugost@tex@\cmcmsugost@font}{
+            \PackageError{cmcmsugost-fontselector}{
+                Unknown font or font set '\cmcmsugost@font' in TeX mode}{}
+        }{
+            \edef\cmcmsugost@dispatch{%
+                cmcmsugost@tex@\cmcmsugost@font}
+            \expandafter\csname\cmcmsugost@dispatch\endcsname%
+        }
+        \@ifundefined{
+            cmcmsugost@tex@mathfont@\cmcmsugost@mathfont}{
+            \PackageError{cmcmsugost-fontselector}{
+                Unknown math font '\cmcmsugost@mathfont' in TeX mode}{}
+        }{
+            \edef\cmcmsugost@dispatch{%
+                cmcmsugost@tex@mathfont@\cmcmsugost@mathfont}
+            \expandafter\csname\cmcmsugost@dispatch\endcsname%
+        }
     }{
-        \csname \cmcmsugost@tex@\cmcmsugost@font\endcsname
-    }
-    \@ifundefined{cmcmsugost@tex@\cmcmsugost@mathfont}{
-        \PackageError{cmcmsugost-fontselector}{
-            Unknown math font '\cmcmsugost@mathfont' in TeX mode}{}
-    }{
-        \csname \cmcmsugost@tex@\cmcmsugost@mathfont\endcsname
+        \edef\cmcmsugost@dispatch{%
+            cmcmsugost@tex@set@\cmcmsugost@font}
+        \expandafter\csname\cmcmsugost@dispatch\endcsname%
     }
 \else%
     % XeTeX/LuaLaTeX
-    \@ifundefined{cmcmsugost@xetex@\cmcmsugost@font}{
-        \PackageError{cmcmsugost-fontselector}{
-            Unknown font '\cmcmsugost@font' in XeTeX/LuaTeX mode}{}
+    \@ifundefined{cmcmsugost@xetex@set@\cmcmsugost@font}{
+        \@ifundefined{cmcmsugost@xetex@\cmcmsugost@font}{
+            \PackageError{cmcmsugost-fontselector}{
+                Unknown font or font set '\cmcmsugost@font' in XeTeX/LuaTeX mode}{}
+        }{
+            \edef\cmcmsugost@dispatch{%
+                cmcmsugost@xetex@\cmcmsugost@font}
+            \expandafter\csname\cmcmsugost@dispatch%
+            \endcsname{\cmcmsugost@fontscale}%
+        }
+        \@ifundefined{cmcmsugost@xetex@sans@\cmcmsugost@sans}{
+            \PackageError{cmcmsugost-fontselector}{
+                Unknown sans font '\cmcmsugost@sans' in XeTeX/LuaTeX mode}{}
+        }{
+            \edef\cmcmsugost@dispatch{%
+                cmcmsugost@xetex@sans@\cmcmsugost@sans}
+            \expandafter\csname\cmcmsugost@dispatch%
+            \endcsname{\cmcmsugost@sansscale}%
+        }
+        \@ifundefined{cmcmsugost@xetex@mono@\cmcmsugost@mono}{
+            \PackageError{cmcmsugost-fontselector}{
+                Unknown mono font '\cmcmsugost@mono' in XeTeX/LuaTeX mode}{}
+        }{
+            \edef\cmcmsugost@dispatch{%
+                cmcmsugost@xetex@mono@\cmcmsugost@mono}
+            \expandafter\csname\cmcmsugost@dispatch%
+            \endcsname{\cmcmsugost@monoscale}%
+        }
+        \@ifundefined{
+            cmcmsugost@xetex@mathfont@\cmcmsugost@mathfont}{
+            \PackageError{cmcmsugost-fontselector}{
+                Unknown math font '\cmcmsugost@mathfont' in XeTeX/LuaTeX mode}{}
+        }{
+            \edef\cmcmsugost@dispatch{%
+                cmcmsugost@xetex@mathfont@\cmcmsugost@mathfont}
+            \expandafter\csname\cmcmsugost@dispatch%
+            \endcsname{\cmcmsugost@mathfontscale}%
+        }
     }{
-        \csname%
-        \cmcmsugost@xetex@\cmcmsugost@font%
-        \endcsname{\cmcmsugost@fontscale}
+        \edef\cmcmsugost@dispatch{%
+            cmcmsugost@xetex@set@\cmcmsugost@font}
+        \expandafter\csname\cmcmsugost@dispatch\endcsname%
     }
-    \@ifundefined{cmcmsugost@xetex@\cmcmsugost@sans}{
-        \PackageError{cmcmsugost-fontselector}{
-            Unknown sans font '\cmcmsugost@sans' in XeTeX/LuaTeX mode}{}
-    }{
-        \csname%
-        \cmcmsugost@xetex@\cmcmsugost@sans%
-        \endcsname{\cmcmsugost@sansscale}
-    }
-    \@ifundefined{cmcmsugost@xetex@\cmcmsugost@mono}{
-        \PackageError{cmcmsugost-fontselector}{
-            Unknown mono font '\cmcmsugost@mono' in XeTeX/LuaTeX mode}{}
-    }{
-        \csname%
-        \cmcmsugost@xetex@\cmcmsugost@mono%
-        \endcsname{\cmcmsugost@monoscale}
-    }
-    \@ifundefined{cmcmsugost@xetex@\cmcmsugost@mathfont}{
-        \PackageError{cmcmsugost-fontselector}{
-            Unknown math font '\cmcmsugost@mathfont' in XeTeX/LuaTeX mode}{}
-    }{
-        \csname%
-        \cmcmsugost@tex@\cmcmsugost@mathfont%
-        \endcsname{\cmcmsugost@mathfontscale}
-    }
+
 \fi
 
 
