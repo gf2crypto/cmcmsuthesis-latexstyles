@@ -1,7 +1,7 @@
 % cmcmsugost-fontselector.sty
 \NeedsTeXFormat{LaTeX2e}[2020-10-01]
 \ProvidesPackage{cmcmsugost-fontselector}[2026/03/10 v0.1 package to make easy selecting fonts]
-\PassOptionsToPackage{LGR,T2A,T1}{fontenc}
+
 \makeatletter
 
 \RequirePackage{iftex}
@@ -32,7 +32,7 @@
 %% monoscale - коэффициент масштабирования для шрифта mono
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\DeclareStringOption[default]{font}
+\DeclareStringOption[tempora]{font}
 \DeclareStringOption[1]{fontscale}
 
 \DeclareStringOption[]{mathfont}
@@ -55,6 +55,9 @@
 %% =================================================================
 
 \newcommand{\cmcmsugost@tex@set@default}{}
+
+\newcommand{\cmcmsugost@tex@set@cm}{}
+
 
 \newcommand{\cmcmsugost@tex@set@tempora}{
     \cmcmsugost@tex@tempora%
