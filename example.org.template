@@ -9,6 +9,17 @@
 
 
 #+LATEX_HEADER_EXTRA: \usepackage[
+#+LATEX_HEADER_EXTRA:   font=tempora, %xcharter, %dejavu, %libertinus, %heuristica, %paratype, %heros, % tempora, % default,%
+#+LATEX_HEADER_EXTRA:   fontscale=1,%
+#+LATEX_HEADER_EXTRA:   mathfont="",%
+#+LATEX_HEADER_EXTRA:   mathfontscale=1,%
+#+LATEX_HEADER_EXTRA:   sans="",%
+#+LATEX_HEADER_EXTRA:   sansscale=1,%
+#+LATEX_HEADER_EXTRA:   mono="",%
+#+LATEX_HEADER_EXTRA:   monoscale=1%
+#+LATEX_HEADER_EXTRA: ]{cmcmsugost-fontselector}
+
+#+LATEX_HEADER_EXTRA: \usepackage[
 #+LATEX_HEADER_EXTRA: % false/true включает отключает слово Стр. в оглавлении
 #+LATEX_HEADER_EXTRA:     tocpageword=false,
 #+LATEX_HEADER_EXTRA: % false/true русская традиция начертания операторов
