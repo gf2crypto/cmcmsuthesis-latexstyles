@@ -552,11 +552,52 @@ mathescape = true
 
 
 \newcommand{\cmcmsugost@SetExtraMath}{
+    \ifPDFTeX%
+        %% При использовании UPGREEK и NEWTXMATH
+        %% портятся большие греческие буквы,
+        %% поэтому UPGREEK нужно грузить раньше.
+        %% Мы не контролируем это, поэтому просто чистим определения
+        \@ifpackageloaded{upgreek}{%
+            % уже загружен — ничего не делаем
+        }{%
+            \@ifpackageloaded{newtxmath}{%
+                % newtxmath уже загружен ДО нас —
+                \let\cmcmsugost@Gamma\Gamma
+                \let\cmcmsugost@Delta\Delta
+                \let\cmcmsugost@Theta\Theta
+                \let\cmcmsugost@Lambda\Lambda
+                \let\cmcmsugost@Xi\Xi
+                \let\cmcmsugost@Pi\Pi
+                \let\cmcmsugost@Sigma\Sigma
+                \let\cmcmsugost@Upsilon\Upsilon
+                \let\cmcmsugost@Phi\Phi
+                \let\cmcmsugost@Psi\Psi
+                \let\cmcmsugost@Omega\Omega
+                % загружаем upgreek
+                \RequirePackage{upgreek}%
+                % и восстанавливаем греческие:
+                \let\Gamma\cmcmsugost@Gamma%
+                \let\Delta\cmcmsugost@Delta%
+                \let\Theta\cmcmsugost@Theta%
+                \let\Lambda\cmcmsugost@Lambda%
+                \let\Xi\cmcmsugost@Xi%
+                \let\Pi\cmcmsugost@Pi%
+                \let\Sigma\cmcmsugost@Sigma%
+                \let\Upsilon\cmcmsugost@Upsilon%
+                \let\Phi\cmcmsugost@Phi%
+                \let\Psi\cmcmsugost@Psi%
+                \let\Omega\cmcmsugost@Omega%
+            }{%
+                % newtxmath ещё не загружен —
+                % загружаем upgreek сейчас, newtxmath сам с ним согласуется:
+                \RequirePackage{upgreek}%
+            }%
+        }%
+    \fi
     \AtEndPreamble{
         \@ifpackageloaded{unicode-math}{}{%
             \newcommand{\symbf}[1]{\ensuremath{\boldsymbol{##1}}}
             \newcommand{\symbfit}[1]{\ensuremath{\boldsymbol{##1}}}
-            \RequirePackage{upgreek}
             \newcommand{\symup}[1]{%
                 \begingroup
                 \edef\symup@name{\expandafter\@gobble\string##1}% alpha from \alpha
