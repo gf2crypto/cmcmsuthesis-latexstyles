@@ -61,11 +61,42 @@
     \cmcmsugost@tex@mathfont@newtx%
 }
 
+\newcommand{\cmcmsugost@tex@set@heros}{
+    \cmcmsugost@tex@sans@heros%
+    \cmcmsugost@tex@mathfont@newtx%
+}
+
+\newcommand{\cmcmsugost@tex@set@paratype}{
+    \RequirePackage{paratype}
+    \cmcmsugost@tex@mathfont@newtx%
+}
+
+\newcommand{\cmcmsugost@tex@set@heuristica}{
+    \cmcmsugost@tex@heuristica%
+    \cmcmsugost@tex@mathfont@fourier%
+}
+\newcommand{\cmcmsugost@tex@set@libertinus}{
+    \PassOptionsToPackage{mono}{libertinus}
+    \cmcmsugost@tex@libertinus%
+    \cmcmsugost@tex@mono@paratype%
+    \cmcmsugost@tex@mathfont@libertinus%
+}
+
+\newcommand{\cmcmsugost@tex@set@dejavu}{
+    \cmcmsugost@tex@dejavu%
+    \cmcmsugost@tex@mathfont@newtx%
+}
+
+\newcommand{\cmcmsugost@tex@set@xcharter}{
+    \cmcmsugost@tex@xcharter%
+    \PassOptionsToPackage{charter,expert}{mathdesign}
+    \cmcmsugost@tex@mathfont@mathdesign%
+}
 
 
-%% =================================================================
+%% ================================================================
 %%     Text
-%% =================================================================
+%% ================================================================
 
 \newcommand{\cmcmsugost@tex@font}{}
 
@@ -73,11 +104,108 @@
     \RequirePackage{tempora}
 }
 
+\newcommand{\cmcmsugost@tex@bonum}{
+    \RequirePackage{tgbonum}
+}
 
-%% =================================================================
-%% =================================================================
+\newcommand{\cmcmsugost@tex@termes}{
+    \RequirePackage{tgtermes}
+}
+
+\newcommand{\cmcmsugost@tex@pagella}{
+    \RequirePackage{tgpagella}
+}
+
+\newcommand{\cmcmsugost@tex@schola}{
+    \RequirePackage{tgschola}
+}
+
+\newcommand{\cmcmsugost@tex@tgtermes}{
+    \RequirePackage{tgtermes}
+}
+
+\newcommand{\cmcmsugost@tex@ptserif}{
+    \RequirePackage{PTSerif}
+}
+
+\newcommand{\cmcmsugost@tex@paratype}{
+    \RequirePackage{paratype}
+}
+
+\newcommand{\cmcmsugost@tex@heuristica}{
+    \RequirePackage{heuristica}
+}
+
+\newcommand{\cmcmsugost@tex@old}{
+    \RequirePackage{oldstandard}
+}
+
+\newcommand{\cmcmsugost@tex@libertinus}{
+    \RequirePackage{libertinus}
+}
+
+\newcommand{\cmcmsugost@tex@noto}{
+    \RequirePackage{noto}
+}
+
+\newcommand{\cmcmsugost@tex@dejavu}{
+    \RequirePackage{dejavu}
+}
+
+\newcommand{\cmcmsugost@tex@xcharter}{
+    \RequirePackage{XCharter}
+}
+
+\newcommand{\cmcmsugost@tex@cochineal}{
+    \RequirePackage{cochineal}
+}
+
+\newcommand{\cmcmsugost@tex@newtx}{
+    \RequirePackage{newtxtext}
+}
+
+
+%% ================================================================
+%%     Sans
+%% ================================================================
+
+\newcommand{\cmcmsugost@tex@sans@adventor}{
+    \RequirePackage{tgadventor}
+}
+
+\newcommand{\cmcmsugost@tex@sans@heros}{
+    \RequirePackage{tgheros}
+}
+
+\newcommand{\cmcmsugost@tex@sans@paratype}{
+    \RequirePackage{PTSans}
+}
+
+\newcommand{\cmcmsugost@tex@sans@fira}{
+    \RequirePackage{FiraSans}
+}
+
+\newcommand{\cmcmsugost@tex@sans@source}{
+    \RequirePackage{sourcesanspro}
+}
+
+%% ================================================================
+%%     Mono
+%% ================================================================
+
+\newcommand{\cmcmsugost@tex@mono@cursor}{
+    \RequirePackage{tgcursor}
+}
+
+\newcommand{\cmcmsugost@tex@mono@paratype}{
+    \RequirePackage{PTMono}
+}
+
+
+%% ================================================================
+%% ================================================================
 %%     Math
-%% =================================================================
+%% ================================================================
 
 \newcommand{\cmcmsugost@tex@mathfont}{}
 
@@ -90,48 +218,94 @@
         }
     }
 }
-%% #################################################################
+
+\newcommand{\cmcmsugost@tex@mathfont@pazo}{
+    \RequirePackage{mathpazo}
+}
+
+\newcommand{\cmcmsugost@tex@mathfont@newpx}{
+    \RequirePackage{newpxmath}
+    %% Patch to prevent openbox error
+    \AddToHook{package/amsthm/before}{%
+        \@ifpackageloaded{newpxmath}{
+            \let\openbox\undefined%
+        }
+    }
+}
+
+\newcommand{\cmcmsugost@tex@mathfont@eulervm}{
+    \RequirePackage{eulervm}
+}
 
 
-%% #################################################################
+\newcommand{\cmcmsugost@tex@mathfont@fourier}{
+    \RequirePackage{fourier}
+}
+
+\newcommand{\cmcmsugost@tex@mathfont@kpfonts}{
+    \RequirePackage{kpfonts}
+}
+
+\newcommand{\cmcmsugost@tex@mathfont@stix}{
+    \RequirePackage{stix2}
+}
+
+\newcommand{\cmcmsugost@tex@mathfont@mathdesign}{
+    \RequirePackage{mathdesign}
+}
+
+\newcommand{\cmcmsugost@tex@mathfont@libertinus}{
+    \RequirePackage{libertinust1math}
+}
+
+
+
+
+
+
+
+%% ################################################################
+
+
+%% ################################################################
 %%  XeTeX Fonts
 %%  #################################################################
 
-%% =================================================================
+%% ================================================================
 %%     Font Set
-%% =================================================================
+%% ================================================================
 
 \newcommand{\cmcmsugost@xetex@set@default}{
     \RequirePackage[default]{fontsetup}
 }
 
-%% =================================================================
-%% =================================================================
+%% ================================================================
+%% ================================================================
 %%     Main
-%% =================================================================
+%% ================================================================
 \newcommand{\cmcmsugost@xetex@font}[1]{#1}
 
-%% =================================================================
-%% =================================================================
+%% ================================================================
+%% ================================================================
 %%     Sans
-%% =================================================================
+%% ================================================================
 \newcommand{\cmcmsugost@xetex@sans}[1]{#1}
 
-%% =================================================================
-%% =================================================================
+%% ================================================================
+%% ================================================================
 %%     Mono
-%% =================================================================
+%% ================================================================
 
 \newcommand{\cmcmsugost@xetex@mono}[1]{}
 
-%% =================================================================
-%% =================================================================
+%% ================================================================
+%% ================================================================
 %%     Math
-%% =================================================================
+%% ================================================================
 
 \newcommand{\cmcmsugost@xetex@mathfont}[1]{#1}
 
-%% #################################################################
+%% ################################################################
 
 \RequirePackage{iftex}
 
@@ -152,6 +326,24 @@
         }{
             \edef\cmcmsugost@dispatch{%
                 cmcmsugost@tex@mathfont@\cmcmsugost@mathfont}
+            \expandafter\csname\cmcmsugost@dispatch\endcsname%
+        }
+        \@ifundefined{
+            cmcmsugost@tex@sans@\cmcmsugost@sans}{
+            \PackageError{cmcmsugost-fontselector}{
+                Unknown sans font '\cmcmsugost@sans' in TeX mode}{}
+        }{
+            \edef\cmcmsugost@dispatch{%
+                cmcmsugost@tex@sans@\cmcmsugost@sans}
+            \expandafter\csname\cmcmsugost@dispatch\endcsname%
+        }
+        \@ifundefined{
+            cmcmsugost@tex@mono@\cmcmsugost@mono}{
+            \PackageError{cmcmsugost-fontselector}{
+                Unknown mono font '\cmcmsugost@sans' in TeX mode}{}
+        }{
+            \edef\cmcmsugost@dispatch{%
+                cmcmsugost@tex@mono@\cmcmsugost@mono}
             \expandafter\csname\cmcmsugost@dispatch\endcsname%
         }
     }{
