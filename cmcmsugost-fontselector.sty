@@ -336,20 +336,20 @@
     ]{PTF55F.ttf}%
 }
 
-%% ----------------------------------------------------------------
-%%  PT Serif Caption  (Paratype — optimised for small sizes)
-%% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@ptserifcaption}[1]{%
-    %% PT Serif Caption: только Regular+Italic — Bold/BoldItalic не существуют
-    %% Явная подстановка чтобы подавить warnings fontspec
-    \RequirePackage{unicode-math}
-    \setmainfont[
-        BoldFont        = PTZ55F.ttf,
-        ItalicFont      = PTZ56F.ttf,
-        BoldItalicFont  = PTZ56F.ttf,
-        Scale           = #1
-    ]{PTZ55F.ttf}%
-}
+% %% ----------------------------------------------------------------
+% %%  PT Serif Caption  (Paratype — optimised for small sizes)
+% %% ----------------------------------------------------------------
+% \newcommand{\cmcmsugost@xetex@ptserifcaption}[1]{%
+%     %% PT Serif Caption: только Regular+Italic — Bold/BoldItalic не существуют
+%     %% Явная подстановка чтобы подавить warnings fontspec
+%     \RequirePackage{unicode-math}
+%     \setmainfont[
+%         BoldFont        = PTF75F.ttf,
+%         ItalicFont      = PTZ56F.ttf,
+%         BoldItalicFont  = PTF76F.ttf,
+%         Scale           = #1
+%     ]{PTZ55F.ttf}%
+% }
 
 %% ----------------------------------------------------------------
 %%  DejaVu Serif  (broad Unicode, full Cyrillic, TTF)
@@ -500,13 +500,28 @@
         ItalicFont      = Brill-Italic.ttf,
         BoldItalicFont  = Brill-BoldItalic.ttf,
         Scale           = #1,
-        Numbers         = OldStyle,
+        Ligatures       = TeX,
+        Numbers         = {Lining,Tabular}
     ]{Brill-Roman.ttf}%
 }
 
 %% ################################################################
 %%  SECTION 2 — SANS-SERIF FONTS  \cmcmsugost@xetex@sans@<name>[1]
 %% ################################################################
+
+%% ----------------------------------------------------------------
+%%  Source Sans 3 Pro
+%%  NOTE: доступен только если установлен в LaTeX
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugost@xetex@sans@source}[1]{%
+    \setsansfont[
+        BoldFont        = SourceSans3-Bold.ttf,
+        ItalicFont      = SourceSans3-Italic.ttf,
+        BoldItalicFont  = SourceSans3-BoldItalic.ttf,
+        Scale           = #1
+    ]{SourceSans3-Regular.ttf}%
+}
+
 
 %% ----------------------------------------------------------------
 %%  Arial  (системный sans macOS/Windows, требует лицензии)
@@ -633,7 +648,7 @@
         ItalicFont      = FiraSans-Italic.otf,
         BoldItalicFont  = FiraSans-BoldItalic.otf,
         Scale           = #1
-    ]{FiraSans-Regular.otf}%
+    ]{FiraSans-Light.otf}%
 }
 
 %% ----------------------------------------------------------------
@@ -825,6 +840,7 @@
 %%  NewCM Math Book  (CM-style, wide Unicode math)
 %% ----------------------------------------------------------------
 \newcommand{\cmcmsugost@xetex@mathfont@newcm}[1]{%
+    \typeout{Loading NewCMMath font}
     \RequirePackage{unicode-math}
     \setmathfont[
         Scale   = #1
@@ -898,13 +914,26 @@
 %%  ptserif  — PT Serif + PT Sans + PT Mono + XITS Math
 %%  Best Cyrillic glyphs, Paratype family
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@ptserif}{%
+\newcommand{\cmcmsugost@xetex@set@pt}{%
     \typeout{Loading PT Serif font set}%
     \cmcmsugost@xetex@ptserif{1}%
     \cmcmsugost@xetex@sans@ptsans{1}%
     \cmcmsugost@xetex@mono@ptmono{MatchLowercase}%
     \cmcmsugost@xetex@mathfont@stixmath{1}%
 }
+
+%% ----------------------------------------------------------------
+%%  dejavu  — DeJaVu Serif, Sansm, Mono, STIX2 Math
+%%  Best Cyrillic glyphs, Paratype family
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugost@xetex@set@dejavu}{%
+    \typeout{Loading DeJaVu font set}%
+    \cmcmsugost@xetex@dejavuserif{1}%
+    \cmcmsugost@xetex@sans@dejavusans{1}%
+    \cmcmsugost@xetex@mono@dejavumono{1}%
+    \cmcmsugost@xetex@mathfont@stixmath{1}%
+}
+
 
 %% ----------------------------------------------------------------
 %%  ptsans  — PT Sans (main) + PT Sans Narrow (headings) + PT Mono + XITS Math
@@ -1061,7 +1090,7 @@
 %%  Classic academic, best compatibility
 %%  NOTE: Brill must be downloaded separately from brill.com
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@brill}{%
+\newcommand{\cmcmsugost@xetex@set@brilllib}{%
     \typeout{Loading Brill font set (Brill + Libertinus Sans + DejaVu Mono + XITS Math)}%
     \cmcmsugost@xetex@brill{1}%
     \cmcmsugost@xetex@sans@libertinussans{0.98}%
@@ -1145,12 +1174,12 @@
 %%  Brill среди доступных math шрифтов — тот же гуманизм и контраст.
 %%  Fira Sans нейтрален, не отвлекает от содержания.
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@brillphdmath}{%
-    \typeout{Loading Brill PhD Math set (Brill + Garamond Math)}%
+\newcommand{\cmcmsugost@xetex@set@brillkp}{%
+    \typeout{Loading BrillG: Brill + KPMath + FiraSans + JetBrains Mono}%
     \cmcmsugost@xetex@brill{1}%
-    \cmcmsugost@xetex@sans@firasans{1}%
-    \cmcmsugost@xetex@mono@dejavumono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@garamondmath{1}%
+    \cmcmsugost@xetex@sans@firasans{0.93}%
+    \cmcmsugost@xetex@mono@jetbrainsmono{0.85}%
+    \cmcmsugost@xetex@mathfont@kpmath{1}%
 }
 
 %% ----------------------------------------------------------------
