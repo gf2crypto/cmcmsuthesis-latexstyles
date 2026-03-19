@@ -420,7 +420,8 @@
         ItalicFont      = Alegreya-Italic.otf,
         BoldItalicFont  = Alegreya-BoldItalic.otf,
         Scale           = #1,
-        Numbers         = OldStyle,
+        Ligatures       = TeX,
+        Numbers         = {Lining,Tabular}
     ]{Alegreya-Regular.otf}%
 }
 
@@ -434,7 +435,8 @@
         ItalicFont      = EBGaramond-Italic.otf,
         BoldItalicFont  = EBGaramond-BoldItalic.otf,
         Scale           = #1,
-        Numbers         = OldStyle
+        Ligatures       = TeX,
+        Numbers         = {Lining,Tabular}
     ]{EBGaramond-Regular.otf}%
 }
 
@@ -906,7 +908,7 @@
     \typeout{Loading Libertinus font set}%
     \cmcmsugost@xetex@libertinus{1}%
     \cmcmsugost@xetex@sans@libertinussans{1}%
-    \cmcmsugost@xetex@mono@dejavumono{MatchLowercase}%
+    \cmcmsugost@xetex@mono@sourcecodepro{1}%
     \cmcmsugost@xetex@mathfont@libertinusmath{1}%
 }
 
@@ -954,18 +956,6 @@
 }
 
 %% ----------------------------------------------------------------
-%%  stixtwo  — STIX Two Text + Heros + JetBrains Mono + STIX Two Math
-%%  Maximum symbol coverage for physics/chemistry
-%% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@stixtwo}{%
-    \typeout{Loading STIX Two font set (STIXTwoText + STIX Two Math)}%
-    \cmcmsugost@xetex@stixtwo{1}%
-    \cmcmsugost@xetex@sans@dejavusans{0.95}%
-    \cmcmsugost@xetex@mono@jetbrainsmono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@stixmath{1}%
-}
-
-%% ----------------------------------------------------------------
 %%  alegreya  — Alegreya + Alegreya Sans + JetBrains Mono + Garamond Math
 %%  Humanist book style
 %% ----------------------------------------------------------------
@@ -973,7 +963,7 @@
     \typeout{Loading Alegreya font set}%
     \cmcmsugost@xetex@alegreya{1}%
     \cmcmsugost@xetex@sans@alegreyasans{1}%
-    \cmcmsugost@xetex@mono@dejavumono{MatchLowercase}%
+    \cmcmsugost@xetex@mono@sourcecodepro{MatchLowercase}%
     \cmcmsugost@xetex@mathfont@garamondmath{1}%
 }
 
@@ -1014,30 +1004,6 @@
 }
 
 %% ----------------------------------------------------------------
-%%  roboto  — Roboto (main) + Roboto Condensed + JetBrains Mono + Fira Math
-%%  Modern technical sans-serif document
-%% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@roboto}{%
-    \typeout{Loading Roboto-style font set (Tinos+Fira Sans)}%
-    \cmcmsugost@xetex@tinos{1}%  %% was Roboto (fonts-extra)
-    \cmcmsugost@xetex@sans@firasans{1}%
-    \cmcmsugost@xetex@mono@dejavumono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@firamath{1}%
-}
-
-%% ----------------------------------------------------------------
-%%  inter  — Inter (main) + Montserrat (headings) + JetBrains Mono + Fira Math
-%%  Modern full-sans design
-%% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@inter}{%
-    \typeout{Loading Inter-style font set (Alegreya+Montserrat)}%
-    \cmcmsugost@xetex@alegreya{1}%  %% was Inter (fonts-extra)
-    \cmcmsugost@xetex@sans@montserrat{1}%
-    \cmcmsugost@xetex@mono@dejavumono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@firamath{1}%
-}
-
-%% ----------------------------------------------------------------
 %%  crimsonpro  — Crimson Pro + Inter + JetBrains Mono + Garamond Math
 %%  Contrast: historical serif + modern sans
 %% ----------------------------------------------------------------
@@ -1073,6 +1039,15 @@
     \cmcmsugost@xetex@mathfont@newcm{1}%
 }
 
+\newcommand{\cmcmsugost@xetex@set@stix}{%
+    \typeout{Loading STIX2 font set}%
+    \cmcmsugost@xetex@stixtwo{1}%
+    \cmcmsugost@xetex@sans@newcm{1}%
+    \cmcmsugost@xetex@mono@jetbrainsmono{0.9}
+    \cmcmsugost@xetex@mathfont@stixmath{1}%
+}
+
+
 %% ----------------------------------------------------------------
 %%  playfair  — Playfair Display + Source Sans Pro + Source Code Pro + NewCM Math
 %%  Magazine / journal display style
@@ -1080,75 +1055,13 @@
 \newcommand{\cmcmsugost@xetex@set@playfair}{%
     \typeout{Loading Playfair Display font set}%
     \cmcmsugost@xetex@domitian{1}%
-    \cmcmsugost@xetex@sans@firasans{1.05}%
+    \cmcmsugost@xetex@sans@firasans{1}%
     \cmcmsugost@xetex@mono@dejavumono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@newcm{1}%
-}
-
-%% ----------------------------------------------------------------
-%%  brill  — Brill + Linux Biolinum + Julia Mono + XITS Math  (set 1)
-%%  Classic academic, best compatibility
-%%  NOTE: Brill must be downloaded separately from brill.com
-%% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@brilllib}{%
-    \typeout{Loading Brill font set (Brill + Libertinus Sans + DejaVu Mono + XITS Math)}%
-    \cmcmsugost@xetex@brill{1}%
-    \cmcmsugost@xetex@sans@libertinussans{0.98}%
-    \cmcmsugost@xetex@mono@dejavumono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@stixmath{1}%
-}
-
-%% ----------------------------------------------------------------
-%%  brillsource  — Brill + Source Sans Pro + Source Code Pro + STIX Two Math
-%%  Strict academic, maximum math symbols
-%% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@brillsource}{%
-    \typeout{Loading Brill+Source font set}%
-    \cmcmsugost@xetex@brill{1}%
-    \cmcmsugost@xetex@sans@firasans{1.02}%
-    \cmcmsugost@xetex@mono@sourcecodepro{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@stixmath{1}%
-}
-
-%% ----------------------------------------------------------------
-%%  brillalegreya  — Brill + Alegreya Sans + JetBrains Mono + Garamond Math
-%%  Humanist book style with Brill
-%% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@brillalegreya}{%
-    \typeout{Loading Brill+Alegreya font set}%
-    \cmcmsugost@xetex@brill{1}%
-    \cmcmsugost@xetex@sans@alegreyasans{0.97}%
-    \cmcmsugost@xetex@mono@jetbrainsmono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@garamondmath{1}%
-}
-
-%% ----------------------------------------------------------------
-%%  brillinter  — Brill + Inter + JetBrains Mono + XITS Math
-%%  Modern contrast: historical serif + neutral interface sans
-%% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@brillinter}{%
-    \typeout{Loading Brill+Inter font set}%
-    \cmcmsugost@xetex@brill{1}%
-    \cmcmsugost@xetex@sans@newcm{1.04}%
-    \cmcmsugost@xetex@mono@jetbrainsmono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@stixmath{1}%
-}
-
-%% ----------------------------------------------------------------
-%%  brilllinguistics  — Brill + Gentium Plus + Julia Mono + NewCM Math
-%%  Linguistics / IPA / multilingual with Brill
-%% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@brilllinguistics}{%
-    \typeout{Loading Brill+Gentium font set (linguistics)}%
-    \cmcmsugost@xetex@brill{1}%
-    \cmcmsugost@xetex@sans@newcm{1.02}%
-    \cmcmsugost@xetex@mono@juliamono{MatchLowercase}%
     \cmcmsugost@xetex@mathfont@newcm{1}%
 }
 
 
 %% ################################################################
-%%  ДИССЕРТАЦИОННЫЕ НАБОРЫ НА ОСНОВЕ BRILL
 %%
 %%  Brill — академический шрифт издательства Brill (Лейден).
 %%  Гуманистическая антиква, ~7000 глифов, полная кириллица,
@@ -1157,212 +1070,34 @@
 %%  Установка: cp Brill-*.ttf ~/Library/texmf/fonts/truetype/brill/
 %%             mktexlsr
 %%
-%%  Принципы подбора пар:
-%%  • Garamond Math — гуманистический math, ближайший к Brill по духу
-%%  • XITS Math — строже, академичнее, для точных наук
-%%  • Libertinus Math — современный, активно развивается
-%%  • Biolinum / Alegreya Sans — гуманистический sans, не конкурирует
-%%  • Fira Sans — нейтральный sans, не перетягивает внимание
-%%  • JetBrains Mono — для кода: лигатуры, читаемость
-%%  • DejaVu Mono — для математики: нейтральный, широкий Unicode
 %% ################################################################
 
-%% ----------------------------------------------------------------
-%%  brillphdmath  — Кандидатская диссертация, математика
-%%  Brill + Fira Sans + DejaVu Mono + Garamond Math
-%%  Строго и элегантно. Garamond Math ближе всего к характеру
-%%  Brill среди доступных math шрифтов — тот же гуманизм и контраст.
-%%  Fira Sans нейтрален, не отвлекает от содержания.
-%% ----------------------------------------------------------------
 \newcommand{\cmcmsugost@xetex@set@brillkp}{%
-    \typeout{Loading BrillG: Brill + KPMath + FiraSans + JetBrains Mono}%
+    \typeout{Loading Brill KP: Brill + KPMath + Alegreya Sana + Source Code Pro}%
     \cmcmsugost@xetex@brill{1}%
-    \cmcmsugost@xetex@sans@firasans{0.93}%
-    \cmcmsugost@xetex@mono@jetbrainsmono{0.85}%
+    \cmcmsugost@xetex@sans@alegreyasans{0.98}%
+    \cmcmsugost@xetex@mono@sourcecodepro{MatchLowercase}
     \cmcmsugost@xetex@mathfont@kpmath{1}%
     \setmathfont[range=\mathcal]{STIXTwoMath-Regular.otf}%
 }
 
-%% ----------------------------------------------------------------
-%%  brillphdcs  — Кандидатская диссертация, Computer Science
-%%  Brill + Fira Sans + JetBrains Mono + STIX Two Math
-%%  STIX Two Math — наиболее полное покрытие символов из всех
-%%  доступных Unicode Math шрифтов. Важно для теор. информатики.
-%%  JetBrains Mono для листингов. Сочетание академично.
-%% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@brillphdcs}{%
-    \typeout{Loading Brill PhD CS set (Brill + STIX Two Math + JetBrains)}%
-    \cmcmsugost@xetex@brill{1}%
-    \cmcmsugost@xetex@sans@firasans{1}%
-    \cmcmsugost@xetex@mono@jetbrainsmono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@stixmath{1}%
-}
-
-%% ----------------------------------------------------------------
-%%  brillmastermath  — Магистерская диссертация, математика
-%%  Brill + Alegreya Sans + DejaVu Mono + Libertinus Math
-%%  Alegreya Sans — гуманистический sans того же класса что и Brill,
-%%  образует органичную пару. Libertinus Math современный и активно
-%%  поддерживается. Для магистерской — чуть свободнее чем PhD.
-%% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@brillmastermath}{%
-    \typeout{Loading Brill Master Math set (Brill + Alegreya Sans + Libertinus Math)}%
+\newcommand{\cmcmsugost@xetex@set@brillstix}{%
+    \typeout{Loading Brill STIX: Brill + STIX2 Math + Alegreya Sana + Source Code Pro}%
     \cmcmsugost@xetex@brill{1}%
     \cmcmsugost@xetex@sans@alegreyasans{0.98}%
-    \cmcmsugost@xetex@mono@dejavumono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@libertinusmath{1}%
+    \cmcmsugost@xetex@mono@newcm{1}%
+    \cmcmsugost@xetex@mono@sourcecodepro{MatchLowercase}
+    \cmcmsugost@xetex@mathfont@stixmath{1}
 }
 
-%% ----------------------------------------------------------------
-%%  brillmastercs  — Магистерская диссертация, Computer Science
-%%  Brill + Alegreya Sans + JetBrains Mono + Garamond Math
-%%  Alegreya Sans добавляет тепло гуманистической антикве Brill.
-%%  JetBrains Mono — для кода с лигатурами. Garamond Math создаёт
-%%  единый гуманистический голос для текста и формул.
-%% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@brillmastercs}{%
-    \typeout{Loading Brill Master CS set (Brill + Alegreya Sans + JetBrains)}%
+\newcommand{\cmcmsugost@xetex@set@brilllibertinus}{%
+    \typeout{Loading Brill Libertinus: Brill + Libertinus Math + Alegreya Sana + Source Code Pro}%
     \cmcmsugost@xetex@brill{1}%
     \cmcmsugost@xetex@sans@alegreyasans{0.98}%
-    \cmcmsugost@xetex@mono@jetbrainsmono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@garamondmath{1}%
-}
-
-%% ----------------------------------------------------------------
-%%  brillbachmath  — Бакалаврская работа, математика
-%%  Brill + Biolinum + DejaVu Mono + Garamond Math
-%%  Biolinum — гуманистический sans, традиционная пара к Libertine-
-%%  семейству (Brill близок по духу). Garamond Math элегантен.
-%%  Для бакалаврской — элегантно и не перегружено.
-%% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@brillbachmath}{%
-    \typeout{Loading Brill Bachelor Math set (Brill + Biolinum + Garamond Math)}%
-    \cmcmsugost@xetex@brill{1}%
-    \cmcmsugost@xetex@sans@libertinussans{0.98}%
-    \cmcmsugost@xetex@mono@dejavumono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@garamondmath{1}%
-}
-
-%% ----------------------------------------------------------------
-%%  brillbachcs  — Бакалаврская работа, Computer Science
-%%  Brill + Biolinum + JetBrains Mono + XITS Math
-%%  Biolinum органично дополняет Brill. XITS Math надёжен и богат
-%%  символами — хорошо для первой серьёзной работы где нужна
-%%  уверенность в наборе формул. JetBrains Mono для кода.
-%% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@brillbachcs}{%
-    \typeout{Loading Brill Bachelor CS set (Brill + Biolinum + JetBrains + XITS)}%
-    \cmcmsugost@xetex@brill{1}%
-    \cmcmsugost@xetex@sans@libertinussans{0.98}%
-    \cmcmsugost@xetex@mono@jetbrainsmono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@stixmath{1}%
-}
-
-%% ################################################################
-%%  ДИССЕРТАЦИОННЫЕ НАБОРЫ (математика и компьютерные науки, РФ)
-%%
-%%  Критерии: хорошая кириллица, математические символы, ГОСТ-совместимый
-%%  вид (строгий засечный основной шрифт), профессиональное качество.
-%%
-%%  ГОСТ Р 7.0.11-2011 не предписывает конкретный шрифт — только
-%%  читаемость и единообразие. Times New Roman как требование встречается
-%%  в институциональных стандартах, ближайший аналог — PT Serif / XITS.
-%% ################################################################
-
-%% ----------------------------------------------------------------
-%%  phdmath  — Кандидатская диссертация, математика
-%%  PT Serif + PT Sans + PT Mono + XITS Math
-%%  Обоснование: PT Serif — лучшая кириллица в TeX Live, разработана
-%%  по заказу Федерального агентства РФ, близка к Times New Roman
-%%  по метрике. XITS Math — широкое покрытие символов для математики.
-%%  Строго, нейтрально, проверено временем.
-%% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@phdmath}{%
-    \typeout{Loading PhD Math dissertation font set (PT Serif + XITS Math)}%
-    \cmcmsugost@xetex@ptserif{1}%
-    \cmcmsugost@xetex@sans@ptsans{1}%
-    \cmcmsugost@xetex@mono@ptmono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@stixmath{1}%
-}
-
-%% ----------------------------------------------------------------
-%%  phdcs  — Кандидатская диссертация, Computer Science
-%%  STIX Two Text + DejaVu Sans + JetBrains Mono + STIX Two Math
-%%  Обоснование: STIX Two — наиболее полный по символам текстовый+math
-%%  шрифт для XeLaTeX. Единая гарнитура для текста и математики.
-%%  JetBrains Mono незаменим для листингов. STIX Two — консорциум
-%%  STI Pub (AMS, APS, ASA, IOP, Springer) — стандарт для CS/физики.
-%% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@phdcs}{%
-    \typeout{Loading PhD CS dissertation font set (STIX Two + JetBrains Mono)}%
-    \cmcmsugost@xetex@stixtwo{1}%
-    \cmcmsugost@xetex@sans@dejavusans{0.95}%
-    \cmcmsugost@xetex@mono@jetbrainsmono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@stixmath{1}%
-}
-
-%% ----------------------------------------------------------------
-%%  mastermath  — Магистерская диссертация, математика
-%%  Libertinus Serif + Biolinum + DejaVu Mono + Libertinus Math
-%%  Обоснование: Libertinus — современная, активно развивающаяся
-%%  fork Libertine с улучшенной кириллицей и math. Пара Libertinus +
-%%  Libertinus Math даёт единый стиль для текста и формул.
-%%  Элегантно, профессионально, modern academic.
-%% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@mastermath}{%
-    \typeout{Loading Master Math dissertation font set (Libertinus)}%
-    \cmcmsugost@xetex@libertinus{1}%
-    \cmcmsugost@xetex@sans@libertinussans{1}%
-    \cmcmsugost@xetex@mono@dejavumono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@libertinusmath{1}%
-}
-
-%% ----------------------------------------------------------------
-%%  mastercs  — Магистерская диссертация, Computer Science
-%%  NewComputerModern + NewCM Sans + JetBrains Mono + NewCM Math
-%%  Обоснование: NewCM — обновлённый Computer Modern с полной
-%%  кириллицей, греческим и IPA. Выглядит как «правильный» LaTeX,
-%%  что ожидаемо для CS-диссертаций. JetBrains Mono — лучший
-%%  выбор для кода: читаем, с лигатурами, кириллица.
-%% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@mastercs}{%
-    \typeout{Loading Master CS dissertation font set (NewCM + JetBrains Mono)}%
-    \cmcmsugost@xetex@newcm{1}%
-    \cmcmsugost@xetex@sans@newcm{1}%
-    \cmcmsugost@xetex@mono@jetbrainsmono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@newcm{1}%
-}
-
-%% ----------------------------------------------------------------
-%%  bachmath  — Бакалаврская работа, математика
-%%  Alegreya + Alegreya Sans + DejaVu Mono + Garamond Math
-%%  Обоснование: Alegreya — гуманистическая антиква с отличной
-%%  кириллицей, high-contrast, хорошо читается в печати.
-%%  Garamond Math органично дополняет стиль. Пара Alegreya +
-%%  AlegreyaSans даёт единое семейство для текста и заголовков.
-%% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@bachmath}{%
-    \typeout{Loading Bachelor Math font set (Alegreya + Garamond Math)}%
-    \cmcmsugost@xetex@alegreya{1}%
-    \cmcmsugost@xetex@sans@alegreyasans{1}%
-    \cmcmsugost@xetex@mono@dejavumono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@garamondmath{1}%
-}
-
-%% ----------------------------------------------------------------
-%%  bachcs  — Бакалаврская работа, Computer Science
-%%  EBGaramond + Fira Sans + JetBrains Mono + LM Math
-%%  Обоснование: EB Garamond — классический Гарамон с хорошей
-%%  кириллицей, академичный вид. Fira Sans — современный sans
-%%  (Mozilla), отличная кириллица, хорошо контрастирует с Garamond.
-%%  JetBrains Mono для кода. LM Math — надёжный, универсальный.
-%% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@bachcs}{%
-    \typeout{Loading Bachelor CS font set (EBGaramond + Fira Sans + JetBrains Mono)}%
-    \cmcmsugost@xetex@ebgaramond{1}%
-    \cmcmsugost@xetex@sans@firasans{1}%
-    \cmcmsugost@xetex@mono@jetbrainsmono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@lmmath{1}%
+    \cmcmsugost@xetex@mono@newcm{1}%
+    \cmcmsugost@xetex@mono@sourcecodepro{MatchLowercase}
+    \cmcmsugost@xetex@mathfont@libertinusmath{1}
+    \setmathfont[range=\mathcal]{STIXTwoMath-Regular.otf}%
 }
 
 %% ----------------------------------------------------------------
@@ -1372,76 +1107,15 @@
 %%  На Linux: sudo apt install ttf-mscorefonts-installer
 %%  На macOS: входят в систему по умолчанию
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@officeclassic}{%
+\newcommand{\cmcmsugost@xetex@set@msoffice}{%
     \RequirePackage{unicode-math}
     \typeout{Loading Office Classic set (Times New Roman + Arial + Courier New)}%
     \typeout{NOTE: requires MS Core Fonts installed in the system}%
     \cmcmsugost@xetex@timesnewroman{1}%
     \cmcmsugost@xetex@sans@arial{1}%
     \cmcmsugost@xetex@mono@couriernew{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@lmmath{1}
+    \cmcmsugost@xetex@mathfont@stixmath{1}
 }
-
-
-
-%% ################################################################
-%%  ДИССЕРТАЦИОННЫЕ НАБОРЫ НА ОСНОВЕ BRILL
-%%
-%%  Brill — академический шрифт издательства Brill (Лейден).
-%%  Гуманистическая антиква, ~7000 глифов, полная кириллица,
-%%  политонический греческий, МФА, старостильные цифры, small caps.
-%%  Скачать бесплатно: brill.com/about/brill-fonts
-%%  Установка: cp Brill-*.ttf ~/Library/texmf/fonts/truetype/brill/
-%%             mktexlsr
-%%
-%%  Принципы подбора пар:
-%%  • Garamond Math — гуманистический math, ближайший к Brill по духу
-%%  • XITS Math — строже, академичнее, для точных наук
-%%  • Libertinus Math — современный, активно развивается
-%%  • Biolinum / Alegreya Sans — гуманистический sans, не конкурирует
-%%  • Fira Sans — нейтральный sans, не перетягивает внимание
-%%  • JetBrains Mono — для кода: лигатуры, читаемость
-%%  • DejaVu Mono — для математики: нейтральный, широкий Unicode
-%% ################################################################
-
-%% ----------------------------------------------------------------
-%%  brillphdmath  — Кандидатская диссертация, математика
-%%  Brill + Fira Sans + DejaVu Mono + Garamond Math
-%%  Строго и элегантно. Garamond Math ближе всего к характеру
-%%  Brill среди доступных math шрифтов — тот же гуманизм и контраст.
-%%  Fira Sans нейтрален, не отвлекает от содержания.
-%% ----------------------------------------------------------------
-%%  brillphdcs  — Кандидатская диссертация, Computer Science
-%%  Brill + Fira Sans + JetBrains Mono + STIX Two Math
-%%  STIX Two Math — наиболее полное покрытие символов из всех
-%%  доступных Unicode Math шрифтов. Важно для теор. информатики.
-%%  JetBrains Mono для листингов. Сочетание академично.
-%% ----------------------------------------------------------------
-%%  brillmastermath  — Магистерская диссертация, математика
-%%  Brill + Alegreya Sans + DejaVu Mono + Libertinus Math
-%%  Alegreya Sans — гуманистический sans того же класса что и Brill,
-%%  образует органичную пару. Libertinus Math современный и активно
-%%  поддерживается. Для магистерской — чуть свободнее чем PhD.
-%% ----------------------------------------------------------------
-%%  brillmastercs  — Магистерская диссертация, Computer Science
-%%  Brill + Alegreya Sans + JetBrains Mono + Garamond Math
-%%  Alegreya Sans добавляет тепло гуманистической антикве Brill.
-%%  JetBrains Mono — для кода с лигатурами. Garamond Math создаёт
-%%  единый гуманистический голос для текста и формул.
-%% ----------------------------------------------------------------
-%%  brillbachmath  — Бакалаврская работа, математика
-%%  Brill + Biolinum + DejaVu Mono + Garamond Math
-%%  Biolinum — гуманистический sans, традиционная пара к Libertine-
-%%  семейству (Brill близок по духу). Garamond Math элегантен.
-%%  Для бакалаврской — элегантно и не перегружено.
-%% ----------------------------------------------------------------
-%%  brillbachcs  — Бакалаврская работа, Computer Science
-%%  Brill + Biolinum + JetBrains Mono + XITS Math
-%%  Biolinum органично дополняет Brill. XITS Math надёжен и богат
-%%  символами — хорошо для первой серьёзной работы где нужна
-%%  уверенность в наборе формул. JetBrains Mono для кода.
-
-
 
 %% ################################################################
 
