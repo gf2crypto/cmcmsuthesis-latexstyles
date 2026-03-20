@@ -32,6 +32,50 @@
 
 \ProcessKeyvalOptions*
 
+
+
+\ifPDFTeX
+    % pdfLaTeX: сначала кодировки, потом математика
+    \RequirePackage[utf8]{inputenc}
+    \RequirePackage[T1,T2A]{fontenc}
+\else
+    % XeLaTeX / LuaLaTeX: математика ДО fontspec
+    \RequirePackage{mathtools}
+    \RequirePackage{amssymb}
+    \RequirePackage{fontspec}
+\fi
+
+% --- Язык ---
+% Опции babel можно задать до загрузки пакета через
+% \PassOptionsToPackage{...}{babel}
+\RequirePackage[russian]{babel}
+
+% --- Графика, таблицы, обтекание ---
+\RequirePackage{graphicx}
+\RequirePackage{booktabs}
+\RequirePackage{longtable}
+\RequirePackage{tabularx}
+\RequirePackage{multirow}
+\RequirePackage{makecell}
+\RequirePackage{colortbl}
+\RequirePackage{wrapfig}
+\RequirePackage{rotating}
+
+% --- Подписи ---
+\RequirePackage{caption}
+\RequirePackage{capt-of}
+\RequirePackage{chngcntr}
+
+% --- Выделение ---
+\RequirePackage[normalem]{ulem}
+
+% --- pdfLaTeX: математика ПОСЛЕ inputenc/fontenc ---
+\ifPDFTeX
+    \RequirePackage{mathtools}
+    \RequirePackage{amssymb}
+\fi
+
+
 % Интервал
 \RequirePackage{setspace}
 % Геометрия документа
