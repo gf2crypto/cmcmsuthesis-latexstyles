@@ -884,6 +884,15 @@
     \setmathfont[
         Scale   = #1
     ]{FiraMath-Regular.otf}%
+    \setmathfont{texgyredejavu-math.otf}[
+        Scale = 1.05,
+        range = {
+                \top,        % U+22A4
+                \vdots,      % U+22EE
+                \ddots,      % U+22F1
+                \setminus,   % U+2216
+            }
+    ]
 }
 
 %% ----------------------------------------------------------------
@@ -951,6 +960,26 @@
     \cmcmsugost@xetex@sans@dejavusans{1}%
     \cmcmsugost@xetex@mono@dejavumono{1}%
     \cmcmsugost@xetex@mathfont@stixmath{1}%
+}
+
+%% ----------------------------------------------------------------
+%%  roboto  — Roboto (main) + Roboto Condensed + JetBrains Mono + Fira Math
+%%  Modern technical sans-serif document
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugost@xetex@set@roboto}{%
+    \typeout{Loading Roboto-style font set (Tinos+Fira Sans)}%
+    \cmcmsugost@xetex@tinos{1}%  %% was Roboto (fonts-extra)
+    \cmcmsugost@xetex@sans@firasans{1}%
+    \cmcmsugost@xetex@mono@dejavumono{MatchLowercase}%
+    \cmcmsugost@xetex@mathfont@firamath{1}%
+}
+
+\newcommand{\cmcmsugost@xetex@set@fira}{%
+    \typeout{Loading -irastyle font set (Fira Sans + JetBrains)}%
+    \cmcmsugost@xetex@sans@firasans{1}%
+    \renewcommand{\familydefault}{\sfdefault}% set sans as default
+    \cmcmsugost@xetex@mono@jetbrainsmono{MatchLowercase}%
+    \cmcmsugost@xetex@mathfont@firamath{1}%
 }
 
 
