@@ -11,11 +11,11 @@
 #+LATEX_HEADER_EXTRA: \usepackage[
 #+LATEX_HEADER_EXTRA:   font=tempora, %xcharter, %dejavu, %libertinus, %heuristica, %paratype, %heros, % tempora, % default,%
 #+LATEX_HEADER_EXTRA:   fontscale=1,%
-#+LATEX_HEADER_EXTRA:   mathfont="",%
+#+LATEX_HEADER_EXTRA:   mathfont=,%
 #+LATEX_HEADER_EXTRA:   mathfontscale=1,%
-#+LATEX_HEADER_EXTRA:   sans="",%
+#+LATEX_HEADER_EXTRA:   sans=,%
 #+LATEX_HEADER_EXTRA:   sansscale=1,%
-#+LATEX_HEADER_EXTRA:   mono="",%
+#+LATEX_HEADER_EXTRA:   mono=,%
 #+LATEX_HEADER_EXTRA:   monoscale=1%
 #+LATEX_HEADER_EXTRA: ]{cmcmsugost-fontselector}
 
@@ -37,8 +37,10 @@
 #+LATEX_HEADER_EXTRA:     listings=true,
 #+LATEX_HEADER_EXTRA: % off/2e алгоритмы (пакет algorithm2e)
 #+LATEX_HEADER_EXTRA:     alg=off,
-#+LATEX_HEADER_EXTRA: % false/true библиография средствами biber, поддержка ГОСТ, рекомендуется использовать, но для финального текста, так как возможна медленная компиляция при больших списках литературы
-#+LATEX_HEADER_EXTRA:     biber=false
+#+LATEX_HEADER_EXTRA: % true/false библиография средствами biber, поддержка ГОСТ, рекомендуется использовать, но для финального текста, так как возможна медленная компиляция при больших списках литературы
+#+LATEX_HEADER_EXTRA:     biber=true,
+#+LATEX_HEADER_EXTRA: % true/false дополнительные команды для оформления математики (\vec, \matr и т.п.)
+#+LATEX_HEADER_EXTRA:     extramath=true
 #+LATEX_HEADER_EXTRA: ]{cmcmsugost-extra}
 
 #+LATEX_HEADER_EXTRA: % Для работы BIBER
