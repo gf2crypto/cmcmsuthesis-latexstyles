@@ -96,6 +96,23 @@
     \cmcmsugost@tex@mathfont@mathdesign%
 }
 
+\newcommand{\cmcmsugost@tex@set@old}{%
+    \cmcmsugost@tex@set@default%
+}
+
+\newcommand{\cmcmsugost@tex@set@modern}{%
+    \cmcmsugost@tex@set@tempora%
+}
+
+\newcommand{\cmcmsugost@tex@set@libert}{%
+    \cmcmsugost@tex@set@libertinus%
+}
+
+\newcommand{\cmcmsugost@tex@set@fashion}{%
+    \cmcmsugost@tex@set@xcharter%
+}
+
+
 
 %% ================================================================
 %%     Text
@@ -1060,7 +1077,21 @@
     \cmcmsugost@xetex@mathfont@newcm{1}%
 }
 
+\newcommand{\cmcmsugost@xetex@set@old}{%
+    \cmcmsugost@xetex@set@default%
+}
 
+\newcommand{\cmcmsugost@xetex@set@modern}{%
+    \cmcmsugost@xetex@set@stix%
+}
+
+\newcommand{\cmcmsugost@xetex@set@libert}{%
+    \cmcmsugost@xetex@set@libertinus%
+}
+
+\newcommand{\cmcmsugost@xetex@set@fashion}{%
+    \cmcmsugost@xetex@set@ebgaramond%
+}
 %% ################################################################
 %%
 %%  Brill — академический шрифт издательства Brill (Лейден).
