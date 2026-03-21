@@ -1,6 +1,6 @@
 % cmcmsugost-extra.sty
 \NeedsTeXFormat{LaTeX2e}[2020-10-01]
-\ProvidesPackage{cmcmsugost-extra}[2026/03/10 v0.1 extra packages]
+\ProvidesPackage{cmcmsugost-extra}[2026/03/21 v0.2 extra packages]
 
 
 \makeatletter
@@ -10,33 +10,76 @@
 \RequirePackage{etoolbox}
 
 \SetupKeyvalOptions{
-    family = cmcmsugost,
-    prefix = cmcmsugost@
+    family = cmcmsugostextra,
+    prefix = cmcmsugostextra@
 }
 
 \DeclareBoolOption[true]{thm}
-\DeclareVoidOption{thmon}{\cmcmsugost@thmtrue}
-\DeclareVoidOption{thmoff}{\cmcmsugost@thmfalse}
+\DeclareVoidOption{thmon}{\cmcmsugostextra@thmtrue}
+\DeclareVoidOption{thmoff}{\cmcmsugostextra@thmfalse}
 
 %%% alg=off (no algorithms)
 %%% alg=2e -> loading algorithm2e
 \DeclareStringOption[off]{alg}[2e]
-\def\cmcmsugost@algoff{off}
-\def\cmcmsugost@algtwoe{2e}
+\def\cmcmsugostextra@algoff{off}
+\def\cmcmsugostextra@algtwoe{2e}
 
 \DeclareBoolOption[true]{listings}
-\DeclareVoidOption{listingson}{\cmcmsugost@listingstrue}
-\DeclareVoidOption{listingsoff}{\cmcmsugost@listingsfalse}
+\DeclareVoidOption{listingson}{\cmcmsugostextra@listingstrue}
+\DeclareVoidOption{listingsoff}{\cmcmsugostextra@listingsfalse}
 
 \DeclareBoolOption[true]{extramath}
-\DeclareVoidOption{extramathon}{\cmcmsugost@extramathtrue}
-\DeclareVoidOption{extramathoff}{\cmcmsugost@extramathfalse}
+\DeclareVoidOption{extramathon}{\cmcmsugostextra@extramathtrue}
+\DeclareVoidOption{extramathoff}{\cmcmsugostextra@extramathfalse}
 
 \DeclareBoolOption[true]{biber}
-\DeclareVoidOption{biberon}{\cmcmsugost@bibertrue}
-\DeclareVoidOption{biberoff}{\cmcmsugost@biberfalse}
+\DeclareVoidOption{biberon}{\cmcmsugostextra@bibertrue}
+\DeclareVoidOption{biberoff}{\cmcmsugostextra@biberfalse}
+
+%%% rumathop — русская традиция математических операторов
+%%% (\tan→tg, \le→\leqslant и т.п.)
+%%% По умолчанию false; автоматически включается если в fontselector
+%%% установлен rumath=true.
+\DeclareBoolOption[false]{rumathop}
+\DeclareVoidOption{rumathopon}{\cmcmsugostextra@rumathoptrue}
+\DeclareVoidOption{rumathopoff}{\cmcmsugostextra@rumathopfalse}
 
 \ProcessKeyvalOptions*
+
+% ================================================================
+% Setup-команда
+% ================================================================
+\RequirePackage{keyval}
+\define@key{cmcmsugostextrasetup}{thm}[true]{%
+    \ifstrequal{#1}{true}{\cmcmsugostextra@thmtrue}{\cmcmsugostextra@thmfalse}%
+}
+\define@key{cmcmsugostextrasetup}{listings}[true]{%
+    \ifstrequal{#1}{true}{\cmcmsugostextra@listingstrue}{\cmcmsugostextra@listingsfalse}%
+}
+\define@key{cmcmsugostextrasetup}{extramath}[true]{%
+    \ifstrequal{#1}{true}{\cmcmsugostextra@extramathtrue}{\cmcmsugostextra@extramathfalse}%
+}
+\define@key{cmcmsugostextrasetup}{biber}[true]{%
+    \ifstrequal{#1}{true}{\cmcmsugostextra@bibertrue}{\cmcmsugostextra@biberfalse}%
+}
+\define@key{cmcmsugostextrasetup}{rumathop}[true]{%
+    \ifstrequal{#1}{true}{\cmcmsugostextra@rumathoptrue}{\cmcmsugostextra@rumathopfalse}%
+}
+\define@key{cmcmsugostextrasetup}{alg}[2e]{%
+    \def\cmcmsugostextra@alg{#1}%
+}
+\newcommand{\cmcmsugostextrasetup}[1]{%
+    \setkeys{cmcmsugostextrasetup}{#1}%
+}
+
+% ================================================================
+% Авто-активация rumathop по флагу rumath из fontselector
+% ================================================================
+\@ifpackageloaded{cmcmsugost-fontselector}{%
+    \ifcmcmsugostfont@rumath%
+        \cmcmsugostextra@rumathoptrue%
+    \fi
+}{}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Translations
@@ -71,7 +114,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\newcommand{\cmcmsugost@SetTheorems}{
+\newcommand{\cmcmsugostextra@SetTheorems}{
     \RequirePackage{amsthm}
     \@ifundefined{c@chapter}
     {%
@@ -106,7 +149,7 @@
     }
 }
 
-\newcommand{\cmcmsugost@SetAlgorithmE}{
+\newcommand{\cmcmsugostextra@SetAlgorithmE}{
     \RequirePackage[%
         linesnumbered,
         titlenumbered
@@ -124,10 +167,10 @@
         \translate{algorithm}}{\translate{List of algorithms}}
     \SetKwComment{Comment}{// }{}
     \SetAlgoNlRelativeSize{0} % номера строк того же размера
-    \newcommand{\cmcmsugost@AlgoNlSty}[1]{%
+    \newcommand{\cmcmsugostextra@AlgoNlSty}[1]{%
         \fontsize{12pt}{14pt}\selectfont\color{AlgoNumbers}##1%
     }
-    \SetNlSty{cmcmsugost@AlgoNlSty}{}{}%
+    \SetNlSty{cmcmsugostextra@AlgoNlSty}{}{}%
     \SetAlgoCaptionLayout{centerline}
     \SetAlgoInsideSkip{smallskip}
     \SetAlgoSkip{smallskip}
@@ -136,19 +179,18 @@
     \SetAlCapFnt{\fontsize{12pt}{14pt}\selectfont}
     \SetAlCapNameFnt{\fontsize{12pt}{14pt}\selectfont}
 
-    \newcommand{\cmcmsugost@AlgoTextSty}[1]{%
+    \newcommand{\cmcmsugostextra@AlgoTextSty}[1]{%
         \fontsize{12pt}{14pt}\selectfont\ttfamily\color{AlgoText}##1%
     }
-    \SetAlFnt{\cmcmsugost@AlgoTextSty}
+    \SetAlFnt{\cmcmsugostextra@AlgoTextSty}
 
-    \newcommand{\cmcmsugost@AlgoCommentStyle}[1]{%
+    \newcommand{\cmcmsugostextra@AlgoCommentStyle}[1]{%
         \ttfamily\color{AlgoComment}##1%
     }%
-    \SetCommentSty{cmcmsugost@AlgoCommentStyle}%
-    \SetArgSty{cmcmsugost@AlgoTextSty}
+    \SetCommentSty{cmcmsugostextra@AlgoCommentStyle}%
+    \SetArgSty{cmcmsugostextra@AlgoTextSty}
     \SetAlCapNameFnt{\normalfont}
     \SetAlCapFnt{\normalfont}
-    % \renewcommand{\@algocf@capt@plain}{above} % caption сверху для plain-стиля
     \SetAlgoCaptionSeparator{~---\ }
     \RequirePackage{chngcntr}
     \@ifundefined{c@chapter}{%
@@ -160,7 +202,7 @@
     }
 }
 
-\newcommand{\cmcmsugost@SetListings}{
+\newcommand{\cmcmsugostextra@SetListings}{
 \RequirePackage{listings}
 \RequirePackage{calc}
 % Ширина текста минус ширина надписи 999
@@ -168,9 +210,7 @@
 \newlength{\lmarg}
 \setlength{\lmarg}{\widthof{999}}   % ширина надписи 999
 \setlength{\twless}{\textwidth-\lmarg}
-\RequirePackage{listings}
 \RequirePackage{xcolor}
-\RequirePackage{color}
 % --- Нейтральные серые тона для печати и экрана ---
 \definecolor{ListingRule}{gray}{0.35}      % рамка / левая линия
 \definecolor{ListingNumbers}{gray}{0.45}   % номера строк
@@ -320,14 +360,14 @@ literate={Ö}{{\"O}}1
     morestring=[b]"
 }
 
-\def\cmcmsugost@KeywordStylePseudocode{%
+\def\cmcmsugostextra@KeywordStylePseudocode{%
     \normalfont\fontsize{12pt}{14pt}\selectfont\bfseries\color{black}%
 }
 
 \lstdefinestyle{pseudocode}{
 language=pseudocode,
 style=blackandwhite,
-keywordstyle=\cmcmsugost@KeywordStylePseudocode,
+keywordstyle=\cmcmsugostextra@KeywordStylePseudocode,
 literate={Ö}{{\"O}}1
 {Ä}{{\"A}}1
 {Ü}{{\"U}}1
@@ -414,10 +454,10 @@ escapeinside={(*@}{@*)},
 mathescape = true
 }%
 \newcommand{\lstInput}{%
-    \cmcmsugost@KeywordStylePseudocode\translate{Input}%
+    \cmcmsugostextra@KeywordStylePseudocode\translate{Input}%
 }
 \newcommand{\lstOutput}{%
-    \cmcmsugost@KeywordStylePseudocode\translate{Output}%
+    \cmcmsugostextra@KeywordStylePseudocode\translate{Output}%
 }
 \renewcommand{\lstlistingname}{\translate{Listing}}
 \RequirePackage{caption}
@@ -442,7 +482,7 @@ mathescape = true
         \renewcommand{\thelstlisting}{\thechapter.\arabic{lstlisting}}
     }
 }
-\ifx\cmcmsugost@alg\cmcmsugost@algtwoe%
+\ifx\cmcmsugostextra@alg\cmcmsugostextra@algtwoe%
     \lstnewenvironment{lstpseudocode}[1][]%
     {%
         % listings внутри этого окружения будет считать себя "алгоритмом"
@@ -464,7 +504,7 @@ mathescape = true
 \fi
 }%
 
-\newcommand{\cmcmsugost@SetBibLaTeX}{
+\newcommand{\cmcmsugostextra@SetBibLaTeX}{
     \RequirePackage{csquotes}
     \RequirePackage[%
         backend=biber,
@@ -546,83 +586,36 @@ mathescape = true
     % # Set higher penalty for breaking in number, dates and pages ranges
     \setcounter{abbrvpenalty}{10000} % default is \hyphenpenalty which is 12
     % # Set higher penalty for breaking in names
-    \setcounter{highnamepenalty}{10000} % If you prefer the traditional BibTeX behavior (no linebreaks at highnamepenalty breakpoints), set it to ‘infinite’ (10 000 or higher).
+    \setcounter{highnamepenalty}{10000}
     \setcounter{lownamepenalty}{10000}
 }
 
-\newcommand{\cmcmsugost@ProvideSymbf}{
-    \@ifundefined{symbf}{
-        \newcommand{\symbf}[1]{%
-            \ensuremath{\boldsymbol{##1}}}
-    }{}
-    \@ifundefined{symbfit}{
-        \newcommand{\symbfit}[1]{%
-            \ensuremath{\boldsymbol{##1}}}
-    }{}
-    \@ifundefined{symup}{
-        \ifPDFTeX%
-            %% При использовании UPGREEK и NEWTXMATH
-            %% портятся большие греческие буквы,
-            %% поэтому UPGREEK нужно грузить раньше.
-            %% Мы не контролируем это, поэтому просто чистим определения
-            \@ifpackageloaded{upgreek}{%
-                % уже загружен — ничего не делаем
-            }{%
-                \@ifpackageloaded{newtxmath}{%
-                    % newtxmath уже загружен ДО нас —
-                    \let\cmcmsugost@Gamma\Gamma
-                    \let\cmcmsugost@Delta\Delta
-                    \let\cmcmsugost@Theta\Theta
-                    \let\cmcmsugost@Lambda\Lambda
-                    \let\cmcmsugost@Xi\Xi
-                    \let\cmcmsugost@Pi\Pi
-                    \let\cmcmsugost@Sigma\Sigma
-                    \let\cmcmsugost@Upsilon\Upsilon
-                    \let\cmcmsugost@Phi\Phi
-                    \let\cmcmsugost@Psi\Psi
-                    \let\cmcmsugost@Omega\Omega
-                    % загружаем upgreek
-                    \RequirePackage{upgreek}%
-                    % и восстанавливаем греческие:
-                    \let\Gamma\cmcmsugost@Gamma%
-                    \let\Delta\cmcmsugost@Delta%
-                    \let\Theta\cmcmsugost@Theta%
-                    \let\Lambda\cmcmsugost@Lambda%
-                    \let\Xi\cmcmsugost@Xi%
-                    \let\Pi\cmcmsugost@Pi%
-                    \let\Sigma\cmcmsugost@Sigma%
-                    \let\Upsilon\cmcmsugost@Upsilon%
-                    \let\Phi\cmcmsugost@Phi%
-                    \let\Psi\cmcmsugost@Psi%
-                    \let\Omega\cmcmsugost@Omega%
-                }{%
-                    % newtxmath ещё не загружен —
-                    % загружаем upgreek сейчас, newtxmath сам с ним согласуется:
-                    \RequirePackage{upgreek}%
-                }%
-            }%
-        \fi
-        \newcommand{\symup}[1]{%
-            \begingroup
-            \edef\symup@name{\expandafter\@gobble\string##1}% alpha from \alpha
-            \ifcsname up\symup@name\endcsname
-                \csname up\symup@name\endcsname
-            \else
-                \mathrm{##1}%
-            \fi
-            \endgroup
-        }
-    }{}
-    \@ifundefined{symbfup}{
-        \newcommand{\symbfup}[1]{%
-            \ensuremath{\boldsymbol{\symup{##1}}}}
-    }{}
+% ================================================================
+% Русская традиция начертания математических операторов
+% (перенесено из fontselector — это мат. операторы, не шрифты)
+% ================================================================
+\newcommand{\cmcmsugostextra@mathruop@apply}{%
+    \AtBeginDocument{%
+        %%% Русская традиция начертания математических функций
+        \renewcommand{\tan}{\operatorname{tg}}%
+        \renewcommand{\cot}{\operatorname{ctg}}%
+        \renewcommand{\csc}{\operatorname{cosec}}%
+        \let\le\leqslant%
+        \let\leq\leqslant%
+        \let\ge\geqslant%
+        \let\geq\geqslant%
+        \let\phi\varphi%
+        \let\epsilon\varepsilon%
+        \let\kappa\varkappa%
+        \let\emptyset\varnothing%
+    }%
 }
 
-\newcommand{\cmcmsugost@SetExtraMath}{
-    \AtEndPreamble{%
-        \cmcmsugost@ProvideSymbf%
-    }
+% ================================================================
+% Extra Math: пользовательские команды для набора
+% (symbf/symup/symbfup определены в fontselector)
+% ================================================================
+\newcommand{\cmcmsugostextra@SetExtraMath}{%
     \newcommand{\vect}[1]{\symbfit{##1}}
     \newcommand{\matr}[1]{\symbfit{##1}}
     \newcommand{\code}[1]{\mathcal{##1}}
@@ -636,40 +629,34 @@ mathescape = true
             \mbox{\ensuremath{\displaystyle ##2}}}}
 }
 
+% ================================================================
+% Применение модулей
+% ================================================================
 
-% \providecommand*\ellstring{ℓ}
-% \@ifpackageloaded{hyperref}{
-%     \pdfstringdefDisableCommands{%
-%         \def\ell{ℓ}%
-%     }
-% }{
-%     \AtBeginDocument{%
-%         \@ifpackageloaded{hyperref}{
-%             \pdfstringdefDisableCommands{%
-%                 \def\ell{ℓ}%
-%             }
-%         }{}
-%     }
-% }
-
-\ifcmcmsugost@thm%
-    \cmcmsugost@SetTheorems%
+\ifcmcmsugostextra@thm%
+    \cmcmsugostextra@SetTheorems%
 \fi
 
-\ifcmcmsugost@listings%
-    \cmcmsugost@SetListings%
+\ifcmcmsugostextra@listings%
+    \cmcmsugostextra@SetListings%
 \fi
 
-\ifcmcmsugost@extramath%
-    \cmcmsugost@SetExtraMath%
+\ifcmcmsugostextra@extramath%
+    \cmcmsugostextra@SetExtraMath%
 \fi
 
-\ifcmcmsugost@biber%
-    \cmcmsugost@SetBibLaTeX%
+\ifcmcmsugostextra@biber%
+    \cmcmsugostextra@SetBibLaTeX%
 \fi
 
-\ifx\cmcmsugost@alg\cmcmsugost@algtwoe%
-    \cmcmsugost@SetAlgorithmE%
+\ifx\cmcmsugostextra@alg\cmcmsugostextra@algtwoe%
+    \cmcmsugostextra@SetAlgorithmE%
+\fi
+
+% Русские математические операторы + rmathbr
+\ifcmcmsugostextra@rumathop%
+    \RequirePackage{rmathbr}%
+    \cmcmsugostextra@mathruop@apply%
 \fi
 
 \makeatother

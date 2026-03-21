@@ -1,6 +1,6 @@
 % cmcmsu-gost.sty
 \NeedsTeXFormat{LaTeX2e}[2020-10-01]
-\ProvidesPackage{cmcmsu-gost}[2026/03/10 v0.1 Core GOST-like formatting]
+\ProvidesPackage{cmcmsu-gost}[2026/03/21 v0.3 Core GOST-like formatting]
 
 \makeatletter
 
@@ -17,38 +17,68 @@
 \DeclareVoidOption{tocpagewordon}{\cmcmsugost@tocpagewordtrue}
 \DeclareVoidOption{tocpagewordoff}{\cmcmsugost@tocpagewordfalse}
 
-\DeclareBoolOption[true]{rumath}
-\DeclareVoidOption{rumathon}{\cmcmsugost@rumathtrue}
-\DeclareVoidOption{rumathoff}{\cmcmsugost@rumathfalse}
-
-\DeclareBoolOption[false]{rumathop}
-\DeclareVoidOption{rumathopon}{\cmcmsugost@rumathoptrue}
-\DeclareVoidOption{rumathopoff}{\cmcmsugost@rumathopfalse}
-
-\DeclareBoolOption[false]{upgreek}
-\DeclareVoidOption{upgreekon}{\cmcmsugost@upgreektrue}
-\DeclareVoidOption{upgreekoff}{\cmcmsugost@upgreekfalse}
-
-
 \ProcessKeyvalOptions*
 
+% ================================================================
+% Setup-команда (работает только в преамбуле)
+% ================================================================
+\newif\ifcmcmsugost@indocument
+\AtBeginDocument{\cmcmsugost@indocumenttrue}
 
+\RequirePackage{keyval}
+\define@key{cmcmsugostsetup}{tocpageword}[true]{%
+    \ifstrequal{#1}{true}{\cmcmsugost@tocpagewordtrue}{\cmcmsugost@tocpagewordfalse}%
+}
 
-\ifPDFTeX
-    % pdfLaTeX: сначала кодировки, потом математика
-    \RequirePackage[utf8]{inputenc}
-    \RequirePackage[T1,T2A]{fontenc}
+\newcommand{\cmcmsugostsetup}[1]{%
+    \ifcmcmsugost@indocument
+        \PackageError{cmcmsu-gost}{%
+            \string\cmcmsugostsetup\space can only be used in the preamble%
+        }{Move \string\cmcmsugostsetup\space before \string\begin{document}.}%
 \else
-    % XeLaTeX / LuaLaTeX: математика ДО fontspec
-    \RequirePackage{mathtools}
-    \RequirePackage{amssymb}
-    \RequirePackage{fontspec}
+\setkeys{cmcmsugostsetup}{#1}%
 \fi
+}
 
-% --- Язык ---
-% Опции babel можно задать до загрузки пакета через
-% \PassOptionsToPackage{...}{babel}
-\RequirePackage[russian]{babel}
+% ================================================================
+% Загрузка пакетов
+% ================================================================
+%
+% Кодировки (inputenc/fontenc/fontspec) и математические базовые
+% пакеты (mathtools/amssymb) перенесены в cmcmsugost-fontselector.
+% Здесь — только мягкий fallback: если к моменту \AtEndPreamble
+% ни fontselector, ни пользователь не загрузили кодировки/язык,
+% gost подгружает дефолты самостоятельно.
+% ================================================================
+
+% --- Мягкий fallback для кодировок, математики и языка ---
+\AtEndPreamble{%
+    \ifPDFTeX
+        \@ifpackageloaded{fontenc}{}{%
+            \RequirePackage[utf8]{inputenc}%
+            \RequirePackage[T1,T2A]{fontenc}%
+        }%
+        \@ifpackageloaded{mathtools}{}{%
+            \RequirePackage{mathtools}%
+            \RequirePackage{amssymb}%
+        }%
+    \else
+        \@ifpackageloaded{fontspec}{}{%
+            \RequirePackage{mathtools}%
+            \RequirePackage{amssymb}%
+            \RequirePackage{fontspec}%
+        }%
+        \@ifpackageloaded{mathtools}{}{%
+            \RequirePackage{mathtools}%
+            \RequirePackage{amssymb}%
+        }%
+    \fi
+    \@ifpackageloaded{babel}{}{%
+        \@ifpackageloaded{polyglossia}{}{%
+            \RequirePackage[russian]{babel}%
+        }%
+    }%
+}
 
 % --- Графика, таблицы, обтекание ---
 \RequirePackage{graphicx}
@@ -61,19 +91,13 @@
 \RequirePackage{wrapfig}
 \RequirePackage{rotating}
 
-% --- Подписи ---
+% --- Подписи (однократная загрузка) ---
 \RequirePackage{caption}
 \RequirePackage{capt-of}
 \RequirePackage{chngcntr}
 
 % --- Выделение ---
 \RequirePackage[normalem]{ulem}
-
-% --- pdfLaTeX: математика ПОСЛЕ inputenc/fontenc ---
-\ifPDFTeX
-    \RequirePackage{mathtools}
-    \RequirePackage{amssymb}
-\fi
 
 
 % Интервал
@@ -105,6 +129,12 @@
     \renewcommand{\headrulewidth}{0pt}%
     \fancyheadoffset{3cm}%
     \setlength{\headheight}{\baselineskip}%
+    % Стиль plain (используется \maketitle, \chapter) — без номера.
+    % Страницы TOC используют fancy и покажут номер как обычно.
+    \fancypagestyle{plain}{%
+        \fancyhf{}%
+        \renewcommand{\headrulewidth}{0pt}%
+    }%
 }
 
 % Есть ли chapter?
@@ -137,45 +167,47 @@
     \titlespacing*{\subsubsection}{0pt}{\cmcmsugost@titleskip}{\cmcmsugost@titleskip}
 }
 
-\newcommand{\cmcmsugost@SetTitleSty}{%
-    \AtEndPreamble{%
-        \setlength{\cmcmsugost@titleskip}{3\baselineskip}%
-        \ifcmcmsugost@haschapter
-            \titleformat{\chapter}
-            {\cmcmsugost@sectionfont}
-            {\chaptertitlename\space\thechapter.\space}
-            {0pt}{}[]
-            \titlespacing*{\chapter}{0pt}{-\headheight}{\cmcmsugost@titleskip}
-        \else
-        \fi
-        \cmcmsugost@SetTitleSectionSty%
-    }%
+% Заголовки и «Глава» — вызываются из единого \AtEndPreamble
+\newcommand{\cmcmsugost@SetTitleSty@deferred}{%
+    \setlength{\cmcmsugost@titleskip}{3\baselineskip}%
+    \ifcmcmsugost@haschapter
+        \titleformat{\chapter}
+        {\cmcmsugost@sectionfont}
+        {\chaptertitlename\space\thechapter.\space}
+        {0pt}{}[]
+        \titlespacing*{\chapter}{0pt}{-\headheight}{\cmcmsugost@titleskip}
+    \else
+    \fi
+    \cmcmsugost@SetTitleSectionSty%
 }
 
 % Оглавление
 \RequirePackage[titles]{tocloft}
-\newcommand{\cmcmsugost@SetToCSty}{%
-    \@ifundefined{captionsrussian}{}{%
-        \addto\captionsrussian{%
-            \renewcommand{\contentsname}{Оглавление}%
-        }%
-    }%
 
-    \ifcmcmsugost@haschapter
-        \renewcommand{\cftchappresnum}{Глава\ }
-        \renewcommand{\cftchapaftersnum}{.\space}
-        \settowidth{\cftchapnumwidth}{Глава 10.\ }
-        \renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}%
-        \renewcommand{\cftchappagefont}{\normalfont}%
-        \renewcommand{\cftchapaftersnum}{.\space}%
-    \fi
-
+% Настройки ToC, НЕ зависящие от babel
+\newcommand{\cmcmsugost@SetToCSty@base}{%
     \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}%
     \renewcommand{\@tocrmarg}{2.55em plus 1fill}%
     \renewcommand{\cftsecpagefont}{\normalfont}%
     \renewcommand{\cftsecaftersnum}{.\space}%
     \renewcommand{\cftsubsecaftersnum}{.\space}%
     \renewcommand{\cftsubsubsecaftersnum}{.\space}%
+}
+
+% Настройки ToC, ЗАВИСЯЩИЕ от babel — вызываются из \AtEndPreamble
+\newcommand{\cmcmsugost@SetToCSty@deferred}{%
+    \@ifundefined{captionsrussian}{}{%
+        \addto\captionsrussian{%
+            \renewcommand{\contentsname}{Оглавление}%
+        }%
+    }%
+    \ifcmcmsugost@haschapter
+        \renewcommand{\cftchappresnum}{Глава\ }
+        \renewcommand{\cftchapaftersnum}{.\space}
+        \settowidth{\cftchapnumwidth}{Глава 10.\ }
+        \renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}%
+        \renewcommand{\cftchappagefont}{\normalfont}%
+    \fi
 }
 
 % Русские буквы для нумерации
@@ -207,6 +239,21 @@
                 ц\or ш\or щ\or э\or ю\or я%
             \else\@ctrerr\fi}%
     \fi
+    \AtEndPreamble{%
+        \@ifpackageloaded{hyperref}{%
+            \pdfstringdefDisableCommands{%
+                \def\CYRA{А}\def\CYRB{Б}\def\CYRV{В}%
+                \def\CYRG{Г}\def\CYRD{Д}\def\CYRE{Е}%
+                \def\CYRZH{Ж}\def\CYRI{И}\def\CYRK{К}%
+                \def\CYRL{Л}\def\CYRM{М}\def\CYRN{Н}%
+                \def\CYRP{П}\def\CYRR{Р}\def\CYRS{С}%
+                \def\CYRT{Т}\def\CYRU{У}\def\CYRF{Ф}%
+                \def\CYRH{Х}\def\CYRC{Ц}\def\CYRSH{Ш}%
+                \def\CYRSHCH{Щ}\def\CYREREV{Э}%
+                \def\CYRYU{Ю}\def\CYRYA{Я}%
+            }%
+        }{}%
+    }
 }
 
 % Приложения
@@ -240,9 +287,9 @@
 
 % "Стр." над номерами страниц в оглавлении
 \RequirePackage{afterpage}
-\newcommand{\cmcmsugost@ToCAddPageWord}{%
-    \newif\ifendTOC
-    \newcommand*{\tocheader}{%
+\newif\ifendTOC
+\newcommand*{\tocheader}{%
+    \ifcmcmsugost@tocpageword
         \ifendTOC\else
             \hbox to \linewidth{\hfill Стр.}\par
             \ifnumless{\value{page}}{3}{}{%
@@ -250,30 +297,27 @@
             }%
             \afterpage{\tocheader}%
         \fi
-    }%
-    \let\cmcmsugost@tableofcontentsORIG\tableofcontents
-    \renewcommand{\tableofcontents}{%
-        \cmcmsugost@tableofcontentsORIG
+    \fi
+}
+\let\cmcmsugost@tableofcontentsORIG\tableofcontents
+\renewcommand{\tableofcontents}{%
+    \cmcmsugost@tableofcontentsORIG
+    \ifcmcmsugost@tocpageword
         \addtocontents{toc}{\protect\tocheader}%
-        \endTOCtrue
-        \newpage
-    }%
+    \fi
+    \endTOCtrue
+    \newpage
 }
 
 % Списки
 \RequirePackage{enumitem}
-\newcommand{\cmcmsugost@SetListSty}{%
+
+% Настройки списков, НЕ зависящие от babel
+\newcommand{\cmcmsugost@SetListSty@base}{%
     \renewcommand{\labelitemi}{\normalfont\bfseries --}%
     \renewcommand{\labelitemii}{\normalfont\bfseries --}%
     \renewcommand{\labelitemiii}{\normalfont\bfseries --}%
     \renewcommand{\labelitemiv}{\normalfont\bfseries --}%
-
-    \AddEnumerateCounter{\asbuk}{\russian@alph}{щ}%
-    \renewcommand{\theenumii}{\asbuk{enumii}}%
-    \renewcommand{\labelenumii}{\theenumii)}%
-    \renewcommand{\theenumiii}{\arabic{enumiii}}%
-    \renewcommand{\labelenumiii}{\theenumiii)}%
-
     \setlist{%
         nosep,
         labelindent=\parindent,
@@ -281,10 +325,18 @@
     }%
 }
 
-% Подписи
-\RequirePackage{caption}
-\RequirePackage{chngcntr}
+% Настройки списков, ЗАВИСЯЩИЕ от babel — вызываются из \AtEndPreamble
+\newcommand{\cmcmsugost@SetListSty@deferred}{%
+    \@ifundefined{russian@alph}{}{%
+        \AddEnumerateCounter{\asbuk}{\russian@alph}{щ}%
+        \renewcommand{\theenumii}{\asbuk{enumii}}%
+        \renewcommand{\labelenumii}{\theenumii)}%
+        \renewcommand{\theenumiii}{\arabic{enumiii}}%
+        \renewcommand{\labelenumiii}{\theenumiii)}%
+    }%
+}
 
+% Подписи
 \newcommand{\cmcmsugost@SetFigureSty}{%
     \DeclareCaptionLabelSeparator{figsep}{~---\ }%
     \captionsetup[figure]{%
@@ -299,7 +351,11 @@
     }%
 
     \DeclareCaptionSubType{figure}%
-    \renewcommand{\thesubfigure}{\asbuk{subfigure}}%
+    \@ifundefined{russian@alph}{%
+        % babel ещё не загружен — отложим переопределение субфигур
+    }{%
+        \renewcommand{\thesubfigure}{\asbuk{subfigure}}%
+    }%
     \DeclareCaptionFont{norm}{\fontsize{14pt}{16pt}\selectfont}%
     \captionsetup[subfigure]{%
         labelfont=norm,
@@ -347,10 +403,12 @@
         \setlength{\abovedisplayshortskip}{4pt plus 1pt minus 1pt}
         \setlength{\belowdisplayshortskip}{4pt plus 1pt minus 1pt}
         \@ifundefined{subequations}{}{%
-            \patchcmd{\subequations}
-            {\def\theequation{\theparentequation\alph{equation}}}
-            {\def\theequation{\theparentequation\asbuk{equation}}}
-            {}{}%
+            \@ifundefined{asbuk}{}{%
+                \patchcmd{\subequations}
+                {\def\theequation{\theparentequation\alph{equation}}}
+                {\def\theequation{\theparentequation\asbuk{equation}}}
+                {}{}%
+            }%
         }%
     }%
     \@ifundefined{c@chapter}{%
@@ -360,105 +418,22 @@
     }
 }
 
-
-
-% ------------------------------------------------
-% Upright Greek by default in math mode
-% Works with XeLaTeX/LuaLaTeX and pdfLaTeX
-% ------------------------------------------------
-\newcommand{\cmcmsugost@upgreek}{
-    \ifPDFTeX%
-        \@ifundefined{upalpha}{\RequirePackage{upgreek}}{}
-        \AtEndPreamble{
-            \let\alpha\upalpha%
-            \let\beta\upbeta%
-            \let\gamma\upgamma%
-            \let\delta\updelta%
-            \let\epsilon\upepsilon%
-            \let\varepsilon\upvarepsilon%
-            \let\theta\uptheta%
-            \let\vartheta\upvartheta%
-            \let\lambda\uplambda%
-            \let\mu\upmu%
-            \let\pi\uppi%
-            \let\varpi\upvarpi%
-            \let\rho\uprho%
-            \let\varrho\upvarrho%
-            \let\sigma\upsigma%
-            \let\varsigma\upvarsigma%
-            \let\phi\upphi%
-            \let\varphi\upvarphi%
-            \let\omega\upomega%
-            \let\Gamma\Upgamma%
-            \let\Delta\Updelta%
-            \let\Theta\Uptheta%
-            \let\Lambda\Uplambda%
-            \let\Xi\Upxi%
-            \let\Pi\Uppi%
-            \let\Sigma\Upsigma%
-            \let\Upsilon\Upupsilon%
-            \let\Phi\Upphi%
-            \let\Psi\Uppsi%
-            \let\Omega\Upomega%
-        }
-    \else
-        \RequirePackage{unicode-math}
-        \AtEndPreamble{\unimathsetup{math-style=french}}
-    \fi
-}
-
-\newcommand{\cmcmsugost@mathruop}{
-    %%% Русская традиция начертания математических знаков
-    \AtBeginDocument{
-        %%% Русская традиция начертания математических функций
-        \renewcommand{\tan}{\operatorname{tg}}
-        \renewcommand{\cot}{\operatorname{ctg}}
-        \renewcommand{\csc}{\operatorname{cosec}}
-        \let\le\leqslant%
-        \let\leq\leqslant%
-        \let\ge\geqslant%
-        \let\geq\geqslant%
-        \let\phi\varphi%
-        \let\epsilon\varepsilon%
-        \let\kappa\varkappa%
-        \let\emptyset\varnothing%
-    }
-}
-
-\newcommand{\cmcmsugost@mathrutradition}{
-    %% Break math symbol and repeat it in next line
-    \RequirePackage{rmathbr}
-    \cmcmsugost@mathruop%
-}
-
+% ================================================================
+% Применение стилей
+% ================================================================
 \newcommand{\cmcmsugost@ApplySty}{%
     \cmcmsugost@patchrualpha%
     \cmcmsugost@FixOverfullBoxes%
-    \cmcmsugost@SetTitleSty%
     \cmcmsugost@SetHeaderAndFooterSty%
-    \cmcmsugost@SetToCSty%
+    \cmcmsugost@SetToCSty@base%
     \cmcmsugost@SetAppendixSty%
     \cmcmsugost@SetFigureSty%
-    \cmcmsugost@SetListSty%
+    \cmcmsugost@SetListSty@base%
     \cmcmsugost@SetEquationSty%
     \cmcmsugost@SetTableSty%
-    \ifcmcmsugost@rumath%
-        \cmcmsugost@mathrutradition%
-    \else
-        \ifcmcmsugost@upgreek%
-            \cmcmsugost@upgreek%
-        \fi
-        \ifcmcmsugost@rumathop%
-            \cmcmsugost@mathruop%
-        \fi
-    \fi
-    \ifcmcmsugost@tocpageword%
-        \cmcmsugost@ToCAddPageWord%
-
-    \fi
     \RequirePackage{indentfirst}
     \RequirePackage{hyperref}
-    \hypersetup{linktoc=page}
+    \hypersetup{linktoc=page, plainpages=false}
 
     \geometry{%
         a4paper,
@@ -474,6 +449,18 @@
     \AtBeginDocument{%
         \setlength{\parindent}{2.5em}
     }
+    % Единый \AtEndPreamble: восстанавливаем T2A, загружаем
+    % babel-зависимый код.
+    \AtEndPreamble{%
+        \ifPDFTeX\fontencoding{T2A}\selectfont\fi
+        \cmcmsugost@SetTitleSty@deferred%
+        \cmcmsugost@SetToCSty@deferred%
+        \cmcmsugost@SetListSty@deferred%
+        %% Доопределяем субфигуры после загрузки babel
+        \@ifundefined{asbuk}{}{%
+            \renewcommand{\thesubfigure}{\asbuk{subfigure}}%
+        }%
+    }%
 }
 
 \cmcmsugost@ApplySty%

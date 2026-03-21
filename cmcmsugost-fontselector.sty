@@ -1,6 +1,6 @@
 % cmcmsugost-fontselector.sty
 \NeedsTeXFormat{LaTeX2e}[2020-10-01]
-\ProvidesPackage{cmcmsugost-fontselector}[2026/03/10 v0.1 package to make easy selecting fonts]
+\ProvidesPackage{cmcmsugost-fontselector}[2026/03/21 v0.2 font and language selector]
 
 \makeatletter
 
@@ -9,8 +9,8 @@
 \RequirePackage{etoolbox}
 
 \SetupKeyvalOptions{
-    family = cmcmsugost,
-    prefix = cmcmsugost@
+    family = cmcmsugostfont,
+    prefix = cmcmsugostfont@
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -23,13 +23,18 @@
 %%                - шрифта, применимо только для XeLaTeX/LuaLaTeX
 %% fontscale - коэффициент масштабирования для шрифта serif
 %% sans  - шрифт без засечек, sans serif (только XeLaTeX/LuaLaTeX)
-%%       - это шрифты обычно используюся в презентациях, пример
+%%       - это шрифты обычно используются в презентациях, пример
 %%       - Arial, PType Sans и т.п., также нужны для команд \textsf
 %% sansscale - коэффициент масштабирования для шрифта sans
 %% mono  - шрифт моноширинный (только для XeLaTeX/LuaLaTeX)
-%%       - это шрифты обычно используюся для набора кода
+%%       - это шрифты обычно используются для набора кода
 %%       - и листингов, пример Courier, Inconsolata, JetBrains Mono
 %% monoscale - коэффициент масштабирования для шрифта mono
+%% lang  - язык документа (по умолчанию russian);
+%%       - загружается только если babel/polyglossia ещё не загружены
+%% rumath  - русская математическая традиция (upgreek + флаг для
+%%         - операторов в extra), по умолчанию true
+%% upgreek - прямые греческие буквы, по умолчанию false
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \DeclareStringOption[]{font}
@@ -44,7 +49,183 @@
 \DeclareStringOption[]{mono}
 \DeclareStringOption[1]{monoscale}
 
+\DeclareStringOption[russian]{lang}
+
+\DeclareBoolOption[false]{rumath}
+\DeclareVoidOption{rumathon}{\cmcmsugostfont@rumathtrue}
+\DeclareVoidOption{rumathoff}{\cmcmsugostfont@rumathfalse}
+
+\DeclareBoolOption[false]{upgreek}
+\DeclareVoidOption{upgreekon}{\cmcmsugostfont@upgreektrue}
+\DeclareVoidOption{upgreekoff}{\cmcmsugostfont@upgreekfalse}
+
 \ProcessKeyvalOptions*
+
+% ================================================================
+% Setup-команда
+% ================================================================
+\RequirePackage{keyval}
+\define@key{cmcmsugostfontsetup}{rumath}[true]{%
+    \ifstrequal{#1}{true}{\cmcmsugostfont@rumathtrue}{\cmcmsugostfont@rumathfalse}%
+}
+\define@key{cmcmsugostfontsetup}{upgreek}[true]{%
+    \ifstrequal{#1}{true}{\cmcmsugostfont@upgreektrue}{\cmcmsugostfont@upgreekfalse}%
+}
+\define@key{cmcmsugostfontsetup}{lang}[russian]{%
+    \def\cmcmsugostfont@lang{#1}%
+}
+\define@key{cmcmsugostfontsetup}{font}[]{%
+    \def\cmcmsugostfont@font{#1}%
+}
+\define@key{cmcmsugostfontsetup}{fontscale}[1]{%
+    \def\cmcmsugostfont@fontscale{#1}%
+}
+\define@key{cmcmsugostfontsetup}{mathfont}[]{%
+    \def\cmcmsugostfont@mathfont{#1}%
+}
+\define@key{cmcmsugostfontsetup}{mathfontscale}[1]{%
+    \def\cmcmsugostfont@mathfontscale{#1}%
+}
+\define@key{cmcmsugostfontsetup}{sans}[]{%
+    \def\cmcmsugostfont@sans{#1}%
+}
+\define@key{cmcmsugostfontsetup}{sansscale}[1]{%
+    \def\cmcmsugostfont@sansscale{#1}%
+}
+\define@key{cmcmsugostfontsetup}{mono}[]{%
+    \def\cmcmsugostfont@mono{#1}%
+}
+\define@key{cmcmsugostfontsetup}{monoscale}[1]{%
+    \def\cmcmsugostfont@monoscale{#1}%
+}
+\newcommand{\cmcmsugostfontsetup}[1]{%
+    \setkeys{cmcmsugostfontsetup}{#1}%
+}
+
+% ================================================================
+% Загрузка кодировок, языка и математической инфраструктуры
+% (перенесено из cmcmsu-gost — fontselector отвечает за весь
+%  шрифтовой стек)
+%
+% Правильный порядок:
+%   pdfLaTeX:  inputenc → fontenc → babel → mathtools → amssymb → шрифты
+%   XeTeX/Lua: babel → mathtools → amssymb → шрифты (unicode-math/fontspec
+%              загружаются внутри команд отдельных шрифтов)
+%
+% Условная загрузка: если пользователь уже загрузил — не перезатираем.
+% ================================================================
+
+% --- 1. Кодировки (pdfLaTeX: ДО babel, иначе babel ругается) ---
+\ifPDFTeX
+    \@ifpackageloaded{fontenc}{}{%
+        \RequirePackage[utf8]{inputenc}%
+        \RequirePackage[T1,T2A]{fontenc}%
+    }%
+\fi
+
+% --- 2. Язык ---
+\@ifpackageloaded{babel}{}{%
+    \@ifpackageloaded{polyglossia}{}{%
+        \RequirePackage[\cmcmsugostfont@lang]{babel}%
+    }%
+}
+
+% --- 3. Математическая инфраструктура ---
+\ifPDFTeX
+    \@ifpackageloaded{mathtools}{}{%
+        \RequirePackage{mathtools}%
+    }%
+    \@ifpackageloaded{amssymb}{}{%
+        \RequirePackage{amssymb}%
+    }%
+\else
+    \@ifpackageloaded{mathtools}{}{%
+        \RequirePackage{mathtools}%
+    }%
+    \@ifpackageloaded{amssymb}{}{%
+        \RequirePackage{amssymb}%
+    }%
+    % fontspec загружается внутри команд шрифтов через
+    % \RequirePackage{unicode-math} — здесь не грузим,
+    % чтобы не нарушить порядок опций (math-style=french и т.п.)
+\fi
+
+% ================================================================
+% ProvideSymbf — обеспечение команд \symbf, \symbfit,
+% \symup, \symbfup для pdfLaTeX (в unicode-math они встроены)
+% ================================================================
+\newcommand{\cmcmsugostfont@ProvideSymbf}{%
+    \@ifundefined{symbf}{%
+        \newcommand{\symbf}[1]{%
+            \ensuremath{\boldsymbol{##1}}}%
+    }{}%
+    \@ifundefined{symbfit}{%
+        \newcommand{\symbfit}[1]{%
+            \ensuremath{\boldsymbol{##1}}}%
+    }{}%
+    \@ifundefined{symup}{%
+        \ifPDFTeX%
+            %% При использовании UPGREEK и NEWTXMATH
+            %% портятся большие греческие буквы,
+            %% поэтому UPGREEK нужно грузить раньше.
+            %% Мы не контролируем это, поэтому чистим определения.
+            \@ifpackageloaded{upgreek}{%
+                % уже загружен — ничего не делаем
+            }{%
+                \@ifpackageloaded{newtxmath}{%
+                    % newtxmath уже загружен ДО нас —
+                    \let\cmcmsugostfont@Gamma\Gamma
+                    \let\cmcmsugostfont@Delta\Delta
+                    \let\cmcmsugostfont@Theta\Theta
+                    \let\cmcmsugostfont@Lambda\Lambda
+                    \let\cmcmsugostfont@Xi\Xi
+                    \let\cmcmsugostfont@Pi\Pi
+                    \let\cmcmsugostfont@Sigma\Sigma
+                    \let\cmcmsugostfont@Upsilon\Upsilon
+                    \let\cmcmsugostfont@Phi\Phi
+                    \let\cmcmsugostfont@Psi\Psi
+                    \let\cmcmsugostfont@Omega\Omega
+                    % загружаем upgreek
+                    \RequirePackage{upgreek}%
+                    % и восстанавливаем греческие:
+                    \let\Gamma\cmcmsugostfont@Gamma%
+                    \let\Delta\cmcmsugostfont@Delta%
+                    \let\Theta\cmcmsugostfont@Theta%
+                    \let\Lambda\cmcmsugostfont@Lambda%
+                    \let\Xi\cmcmsugostfont@Xi%
+                    \let\Pi\cmcmsugostfont@Pi%
+                    \let\Sigma\cmcmsugostfont@Sigma%
+                    \let\Upsilon\cmcmsugostfont@Upsilon%
+                    \let\Phi\cmcmsugostfont@Phi%
+                    \let\Psi\cmcmsugostfont@Psi%
+                    \let\Omega\cmcmsugostfont@Omega%
+                }{%
+                    % newtxmath ещё не загружен —
+                    \RequirePackage{upgreek}%
+                }%
+            }%
+        \fi
+        \newcommand{\symup}[1]{%
+            \begingroup
+            \edef\symup@name{\expandafter\@gobble\string##1}%
+            \ifcsname up\symup@name\endcsname
+                \csname up\symup@name\endcsname
+            \else
+                \mathrm{##1}%
+            \fi
+            \endgroup
+        }%
+    }{}%
+    \@ifundefined{symbfup}{%
+        \newcommand{\symbfup}[1]{%
+            \ensuremath{\boldsymbol{\symup{##1}}}}%
+    }{}%
+}
+
+% Применяем ProvideSymbf в конце преамбулы (после загрузки шрифтов)
+\AtEndPreamble{%
+    \cmcmsugostfont@ProvideSymbf%
+}
 
 %% #################################################################
 %%  TeX Fonts
@@ -54,62 +235,62 @@
 %%     Font Set
 %% =================================================================
 
-\newcommand{\cmcmsugost@tex@set@default}{}
+\newcommand{\cmcmsugostfont@tex@set@default}{}
 
-\newcommand{\cmcmsugost@tex@set@cm}{}
+\newcommand{\cmcmsugostfont@tex@set@cm}{}
 
 
-\newcommand{\cmcmsugost@tex@set@tempora}{
-    \cmcmsugost@tex@tempora%
-    \cmcmsugost@tex@mathfont@newtx%
+\newcommand{\cmcmsugostfont@tex@set@tempora}{
+    \cmcmsugostfont@tex@tempora%
+    \cmcmsugostfont@tex@mathfont@newtx%
 }
 
-\newcommand{\cmcmsugost@tex@set@heros}{
-    \cmcmsugost@tex@sans@heros%
-    \cmcmsugost@tex@mathfont@newtx%
+\newcommand{\cmcmsugostfont@tex@set@heros}{
+    \cmcmsugostfont@tex@sans@heros%
+    \cmcmsugostfont@tex@mathfont@newtx%
 }
 
-\newcommand{\cmcmsugost@tex@set@paratype}{
+\newcommand{\cmcmsugostfont@tex@set@paratype}{
     \RequirePackage{paratype}
-    \cmcmsugost@tex@mathfont@newtx%
+    \cmcmsugostfont@tex@mathfont@newtx%
 }
 
-\newcommand{\cmcmsugost@tex@set@heuristica}{
-    \cmcmsugost@tex@heuristica%
-    \cmcmsugost@tex@mathfont@fourier%
+\newcommand{\cmcmsugostfont@tex@set@heuristica}{
+    \cmcmsugostfont@tex@heuristica%
+    \cmcmsugostfont@tex@mathfont@fourier%
 }
-\newcommand{\cmcmsugost@tex@set@libertinus}{
+\newcommand{\cmcmsugostfont@tex@set@libertinus}{
     \PassOptionsToPackage{mono}{libertinus}
-    \cmcmsugost@tex@libertinus%
-    \cmcmsugost@tex@mono@paratype%
-    \cmcmsugost@tex@mathfont@libertinus%
+    \cmcmsugostfont@tex@libertinus%
+    \cmcmsugostfont@tex@mono@paratype%
+    \cmcmsugostfont@tex@mathfont@libertinus%
 }
 
-\newcommand{\cmcmsugost@tex@set@dejavu}{
-    \cmcmsugost@tex@dejavu%
-    \cmcmsugost@tex@mathfont@newtx%
+\newcommand{\cmcmsugostfont@tex@set@dejavu}{
+    \cmcmsugostfont@tex@dejavu%
+    \cmcmsugostfont@tex@mathfont@newtx%
 }
 
-\newcommand{\cmcmsugost@tex@set@xcharter}{
-    \cmcmsugost@tex@xcharter%
+\newcommand{\cmcmsugostfont@tex@set@xcharter}{
+    \cmcmsugostfont@tex@xcharter%
     \PassOptionsToPackage{charter,expert}{mathdesign}
-    \cmcmsugost@tex@mathfont@mathdesign%
+    \cmcmsugostfont@tex@mathfont@mathdesign%
 }
 
-\newcommand{\cmcmsugost@tex@set@old}{%
-    \cmcmsugost@tex@set@default%
+\newcommand{\cmcmsugostfont@tex@set@old}{%
+    \cmcmsugostfont@tex@set@default%
 }
 
-\newcommand{\cmcmsugost@tex@set@modern}{%
-    \cmcmsugost@tex@set@tempora%
+\newcommand{\cmcmsugostfont@tex@set@modern}{%
+    \cmcmsugostfont@tex@set@tempora%
 }
 
-\newcommand{\cmcmsugost@tex@set@libert}{%
-    \cmcmsugost@tex@set@libertinus%
+\newcommand{\cmcmsugostfont@tex@set@libert}{%
+    \cmcmsugostfont@tex@set@libertinus%
 }
 
-\newcommand{\cmcmsugost@tex@set@fashion}{%
-    \cmcmsugost@tex@set@xcharter%
+\newcommand{\cmcmsugostfont@tex@set@fashion}{%
+    \cmcmsugostfont@tex@set@xcharter%
 }
 
 
@@ -118,71 +299,71 @@
 %%     Text
 %% ================================================================
 
-\newcommand{\cmcmsugost@tex@}{
-    \cmcmsugost@tex@tempora%
+\newcommand{\cmcmsugostfont@tex@}{
+    \cmcmsugostfont@tex@tempora%
 }
 
-\newcommand{\cmcmsugost@tex@tempora}{
+\newcommand{\cmcmsugostfont@tex@tempora}{
     \RequirePackage{tempora}
 }
 
-\newcommand{\cmcmsugost@tex@bonum}{
+\newcommand{\cmcmsugostfont@tex@bonum}{
     \RequirePackage{tgbonum}
 }
 
-\newcommand{\cmcmsugost@tex@termes}{
+\newcommand{\cmcmsugostfont@tex@termes}{
     \RequirePackage{tgtermes}
 }
 
-\newcommand{\cmcmsugost@tex@pagella}{
+\newcommand{\cmcmsugostfont@tex@pagella}{
     \RequirePackage{tgpagella}
 }
 
-\newcommand{\cmcmsugost@tex@schola}{
+\newcommand{\cmcmsugostfont@tex@schola}{
     \RequirePackage{tgschola}
 }
 
-\newcommand{\cmcmsugost@tex@tgtermes}{
+\newcommand{\cmcmsugostfont@tex@tgtermes}{
     \RequirePackage{tgtermes}
 }
 
-\newcommand{\cmcmsugost@tex@ptserif}{
+\newcommand{\cmcmsugostfont@tex@ptserif}{
     \RequirePackage{PTSerif}
 }
 
-\newcommand{\cmcmsugost@tex@paratype}{
+\newcommand{\cmcmsugostfont@tex@paratype}{
     \RequirePackage{paratype}
 }
 
-\newcommand{\cmcmsugost@tex@heuristica}{
+\newcommand{\cmcmsugostfont@tex@heuristica}{
     \RequirePackage{heuristica}
 }
 
-\newcommand{\cmcmsugost@tex@old}{
+\newcommand{\cmcmsugostfont@tex@old}{
     \RequirePackage{oldstandard}
 }
 
-\newcommand{\cmcmsugost@tex@libertinus}{
+\newcommand{\cmcmsugostfont@tex@libertinus}{
     \RequirePackage{libertinus}
 }
 
-\newcommand{\cmcmsugost@tex@noto}{
+\newcommand{\cmcmsugostfont@tex@noto}{
     \RequirePackage{noto}
 }
 
-\newcommand{\cmcmsugost@tex@dejavu}{
+\newcommand{\cmcmsugostfont@tex@dejavu}{
     \RequirePackage{dejavu}
 }
 
-\newcommand{\cmcmsugost@tex@xcharter}{
+\newcommand{\cmcmsugostfont@tex@xcharter}{
     \RequirePackage{XCharter}
 }
 
-\newcommand{\cmcmsugost@tex@cochineal}{
+\newcommand{\cmcmsugostfont@tex@cochineal}{
     \RequirePackage{cochineal}
 }
 
-\newcommand{\cmcmsugost@tex@newtx}{
+\newcommand{\cmcmsugostfont@tex@newtx}{
     \RequirePackage{newtxtext}
 }
 
@@ -191,26 +372,26 @@
 %%     Sans
 %% ================================================================
 
-\newcommand{\cmcmsugost@tex@sans@}{}
+\newcommand{\cmcmsugostfont@tex@sans@}{}
 
 
-\newcommand{\cmcmsugost@tex@sans@adventor}{
+\newcommand{\cmcmsugostfont@tex@sans@adventor}{
     \RequirePackage{tgadventor}
 }
 
-\newcommand{\cmcmsugost@tex@sans@heros}{
+\newcommand{\cmcmsugostfont@tex@sans@heros}{
     \RequirePackage{tgheros}
 }
 
-\newcommand{\cmcmsugost@tex@sans@paratype}{
+\newcommand{\cmcmsugostfont@tex@sans@paratype}{
     \RequirePackage{PTSans}
 }
 
-\newcommand{\cmcmsugost@tex@sans@fira}{
+\newcommand{\cmcmsugostfont@tex@sans@fira}{
     \RequirePackage{FiraSans}
 }
 
-\newcommand{\cmcmsugost@tex@sans@source}{
+\newcommand{\cmcmsugostfont@tex@sans@source}{
     \RequirePackage{sourcesanspro}
 }
 
@@ -218,27 +399,26 @@
 %%     Mono
 %% ================================================================
 
-\newcommand{\cmcmsugost@tex@mono@}{}
+\newcommand{\cmcmsugostfont@tex@mono@}{}
 
-\newcommand{\cmcmsugost@tex@mono@cursor}{
+\newcommand{\cmcmsugostfont@tex@mono@cursor}{
     \RequirePackage{tgcursor}
 }
 
-\newcommand{\cmcmsugost@tex@mono@paratype}{
+\newcommand{\cmcmsugostfont@tex@mono@paratype}{
     \RequirePackage{PTMono}
 }
 
 
 %% ================================================================
-%% ================================================================
 %%     Math
 %% ================================================================
 
-\newcommand{\cmcmsugost@tex@mathfont@}{
-    \cmcmsugost@tex@mathfont@newtx%
+\newcommand{\cmcmsugostfont@tex@mathfont@}{
+    \cmcmsugostfont@tex@mathfont@newtx%
 }
 
-\newcommand{\cmcmsugost@tex@mathfont@newtx}{
+\newcommand{\cmcmsugostfont@tex@mathfont@newtx}{
     \RequirePackage{newtxmath}
     %% Patch to prevent openbox error
     \AddToHook{package/amsthm/before}{%
@@ -248,11 +428,11 @@
     }
 }
 
-\newcommand{\cmcmsugost@tex@mathfont@pazo}{
+\newcommand{\cmcmsugostfont@tex@mathfont@pazo}{
     \RequirePackage{mathpazo}
 }
 
-\newcommand{\cmcmsugost@tex@mathfont@newpx}{
+\newcommand{\cmcmsugostfont@tex@mathfont@newpx}{
     \RequirePackage{newpxmath}
     %% Patch to prevent openbox error
     \AddToHook{package/amsthm/before}{%
@@ -262,28 +442,28 @@
     }
 }
 
-\newcommand{\cmcmsugost@tex@mathfont@eulervm}{
+\newcommand{\cmcmsugostfont@tex@mathfont@eulervm}{
     \RequirePackage{eulervm}
 }
 
 
-\newcommand{\cmcmsugost@tex@mathfont@fourier}{
+\newcommand{\cmcmsugostfont@tex@mathfont@fourier}{
     \RequirePackage{fourier}
 }
 
-\newcommand{\cmcmsugost@tex@mathfont@kpfonts}{
+\newcommand{\cmcmsugostfont@tex@mathfont@kpfonts}{
     \RequirePackage{kpfonts}
 }
 
-\newcommand{\cmcmsugost@tex@mathfont@stix}{
+\newcommand{\cmcmsugostfont@tex@mathfont@stix}{
     \RequirePackage{stix2}
 }
 
-\newcommand{\cmcmsugost@tex@mathfont@mathdesign}{
+\newcommand{\cmcmsugostfont@tex@mathfont@mathdesign}{
     \RequirePackage{mathdesign}
 }
 
-\newcommand{\cmcmsugost@tex@mathfont@libertinus}{
+\newcommand{\cmcmsugostfont@tex@mathfont@libertinus}{
     \RequirePackage{libertinust1math}
 }
 
@@ -298,52 +478,48 @@
 %%     Font Set
 %% ================================================================
 
-% \newcommand{\cmcmsugost@xetex@set@default}{
+% \newcommand{\cmcmsugostfont@xetex@set@default}{
 %     \RequirePackage[default]{fontsetup}
 % }
 
 %% ================================================================
-%% ================================================================
 %%     Main
 %% ================================================================
-\newcommand{\cmcmsugost@xetex@}[1]{
-    \cmcmsugost@xetex@newcmserif{#1}%
+\newcommand{\cmcmsugostfont@xetex@}[1]{
+    \cmcmsugostfont@xetex@newcmserif{#1}%
 }
 
-%% ================================================================
 %% ================================================================
 %%     Sans
 %% ================================================================
-\newcommand{\cmcmsugost@xetex@sans@}[1]{
-    \cmcmsugost@xetex@sans@newcm{#1}%
+\newcommand{\cmcmsugostfont@xetex@sans@}[1]{
+    \cmcmsugostfont@xetex@sans@newcm{#1}%
 }
 
-%% ================================================================
 %% ================================================================
 %%     Mono
 %% ================================================================
 
-\newcommand{\cmcmsugost@xetex@mono@}[1]{
-    \cmcmsugost@xetex@mono@newcm{#1}%
+\newcommand{\cmcmsugostfont@xetex@mono@}[1]{
+    \cmcmsugostfont@xetex@mono@newcm{#1}%
 }
 
-%% ================================================================
 %% ================================================================
 %%     Math
 %% ================================================================
 
-\newcommand{\cmcmsugost@xetex@mathfont@}[1]{%
-    \cmcmsugost@xetex@mathfont@newcm{#1}%
+\newcommand{\cmcmsugostfont@xetex@mathfont@}[1]{%
+    \cmcmsugostfont@xetex@mathfont@newcm{#1}%
 }
 
 %% ################################################################
-%%  SECTION 1 — MAIN (SERIF) FONTS  \cmcmsugost@xetex@<name>[1]
+%%  SECTION 1 — MAIN (SERIF) FONTS  \cmcmsugostfont@xetex@<n>[1]
 %% ################################################################
 
 %% ----------------------------------------------------------------
 %%  PT Serif  (Paratype — best Cyrillic glyphs in TeX Live, TTF)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@ptserif}[1]{%
+\newcommand{\cmcmsugostfont@xetex@ptserif}[1]{%
     \RequirePackage{unicode-math}
     \setmainfont[
         BoldFont        = PTF75F.ttf,
@@ -353,25 +529,10 @@
     ]{PTF55F.ttf}%
 }
 
-% %% ----------------------------------------------------------------
-% %%  PT Serif Caption  (Paratype — optimised for small sizes)
-% %% ----------------------------------------------------------------
-% \newcommand{\cmcmsugost@xetex@ptserifcaption}[1]{%
-%     %% PT Serif Caption: только Regular+Italic — Bold/BoldItalic не существуют
-%     %% Явная подстановка чтобы подавить warnings fontspec
-%     \RequirePackage{unicode-math}
-%     \setmainfont[
-%         BoldFont        = PTF75F.ttf,
-%         ItalicFont      = PTZ56F.ttf,
-%         BoldItalicFont  = PTF76F.ttf,
-%         Scale           = #1
-%     ]{PTZ55F.ttf}%
-% }
-
 %% ----------------------------------------------------------------
 %%  DejaVu Serif  (broad Unicode, full Cyrillic, TTF)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@dejavuserif}[1]{%
+\newcommand{\cmcmsugostfont@xetex@dejavuserif}[1]{%
     \RequirePackage{unicode-math}
     \setmainfont[
         BoldFont        = DejaVuSerif-Bold.ttf,
@@ -390,7 +551,7 @@
 %% ----------------------------------------------------------------
 %%  NewComputerModern  (CM-style, full Cyrillic+Greek+IPA, OTF)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@newcmserif}[1]{%
+\newcommand{\cmcmsugostfont@xetex@newcmserif}[1]{%
     \RequirePackage{unicode-math}
     \setmainfont[
         BoldFont        = NewCM10-Bold.otf,
@@ -403,7 +564,7 @@
 %% ----------------------------------------------------------------
 %%  STIX Two Text  (Times/STIX, full Cyrillic, max math symbols)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@stixtwo}[1]{%
+\newcommand{\cmcmsugostfont@xetex@stixtwo}[1]{%
     \RequirePackage{unicode-math}
     \setmainfont[
         BoldFont        = STIXTwoText-Bold.otf,
@@ -416,7 +577,7 @@
 %% ----------------------------------------------------------------
 %%  Libertinus Serif  (modern fork of Libertine, full Cyrillic, active dev)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@libertinus}[1]{%
+\newcommand{\cmcmsugostfont@xetex@libertinus}[1]{%
     \RequirePackage{unicode-math}
     \setmainfont[
         BoldFont        = LibertinusSerif-Bold.otf,
@@ -430,7 +591,7 @@
 %% ----------------------------------------------------------------
 %%  Alegreya  (humanist serif, rich OpenType, full Cyrillic)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@alegreya}[1]{%
+\newcommand{\cmcmsugostfont@xetex@alegreya}[1]{%
     \RequirePackage{unicode-math}
     \setmainfont[
         BoldFont        = Alegreya-Bold.otf,
@@ -445,7 +606,7 @@
 %% ----------------------------------------------------------------
 %%  EB Garamond  (historical Garamond, full Cyrillic)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@ebgaramond}[1]{%
+\newcommand{\cmcmsugostfont@xetex@ebgaramond}[1]{%
     \RequirePackage{unicode-math}
     \setmainfont[
         BoldFont        = EBGaramond-Bold.otf,
@@ -460,7 +621,7 @@
 %% ----------------------------------------------------------------
 %%  Domitian  (Palatino replacement, full Cyrillic)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@domitian}[1]{%
+\newcommand{\cmcmsugostfont@xetex@domitian}[1]{%
     \RequirePackage{unicode-math}
     \setmainfont[
         BoldFont        = Domitian-Bold.otf,
@@ -473,7 +634,7 @@
 %% ----------------------------------------------------------------
 %%  Gentium Plus  (wide Unicode: Cyrillic+Greek+IPA, TTF)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@gentiumplus}[1]{%
+\newcommand{\cmcmsugostfont@xetex@gentiumplus}[1]{%
     \RequirePackage{unicode-math}
     \setmainfont[
         BoldFont        = GentiumPlus-Bold.ttf,
@@ -486,7 +647,7 @@
 %% ----------------------------------------------------------------
 %%  Tinos  (metrically compatible with Times New Roman, full Cyrillic, TTF)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@tinos}[1]{%
+\newcommand{\cmcmsugostfont@xetex@tinos}[1]{%
     \RequirePackage{unicode-math}
     \setmainfont[
         BoldFont        = Tinos-Bold.ttf,
@@ -500,7 +661,7 @@
 %%  Times New Roman  (системный шрифт macOS/Windows, требует лицензии)
 %%  NOTE: доступен только если установлен в системе
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@timesnewroman}[1]{%
+\newcommand{\cmcmsugostfont@xetex@timesnewroman}[1]{%
     \RequirePackage{unicode-math}
     \setmainfont[
         Scale           = #1
@@ -512,7 +673,7 @@
 %%  NOTE: not in TeX Live — download from brill.com (free non-commercial)
 %%  Install: cp Brill-*.ttf ~/Library/texmf/fonts/truetype/brill/ && mktexlsr
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@brill}[1]{%
+\newcommand{\cmcmsugostfont@xetex@brill}[1]{%
     \RequirePackage{unicode-math}
     \setmainfont[
         BoldFont        = Brill-Bold.ttf,
@@ -525,14 +686,14 @@
 }
 
 %% ################################################################
-%%  SECTION 2 — SANS-SERIF FONTS  \cmcmsugost@xetex@sans@<name>[1]
+%%  SECTION 2 — SANS-SERIF FONTS  \cmcmsugostfont@xetex@sans@<n>[1]
 %% ################################################################
 
 %% ----------------------------------------------------------------
 %%  Source Sans 3 Pro
 %%  NOTE: доступен только если установлен в LaTeX
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@sans@source}[1]{%
+\newcommand{\cmcmsugostfont@xetex@sans@source}[1]{%
     \setsansfont[
         BoldFont        = SourceSans3-Bold.ttf,
         ItalicFont      = SourceSans3-Italic.ttf,
@@ -546,7 +707,7 @@
 %%  Arial  (системный sans macOS/Windows, требует лицензии)
 %%  NOTE: доступен только если установлен в системе
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@sans@arial}[1]{%
+\newcommand{\cmcmsugostfont@xetex@sans@arial}[1]{%
     \setsansfont[
         Scale           = #1
     ]{Arial}%
@@ -555,7 +716,7 @@
 %% ----------------------------------------------------------------
 %%  PT Sans  (Paratype — best Cyrillic sans in TeX Live, TTF)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@sans@ptsans}[1]{%
+\newcommand{\cmcmsugostfont@xetex@sans@ptsans}[1]{%
     \setsansfont[
         BoldFont        = PTS75F.ttf,
         ItalicFont      = PTS56F.ttf,
@@ -567,7 +728,7 @@
 %% ----------------------------------------------------------------
 %%  PT Sans Narrow  (Paratype — condensed variant, full Cyrillic)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@sans@ptsansnarrow}[1]{%
+\newcommand{\cmcmsugostfont@xetex@sans@ptsansnarrow}[1]{%
     \setsansfont[
         BoldFont        = PTN77F.ttf,
         %% NOTE: PT Sans Narrow has no Italic/BoldItalic — Regular/Bold substituted
@@ -580,7 +741,7 @@
 %% ----------------------------------------------------------------
 %%  PT Sans Caption  (Paratype — optimised for small sizes)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@sans@ptsanscaption}[1]{%
+\newcommand{\cmcmsugostfont@xetex@sans@ptsanscaption}[1]{%
     \setsansfont[
         BoldFont        = PTC75F.ttf,
         %% NOTE: PT Sans Caption has no Italic/BoldItalic — Regular/Bold substituted
@@ -593,7 +754,7 @@
 %% ----------------------------------------------------------------
 %%  DejaVu Sans  (broad Unicode, full Cyrillic, TTF)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@sans@dejavusans}[1]{%
+\newcommand{\cmcmsugostfont@xetex@sans@dejavusans}[1]{%
     \setsansfont[
         BoldFont        = DejaVuSans-Bold.ttf,
         ItalicFont      = DejaVuSans-Oblique.ttf,
@@ -611,7 +772,7 @@
 %% ----------------------------------------------------------------
 %%  NewCM Sans  (CM-style sans, full Cyrillic+Greek+IPA)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@sans@newcm}[1]{%
+\newcommand{\cmcmsugostfont@xetex@sans@newcm}[1]{%
     \setsansfont[
         BoldFont        = NewCMSans10-Bold.otf,
         ItalicFont      = NewCMSans10-Oblique.otf,
@@ -623,7 +784,7 @@
 %% ----------------------------------------------------------------
 %%  Libertinus Sans  (modern fork of Biolinum, пара к Libertinus Serif)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@sans@libertinussans}[1]{%
+\newcommand{\cmcmsugostfont@xetex@sans@libertinussans}[1]{%
     %% Libertinus Sans: нет BoldItalic — подставляем Bold
     \setsansfont[
         BoldFont        = LibertinusSans-Bold.otf,
@@ -636,7 +797,7 @@
 %% ----------------------------------------------------------------
 %%  Alegreya Sans  (humanist sans, pair to Alegreya, full Cyrillic)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@sans@alegreyasans}[1]{%
+\newcommand{\cmcmsugostfont@xetex@sans@alegreyasans}[1]{%
     \setsansfont[
         BoldFont        = AlegreyaSans-Bold.otf,
         ItalicFont      = AlegreyaSans-Italic.otf,
@@ -648,7 +809,7 @@
 %% ----------------------------------------------------------------
 %%  Montserrat  (geometric sans, full Cyrillic, many weights)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@sans@montserrat}[1]{%
+\newcommand{\cmcmsugostfont@xetex@sans@montserrat}[1]{%
     \setsansfont[
         BoldFont        = Montserrat-Bold.otf,
         ItalicFont      = Montserrat-Italic.otf,
@@ -661,7 +822,7 @@
 %% ----------------------------------------------------------------
 %%  Fira Sans  (Mozilla, full Cyrillic, many weights)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@sans@firasans}[1]{%
+\newcommand{\cmcmsugostfont@xetex@sans@firasans}[1]{%
     \setsansfont[
         BoldFont        = FiraSans-Bold.otf,
         ItalicFont      = FiraSans-Italic.otf,
@@ -673,7 +834,7 @@
 %% ----------------------------------------------------------------
 %%  Lato  (humanist sans, full Cyrillic, TTF)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@sans@lato}[1]{%
+\newcommand{\cmcmsugostfont@xetex@sans@lato}[1]{%
     \setsansfont[
         BoldFont        = Lato-Bold.ttf,
         ItalicFont      = Lato-Italic.ttf,
@@ -685,7 +846,7 @@
 %% ----------------------------------------------------------------
 %%  Arimo  (metrically compatible with Arial, full Cyrillic, TTF)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@sans@arimo}[1]{%
+\newcommand{\cmcmsugostfont@xetex@sans@arimo}[1]{%
     \setsansfont[
         BoldFont        = Arimo-Bold.ttf,
         ItalicFont      = Arimo-Italic.ttf,
@@ -696,7 +857,7 @@
 
 
 %% ################################################################
-%%  SECTION 3 — MONOSPACED FONTS  \cmcmsugost@xetex@mono@<name>[1]
+%%  SECTION 3 — MONOSPACED FONTS  \cmcmsugostfont@xetex@mono@<n>[1]
 %% ################################################################
 
 
@@ -704,7 +865,7 @@
 %%  Courier New  (системный mono macOS/Windows, требует лицензии)
 %%  NOTE: доступен только если установлен в системе
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@mono@couriernew}[1]{%
+\newcommand{\cmcmsugostfont@xetex@mono@couriernew}[1]{%
     \setmonofont[
         Scale           = #1
     ]{Courier New}%
@@ -713,7 +874,7 @@
 %% ----------------------------------------------------------------
 %%  DejaVu Sans Mono  (broad Unicode, full Cyrillic, TTF)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@mono@dejavumono}[1]{%
+\newcommand{\cmcmsugostfont@xetex@mono@dejavumono}[1]{%
     \setmonofont[
         BoldFont        = DejaVuSansMono-Bold.ttf,
         ItalicFont      = DejaVuSansMono-Oblique.ttf,
@@ -731,7 +892,7 @@
 %% ----------------------------------------------------------------
 %%  PT Mono  (Paratype — best Cyrillic mono, pair to PT family, TTF)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@mono@ptmono}[1]{%
+\newcommand{\cmcmsugostfont@xetex@mono@ptmono}[1]{%
     \setmonofont[
         BoldFont        = PTM75F.ttf,
         %% NOTE: PT Mono has no Italic/BoldItalic — Regular/Bold substituted
@@ -750,25 +911,19 @@
 %% ----------------------------------------------------------------
 %%  NewCM Mono  (CM-style mono, full Cyrillic+Greek+IPA)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@mono@newcm}[1]{%
+\newcommand{\cmcmsugostfont@xetex@mono@newcm}[1]{%
     \setmonofont[
         BoldFont        = NewCMMono10-Bold.otf,
         ItalicFont      = NewCMMono10-Italic.otf,
         BoldItalicFont  = NewCMMono10-BoldOblique.otf,
         Scale           = #1
     ]{NewCMMono10-Book.otf}%
-    % \newfontfamily\cyrillicfonttt[
-    %     BoldFont        = Newcm10-Bold.otf,
-    %     ItalicFont      = Newcm10-Italic.otf,
-    %     BoldItalicFont  = Newcm10-BoldOblique.otf,
-    %     Scale           = #1
-    % ]{Newcm10-Book.otf}%
 }
 
 %% ----------------------------------------------------------------
 %%  JetBrains Mono  (programmer's mono, excellent Cyrillic, ligatures)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@mono@jetbrainsmono}[1]{%
+\newcommand{\cmcmsugostfont@xetex@mono@jetbrainsmono}[1]{%
     %% jetbrainsmono — алиас из пакета jetbrainsmono-otf (.fontspec файл)
     %% Без лигатур. Для версии с лигатурами заменить на {jetbrainscode}
     \setmonofont[
@@ -785,13 +940,11 @@
 %% ----------------------------------------------------------------
 %%  Julia Mono  (widest Unicode coverage of any mono in TeX Live)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@mono@juliamono}[1]{%
+\newcommand{\cmcmsugostfont@xetex@mono@juliamono}[1]{%
     %% Используем пакет juliamono (tlmgr install juliamono, ~23MB)
-    %% Пакет сам вызывает \setmonofont{JuliaMono}[Scale=..., FakeStretch=0.92, ...]
-    %% FakeStretch=0.92 — стандартная рекомендация пакета для читаемости
     \PassOptionsToPackage{Scale=#1}{juliamono}%
     \RequirePackage{juliamono}%
-    %% polyglossia требует явного \cyrillicfonttt для шрифтов без Cyrillic OT script tag
+    %% polyglossia требует явного \cyrillicfonttt
     \newfontfamily\cyrillicfonttt[
         Scale           = #1,
         FakeStretch     = 0.92,
@@ -806,27 +959,21 @@
 %% ----------------------------------------------------------------
 %%  Source Code Pro  (Adobe, full Cyrillic, professional quality)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@mono@sourcecodepro}[1]{%
-    %% Используем пакет sourcecodepro (входит в TeX Live fonts-extra)
-    %% Аналог: \usepackage[scaled=.95]{sourcecodepro}
-    %% Пакет сам вызывает \setmonofont{SourceCodePro} для XeLaTeX
+\newcommand{\cmcmsugostfont@xetex@mono@sourcecodepro}[1]{%
     \PassOptionsToPackage{scale=#1}{sourcecodepro}%
     \RequirePackage{sourcecodepro}%
-    % %% polyglossia требует явного \cyrillicfonttt для шрифтов без Cyrillic OT script tag
-    % \newfontfamily\cyrillicfonttt[
-    %     Scale           = #1
-    % ]{SourceCodePro-Regular.otf}%
 }
+
 %% ################################################################
-%%  SECTION 4 — MATH FONTS  \cmcmsugost@xetex@mathfont@<name>[1]
+%%  SECTION 4 — MATH FONTS  \cmcmsugostfont@xetex@mathfont@<n>[1]
 %%  All require \usepackage{unicode-math} loaded before calling.
 %%  #1 = Scale factor (numeric, e.g. 1 — math fonts rarely rescaled)
 %% ################################################################
-%%  TeX Gyre Bonum Math  (Bookman-style math)
+
 %% ----------------------------------------------------------------
 %%  Latin Modern Math  (CM-style Unicode math, de-facto standard)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@mathfont@lmmath}[1]{%
+\newcommand{\cmcmsugostfont@xetex@mathfont@lmmath}[1]{%
     \RequirePackage{unicode-math}
     \setmathfont[
         Scale   = #1
@@ -836,7 +983,7 @@
 %% ----------------------------------------------------------------
 %%  Libertinus Math  (modern, actively developed, pair to Libertine)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@mathfont@libertinusmath}[1]{%
+\newcommand{\cmcmsugostfont@xetex@mathfont@libertinusmath}[1]{%
     \RequirePackage{unicode-math}
     \setmathfont[
         Scale   = #1
@@ -844,11 +991,9 @@
 }
 
 %% ----------------------------------------------------------------
-%%  Asana Math  (Palatino-style, one of the first Unicode Math fonts)
-%% ----------------------------------------------------------------
 %%  STIX Two Math  (maximum symbol coverage of all Unicode Math fonts)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@mathfont@stixmath}[1]{%
+\newcommand{\cmcmsugostfont@xetex@mathfont@stixmath}[1]{%
     \RequirePackage{unicode-math}
     \setmathfont[
         Scale   = #1
@@ -858,7 +1003,7 @@
 %% ----------------------------------------------------------------
 %%  NewCM Math Book  (CM-style, wide Unicode math)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@mathfont@newcm}[1]{%
+\newcommand{\cmcmsugostfont@xetex@mathfont@newcm}[1]{%
     \typeout{Loading NewCMMath font}
     \RequirePackage{unicode-math}
     \setmathfont[
@@ -869,7 +1014,7 @@
 %% ----------------------------------------------------------------
 %%  Garamond Math  (Garamond-style, elegant)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@mathfont@garamondmath}[1]{%
+\newcommand{\cmcmsugostfont@xetex@mathfont@garamondmath}[1]{%
     \RequirePackage{unicode-math}
     \setmathfont[
         Scale   = #1
@@ -879,7 +1024,7 @@
 %% ----------------------------------------------------------------
 %%  Fira Math  (sans-serif math — unique in TeX Live)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@mathfont@firamath}[1]{%
+\newcommand{\cmcmsugostfont@xetex@mathfont@firamath}[1]{%
     \RequirePackage{unicode-math}
     \setmathfont[
         Scale   = #1
@@ -898,7 +1043,7 @@
 %% ----------------------------------------------------------------
 %%  kpfonts-otf Math  (rich symbol set, OTF version)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@mathfont@kpmath}[1]{%
+\newcommand{\cmcmsugostfont@xetex@mathfont@kpmath}[1]{%
     \RequirePackage{unicode-math}
     \setmathfont[
         Scale   = #1
@@ -906,221 +1051,212 @@
 }
 
 %% ################################################################
-%%  SECTION 5 — FONT SETS  \cmcmsugost@xetex@set@<name>
+%%  SECTION 5 — FONT SETS  \cmcmsugostfont@xetex@set@<n>
 %%  No argument — scale values chosen for optimal visual harmony.
 %% ################################################################
 
 %% ----------------------------------------------------------------
 %%  default  — NewComputerModern (single coherent family)
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@default}{%
+\newcommand{\cmcmsugostfont@xetex@set@default}{%
     \typeout{Loading DEFAULT FONTS (NewComputerModern via fontsetup)}%
     \RequirePackage[default]{fontsetup}%
 }
 
 %% ----------------------------------------------------------------
 %%  newcm  — NewComputerModern full set (manual, book weight)
+%%  FIX: было cmcmsugostfont@xetex@newcm → исправлено на newcmserif
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@newcm}{%
+\newcommand{\cmcmsugostfont@xetex@set@newcm}{%
     \typeout{Loading NewComputerModern font set}%
-    \cmcmsugost@xetex@newcm{1}%
-    \cmcmsugost@xetex@sans@newcm{1}%
-    \cmcmsugost@xetex@mono@newcm{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@newcm{1}%
+    \cmcmsugostfont@xetex@newcmserif{1}%
+    \cmcmsugostfont@xetex@sans@newcm{1}%
+    \cmcmsugostfont@xetex@mono@newcm{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@newcm{1}%
 }
 
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@libertinus}{%
+\newcommand{\cmcmsugostfont@xetex@set@libertinus}{%
     \typeout{Loading Libertinus font set}%
-    \cmcmsugost@xetex@libertinus{1}%
-    \cmcmsugost@xetex@sans@libertinussans{1}%
-    \cmcmsugost@xetex@mono@sourcecodepro{1}%
-    \cmcmsugost@xetex@mathfont@libertinusmath{1}%
+    \cmcmsugostfont@xetex@libertinus{1}%
+    \cmcmsugostfont@xetex@sans@libertinussans{1}%
+    \cmcmsugostfont@xetex@mono@sourcecodepro{1}%
+    \cmcmsugostfont@xetex@mathfont@libertinusmath{1}%
 }
 
 %% ----------------------------------------------------------------
-%%  ptserif  — PT Serif + PT Sans + PT Mono + XITS Math
+%%  ptserif  — PT Serif + PT Sans + PT Mono + STIX Math
 %%  Best Cyrillic glyphs, Paratype family
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@pt}{%
+\newcommand{\cmcmsugostfont@xetex@set@pt}{%
     \typeout{Loading PT Serif font set}%
-    \cmcmsugost@xetex@ptserif{1}%
-    \cmcmsugost@xetex@sans@ptsans{1}%
-    \cmcmsugost@xetex@mono@ptmono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@stixmath{1}%
+    \cmcmsugostfont@xetex@ptserif{1}%
+    \cmcmsugostfont@xetex@sans@ptsans{1}%
+    \cmcmsugostfont@xetex@mono@ptmono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@stixmath{1}%
 }
 
 %% ----------------------------------------------------------------
-%%  dejavu  — DeJaVu Serif, Sansm, Mono, STIX2 Math
-%%  Best Cyrillic glyphs, Paratype family
+%%  dejavu  — DeJaVu Serif, Sans, Mono, STIX2 Math
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@dejavu}{%
+\newcommand{\cmcmsugostfont@xetex@set@dejavu}{%
     \typeout{Loading DeJaVu font set}%
-    \cmcmsugost@xetex@dejavuserif{1}%
-    \cmcmsugost@xetex@sans@dejavusans{1}%
-    \cmcmsugost@xetex@mono@dejavumono{1}%
-    \cmcmsugost@xetex@mathfont@stixmath{1}%
+    \cmcmsugostfont@xetex@dejavuserif{1}%
+    \cmcmsugostfont@xetex@sans@dejavusans{1}%
+    \cmcmsugostfont@xetex@mono@dejavumono{1}%
+    \cmcmsugostfont@xetex@mathfont@stixmath{1}%
 }
 
 %% ----------------------------------------------------------------
-%%  roboto  — Roboto (main) + Roboto Condensed + JetBrains Mono + Fira Math
-%%  Modern technical sans-serif document
+%%  roboto  — Tinos + Fira Sans + DejaVu Mono + Fira Math
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@roboto}{%
+\newcommand{\cmcmsugostfont@xetex@set@roboto}{%
     \typeout{Loading Roboto-style font set (Tinos+Fira Sans)}%
-    \cmcmsugost@xetex@tinos{1}%  %% was Roboto (fonts-extra)
-    \cmcmsugost@xetex@sans@firasans{1}%
-    \cmcmsugost@xetex@mono@dejavumono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@firamath{1}%
+    \cmcmsugostfont@xetex@tinos{1}%
+    \cmcmsugostfont@xetex@sans@firasans{1}%
+    \cmcmsugostfont@xetex@mono@dejavumono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@firamath{1}%
 }
 
-\newcommand{\cmcmsugost@xetex@set@fira}{%
-    \typeout{Loading -irastyle font set (Fira Sans + JetBrains)}%
-    \cmcmsugost@xetex@sans@firasans{1}%
+\newcommand{\cmcmsugostfont@xetex@set@fira}{%
+    \typeout{Loading Fira-style font set (Fira Sans + JetBrains)}%
+    \cmcmsugostfont@xetex@sans@firasans{1}%
     \renewcommand{\familydefault}{\sfdefault}% set sans as default
-    \cmcmsugost@xetex@mono@jetbrainsmono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@firamath{1}%
+    \cmcmsugostfont@xetex@mono@jetbrainsmono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@firamath{1}%
 }
 
 
 %% ----------------------------------------------------------------
-%%  ptsans  — PT Sans (main) + PT Sans Narrow (headings) + PT Mono + XITS Math
-%%  Full sans-serif Cyrillic document
+%%  ptsans  — PT Sans (main) + PT Sans Narrow (headings) + PT Mono + STIX Math
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@ptsans}{%
+\newcommand{\cmcmsugostfont@xetex@set@ptsans}{%
     \typeout{Loading PT Sans font set}%
-    \cmcmsugost@xetex@sans@ptsans{1}%
+    \cmcmsugostfont@xetex@sans@ptsans{1}%
     \RequirePackage{unicode-math}
     \setmainfont[
         BoldFont        = PTS75F.ttf,
         ItalicFont      = PTS56F.ttf,
         BoldItalicFont  = PTS76F.ttf
     ]{PTS55F.ttf}%
-    \cmcmsugost@xetex@sans@ptsansnarrow{1}%
-    \cmcmsugost@xetex@mono@ptmono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@stixmath{1}%
+    \cmcmsugostfont@xetex@sans@ptsansnarrow{1}%
+    \cmcmsugostfont@xetex@mono@ptmono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@stixmath{1}%
 }
 
 %% ----------------------------------------------------------------
-%%  alegreya  — Alegreya + Alegreya Sans + JetBrains Mono + Garamond Math
-%%  Humanist book style
+%%  alegreya  — Alegreya + Alegreya Sans + Source Code Pro + Garamond Math
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@alegreya}{%
+\newcommand{\cmcmsugostfont@xetex@set@alegreya}{%
     \typeout{Loading Alegreya font set}%
-    \cmcmsugost@xetex@alegreya{1}%
-    \cmcmsugost@xetex@sans@alegreyasans{1}%
-    \cmcmsugost@xetex@mono@sourcecodepro{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@garamondmath{1}%
+    \cmcmsugostfont@xetex@alegreya{1}%
+    \cmcmsugostfont@xetex@sans@alegreyasans{1}%
+    \cmcmsugostfont@xetex@mono@sourcecodepro{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@garamondmath{1}%
 }
 
 %% ----------------------------------------------------------------
-%%  cormorant  — Cormorant + Alegreya Sans + JetBrains Mono + Garamond Math
-%%  Elegant Garamond-style
+%%  cormorant  — EB Garamond + Alegreya Sans + DejaVu Mono + Garamond Math
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@cormorant}{%
+\newcommand{\cmcmsugostfont@xetex@set@cormorant}{%
     \typeout{Loading Cormorant font set}%
-    \cmcmsugost@xetex@ebgaramond{1}%
-    \cmcmsugost@xetex@sans@alegreyasans{0.98}%
-    \cmcmsugost@xetex@mono@dejavumono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@garamondmath{1}%
+    \cmcmsugostfont@xetex@ebgaramond{1}%
+    \cmcmsugostfont@xetex@sans@alegreyasans{0.98}%
+    \cmcmsugostfont@xetex@mono@dejavumono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@garamondmath{1}%
 }
 
 %% ----------------------------------------------------------------
-%%  merriweather  — Merriweather + Merriweather Sans + SourceCode + XITS Math
-%%  Screen and print optimised
+%%  merriweather  — EB Garamond + NewCM Sans + DejaVu Mono + STIX Math
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@merriweather}{%
+\newcommand{\cmcmsugostfont@xetex@set@merriweather}{%
     \typeout{Loading Merriweather font set}%
-    \cmcmsugost@xetex@ebgaramond{1}%  %% was Merriweather
-    \cmcmsugost@xetex@sans@newcm{1}%
-    \cmcmsugost@xetex@mono@dejavumono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@stixmath{1}%
+    \cmcmsugostfont@xetex@ebgaramond{1}%
+    \cmcmsugostfont@xetex@sans@newcm{1}%
+    \cmcmsugostfont@xetex@mono@dejavumono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@stixmath{1}%
 }
 
 %% ----------------------------------------------------------------
-%%  source  — Source Serif Pro + Source Sans Pro + Source Code Pro + XITS Math
-%%  Adobe triple, perfectly matched metrics
+%%  source  — Domitian + Fira Sans + DejaVu Mono + STIX Math
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@source}{%
+\newcommand{\cmcmsugostfont@xetex@set@source}{%
     \typeout{Loading Adobe Source font set}%
-    \cmcmsugost@xetex@domitian{1}%  %% was Source Serif Pro
-    \cmcmsugost@xetex@sans@firasans{1}%
-    \cmcmsugost@xetex@mono@dejavumono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@stixmath{1}%
+    \cmcmsugostfont@xetex@domitian{1}%
+    \cmcmsugostfont@xetex@sans@firasans{1}%
+    \cmcmsugostfont@xetex@mono@dejavumono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@stixmath{1}%
 }
 
 %% ----------------------------------------------------------------
-%%  crimsonpro  — Crimson Pro + Inter + JetBrains Mono + Garamond Math
-%%  Contrast: historical serif + modern sans
+%%  crimsonpro  — Alegreya + NewCM Sans + DejaVu Mono + Garamond Math
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@crimsonpro}{%
+\newcommand{\cmcmsugostfont@xetex@set@crimsonpro}{%
     \typeout{Loading Crimson Pro font set}%
-    \cmcmsugost@xetex@alegreya{1}%
-    \cmcmsugost@xetex@sans@newcm{1.02}%
-    \cmcmsugost@xetex@mono@dejavumono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@garamondmath{1}%
+    \cmcmsugostfont@xetex@alegreya{1}%
+    \cmcmsugostfont@xetex@sans@newcm{1.02}%
+    \cmcmsugostfont@xetex@mono@dejavumono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@garamondmath{1}%
 }
 
 %% ----------------------------------------------------------------
-%%  ebgaramond  — EB Garamond + Inria Sans + Julia Mono + Garamond Math
-%%  Historical Garamond for philological/historical texts
+%%  ebgaramond  — EB Garamond + NewCM Sans + DejaVu Mono + Garamond Math
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@ebgaramond}{%
+\newcommand{\cmcmsugostfont@xetex@set@ebgaramond}{%
     \typeout{Loading EB Garamond font set}%
-    \cmcmsugost@xetex@ebgaramond{1}%
-    \cmcmsugost@xetex@sans@newcm{1}%
-    \cmcmsugost@xetex@mono@dejavumono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@garamondmath{1}%
+    \cmcmsugostfont@xetex@ebgaramond{1}%
+    \cmcmsugostfont@xetex@sans@newcm{1}%
+    \cmcmsugostfont@xetex@mono@dejavumono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@garamondmath{1}%
 }
 
 %% ----------------------------------------------------------------
-%%  gentiumplus  — Gentium Plus + Inria Sans + Julia Mono + NewCM Math
-%%  Linguistics / IPA / multilingual
+%%  gentiumplus  — Gentium Plus + NewCM Sans + DejaVu Mono + NewCM Math
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@gentiumplus}{%
+\newcommand{\cmcmsugostfont@xetex@set@gentiumplus}{%
     \typeout{Loading Gentium Plus font set}%
-    \cmcmsugost@xetex@gentiumplus{1}%
-    \cmcmsugost@xetex@sans@newcm{1.02}%
-    \cmcmsugost@xetex@mono@dejavumono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@newcm{1}%
+    \cmcmsugostfont@xetex@gentiumplus{1}%
+    \cmcmsugostfont@xetex@sans@newcm{1.02}%
+    \cmcmsugostfont@xetex@mono@dejavumono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@newcm{1}%
 }
 
-\newcommand{\cmcmsugost@xetex@set@stix}{%
+\newcommand{\cmcmsugostfont@xetex@set@stix}{%
     \typeout{Loading STIX2 font set}%
-    \cmcmsugost@xetex@stixtwo{1}%
-    \cmcmsugost@xetex@sans@newcm{1}%
-    \cmcmsugost@xetex@mono@jetbrainsmono{0.9}
-    \cmcmsugost@xetex@mathfont@stixmath{1}%
+    \cmcmsugostfont@xetex@stixtwo{1}%
+    \cmcmsugostfont@xetex@sans@newcm{1}%
+    \cmcmsugostfont@xetex@mono@jetbrainsmono{0.9}
+    \cmcmsugostfont@xetex@mathfont@stixmath{1}%
 }
 
 
 %% ----------------------------------------------------------------
-%%  playfair  — Playfair Display + Source Sans Pro + Source Code Pro + NewCM Math
-%%  Magazine / journal display style
+%%  playfair  — Domitian + Fira Sans + DejaVu Mono + NewCM Math
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@playfair}{%
+\newcommand{\cmcmsugostfont@xetex@set@playfair}{%
     \typeout{Loading Playfair Display font set}%
-    \cmcmsugost@xetex@domitian{1}%
-    \cmcmsugost@xetex@sans@firasans{1}%
-    \cmcmsugost@xetex@mono@dejavumono{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@newcm{1}%
+    \cmcmsugostfont@xetex@domitian{1}%
+    \cmcmsugostfont@xetex@sans@firasans{1}%
+    \cmcmsugostfont@xetex@mono@dejavumono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@newcm{1}%
 }
 
-\newcommand{\cmcmsugost@xetex@set@old}{%
-    \cmcmsugost@xetex@set@default%
+\newcommand{\cmcmsugostfont@xetex@set@old}{%
+    \cmcmsugostfont@xetex@set@default%
 }
 
-\newcommand{\cmcmsugost@xetex@set@modern}{%
-    \cmcmsugost@xetex@set@stix%
+\newcommand{\cmcmsugostfont@xetex@set@modern}{%
+    \cmcmsugostfont@xetex@set@stix%
 }
 
-\newcommand{\cmcmsugost@xetex@set@libert}{%
-    \cmcmsugost@xetex@set@libertinus%
+\newcommand{\cmcmsugostfont@xetex@set@libert}{%
+    \cmcmsugostfont@xetex@set@libertinus%
 }
 
-\newcommand{\cmcmsugost@xetex@set@fashion}{%
-    \cmcmsugost@xetex@set@ebgaramond%
+\newcommand{\cmcmsugostfont@xetex@set@fashion}{%
+    \cmcmsugostfont@xetex@set@ebgaramond%
 }
+
 %% ################################################################
 %%
 %%  Brill — академический шрифт издательства Brill (Лейден).
@@ -1132,141 +1268,213 @@
 %%
 %% ################################################################
 
-\newcommand{\cmcmsugost@xetex@set@brillkp}{%
-    \typeout{Loading Brill KP: Brill + KPMath + Alegreya Sana + Source Code Pro}%
-    \cmcmsugost@xetex@brill{1}%
-    \cmcmsugost@xetex@sans@alegreyasans{0.98}%
-    \cmcmsugost@xetex@mono@sourcecodepro{MatchLowercase}
-    \cmcmsugost@xetex@mathfont@kpmath{1}%
+\newcommand{\cmcmsugostfont@xetex@set@brillkp}{%
+    \typeout{Loading Brill KP: Brill + KPMath + Alegreya Sans + Source Code Pro}%
+    \cmcmsugostfont@xetex@brill{1}%
+    \cmcmsugostfont@xetex@sans@alegreyasans{0.98}%
+    \cmcmsugostfont@xetex@mono@sourcecodepro{MatchLowercase}
+    \cmcmsugostfont@xetex@mathfont@kpmath{1}%
     \setmathfont[range=\mathcal]{STIXTwoMath-Regular.otf}%
 }
 
-\newcommand{\cmcmsugost@xetex@set@brillstix}{%
-    \typeout{Loading Brill STIX: Brill + STIX2 Math + Alegreya Sana + Source Code Pro}%
-    \cmcmsugost@xetex@brill{1}%
-    \cmcmsugost@xetex@sans@alegreyasans{0.98}%
-    \cmcmsugost@xetex@mono@newcm{1}%
-    \cmcmsugost@xetex@mono@sourcecodepro{MatchLowercase}
-    \cmcmsugost@xetex@mathfont@stixmath{1}
+\newcommand{\cmcmsugostfont@xetex@set@brillstix}{%
+    \typeout{Loading Brill STIX: Brill + STIX2 Math + Alegreya Sans + Source Code Pro}%
+    \cmcmsugostfont@xetex@brill{1}%
+    \cmcmsugostfont@xetex@sans@alegreyasans{0.98}%
+    \cmcmsugostfont@xetex@mono@newcm{1}%
+    \cmcmsugostfont@xetex@mono@sourcecodepro{MatchLowercase}
+    \cmcmsugostfont@xetex@mathfont@stixmath{1}
 }
 
-\newcommand{\cmcmsugost@xetex@set@brilllibertinus}{%
-    \typeout{Loading Brill Libertinus: Brill + Libertinus Math + Alegreya Sana + Source Code Pro}%
-    \cmcmsugost@xetex@brill{1}%
-    \cmcmsugost@xetex@sans@alegreyasans{0.98}%
-    \cmcmsugost@xetex@mono@newcm{1}%
-    \cmcmsugost@xetex@mono@sourcecodepro{MatchLowercase}
-    \cmcmsugost@xetex@mathfont@libertinusmath{1}
+\newcommand{\cmcmsugostfont@xetex@set@brilllibertinus}{%
+    \typeout{Loading Brill Libertinus: Brill + Libertinus Math + Alegreya Sans + Source Code Pro}%
+    \cmcmsugostfont@xetex@brill{1}%
+    \cmcmsugostfont@xetex@sans@alegreyasans{0.98}%
+    \cmcmsugostfont@xetex@mono@newcm{1}%
+    \cmcmsugostfont@xetex@mono@sourcecodepro{MatchLowercase}
+    \cmcmsugostfont@xetex@mathfont@libertinusmath{1}
     \setmathfont[range=\mathcal]{STIXTwoMath-Regular.otf}%
 }
 
 %% ----------------------------------------------------------------
-%%  set@officeclassic  — Times New Roman + Arial + Courier New
-%%  Классический офисный набор, требуемый рядом институциональных
-%%  стандартов. Работает только если шрифты установлены в системе.
-%%  На Linux: sudo apt install ttf-mscorefonts-installer
-%%  На macOS: входят в систему по умолчанию
+%%  set@msoffice  — Times New Roman + Arial + Courier New
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugost@xetex@set@msoffice}{%
+\newcommand{\cmcmsugostfont@xetex@set@msoffice}{%
     \RequirePackage{unicode-math}
     \typeout{Loading Office Classic set (Times New Roman + Arial + Courier New)}%
     \typeout{NOTE: requires MS Core Fonts installed in the system}%
-    \cmcmsugost@xetex@timesnewroman{1}%
-    \cmcmsugost@xetex@sans@arial{1}%
-    \cmcmsugost@xetex@mono@couriernew{MatchLowercase}%
-    \cmcmsugost@xetex@mathfont@stixmath{1}
+    \cmcmsugostfont@xetex@timesnewroman{1}%
+    \cmcmsugostfont@xetex@sans@arial{1}%
+    \cmcmsugostfont@xetex@mono@couriernew{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@stixmath{1}
 }
 
 %% ################################################################
 
-\RequirePackage{iftex}
+% ================================================================
+% Upright Greek (шрифтовые настройки — остаются в fontselector)
+% ================================================================
+
+% ------------------------------------------------
+% Upright Greek by default in math mode
+% Works with XeLaTeX/LuaLaTeX and pdfLaTeX
+% ------------------------------------------------
+\newcommand{\cmcmsugostfont@upgreek@apply}{
+    \ifPDFTeX%
+        \@ifundefined{upalpha}{\RequirePackage{upgreek}}{}
+        \AtEndPreamble{
+            \let\alpha\upalpha%
+            \let\beta\upbeta%
+            \let\gamma\upgamma%
+            \let\delta\updelta%
+            \let\epsilon\upepsilon%
+            \let\varepsilon\upvarepsilon%
+            \let\theta\uptheta%
+            \let\vartheta\upvartheta%
+            \let\lambda\uplambda%
+            \let\mu\upmu%
+            \let\pi\uppi%
+            \let\varpi\upvarpi%
+            \let\rho\uprho%
+            \let\varrho\upvarrho%
+            \let\sigma\upsigma%
+            \let\varsigma\upvarsigma%
+            \let\phi\upphi%
+            \let\varphi\upvarphi%
+            \let\omega\upomega%
+            \let\Gamma\Upgamma%
+            \let\Delta\Updelta%
+            \let\Theta\Uptheta%
+            \let\Lambda\Uplambda%
+            \let\Xi\Upxi%
+            \let\Pi\Uppi%
+            \let\Sigma\Upsigma%
+            \let\Upsilon\Upupsilon%
+            \let\Phi\Upphi%
+            \let\Psi\Uppsi%
+            \let\Omega\Upomega%
+        }
+    \else
+        % Для XeLaTeX/LuaLaTeX: math-style=french передаётся
+        % через PassOptionsToPackage ниже, до загрузки шрифтов
+        \AtEndPreamble{\unimathsetup{math-style=french}}
+    \fi
+}
+
+% ================================================================
+% Применение upgreek (до загрузки шрифтов)
+% rumath=true активирует upgreek + экспортирует флаг для extra
+% ================================================================
+\ifcmcmsugostfont@rumath%
+    \cmcmsugostfont@upgreek@apply%
+\else
+    \ifcmcmsugostfont@upgreek%
+        \cmcmsugostfont@upgreek@apply%
+    \fi
+\fi
+
+% Для XeLaTeX/LuaLaTeX: если upgreek включён,
+% передаём math-style=french до загрузки unicode-math
+\ifPDFTeX\else
+    \ifcmcmsugostfont@rumath
+        \PassOptionsToPackage{math-style=french}{unicode-math}
+    \else
+        \ifcmcmsugostfont@upgreek
+            \PassOptionsToPackage{math-style=french}{unicode-math}
+        \fi
+    \fi
+\fi
+
+% ================================================================
+% Диспетчер загрузки шрифтов
+% ================================================================
 
 \ifPDFTeX%
-    \@ifundefined{cmcmsugost@tex@set@\cmcmsugost@font}{
-        \@ifundefined{cmcmsugost@tex@\cmcmsugost@font}{
+    \@ifundefined{cmcmsugostfont@tex@set@\cmcmsugostfont@font}{
+        \@ifundefined{cmcmsugostfont@tex@\cmcmsugostfont@font}{
             \PackageError{cmcmsugost-fontselector}{
-                Unknown font or font set '\cmcmsugost@font' in TeX mode}{}
+                Unknown font or font set '\cmcmsugostfont@font' in TeX mode}{}
         }{
-            \edef\cmcmsugost@dispatch{%
-                cmcmsugost@tex@\cmcmsugost@font}
-            \expandafter\csname\cmcmsugost@dispatch\endcsname%
+            \edef\cmcmsugostfont@dispatch{%
+                cmcmsugostfont@tex@\cmcmsugostfont@font}
+            \expandafter\csname\cmcmsugostfont@dispatch\endcsname%
         }
         \@ifundefined{%
-            cmcmsugost@tex@mathfont@\cmcmsugost@mathfont}{
+            cmcmsugostfont@tex@mathfont@\cmcmsugostfont@mathfont}{
             \PackageError{cmcmsugost-fontselector}{
-                Unknown math font '\cmcmsugost@mathfont' in TeX mode}{}
+                Unknown math font '\cmcmsugostfont@mathfont' in TeX mode}{}
         }{
-            \edef\cmcmsugost@dispatch{%
-                cmcmsugost@tex@mathfont@\cmcmsugost@mathfont}
-            \expandafter\csname\cmcmsugost@dispatch\endcsname%
+            \edef\cmcmsugostfont@dispatch{%
+                cmcmsugostfont@tex@mathfont@\cmcmsugostfont@mathfont}
+            \expandafter\csname\cmcmsugostfont@dispatch\endcsname%
         }
         \@ifundefined{%
-            cmcmsugost@tex@sans@\cmcmsugost@sans}{
+            cmcmsugostfont@tex@sans@\cmcmsugostfont@sans}{
             \PackageError{cmcmsugost-fontselector}{
-                Unknown sans font '\cmcmsugost@sans' in TeX mode}{}
+                Unknown sans font '\cmcmsugostfont@sans' in TeX mode}{}
         }{
-            \edef\cmcmsugost@dispatch{%
-                cmcmsugost@tex@sans@\cmcmsugost@sans}
-            \expandafter\csname\cmcmsugost@dispatch\endcsname%
+            \edef\cmcmsugostfont@dispatch{%
+                cmcmsugostfont@tex@sans@\cmcmsugostfont@sans}
+            \expandafter\csname\cmcmsugostfont@dispatch\endcsname%
         }
         \@ifundefined{%
-            cmcmsugost@tex@mono@\cmcmsugost@mono}{
+            cmcmsugostfont@tex@mono@\cmcmsugostfont@mono}{
             \PackageError{cmcmsugost-fontselector}{
-                Unknown mono font '\cmcmsugost@sans' in TeX mode}{}
+                Unknown mono font '\cmcmsugostfont@mono' in TeX mode}{}
         }{
-            \edef\cmcmsugost@dispatch{%
-                cmcmsugost@tex@mono@\cmcmsugost@mono}
-            \expandafter\csname\cmcmsugost@dispatch\endcsname%
+            \edef\cmcmsugostfont@dispatch{%
+                cmcmsugostfont@tex@mono@\cmcmsugostfont@mono}
+            \expandafter\csname\cmcmsugostfont@dispatch\endcsname%
         }
     }{
-        \edef\cmcmsugost@dispatch{%
-            cmcmsugost@tex@set@\cmcmsugost@font}
-        \expandafter\csname\cmcmsugost@dispatch\endcsname%
+        \edef\cmcmsugostfont@dispatch{%
+            cmcmsugostfont@tex@set@\cmcmsugostfont@font}
+        \expandafter\csname\cmcmsugostfont@dispatch\endcsname%
     }
 \else%
     % XeTeX/LuaLaTeX
-    \@ifundefined{cmcmsugost@xetex@set@\cmcmsugost@font}{
-        \@ifundefined{cmcmsugost@xetex@\cmcmsugost@font}{
+    \@ifundefined{cmcmsugostfont@xetex@set@\cmcmsugostfont@font}{
+        \@ifundefined{cmcmsugostfont@xetex@\cmcmsugostfont@font}{
             \PackageError{cmcmsugost-fontselector}{
-                Unknown font or font set '\cmcmsugost@font' in XeTeX/LuaTeX mode}{}
+                Unknown font or font set '\cmcmsugostfont@font' in XeTeX/LuaTeX mode}{}
         }{
-            \edef\cmcmsugost@dispatch{%
-                cmcmsugost@xetex@\cmcmsugost@font}
-            \expandafter\csname\cmcmsugost@dispatch%
-            \endcsname{\cmcmsugost@fontscale}%
+            \edef\cmcmsugostfont@dispatch{%
+                cmcmsugostfont@xetex@\cmcmsugostfont@font}
+            \expandafter\csname\cmcmsugostfont@dispatch%
+            \endcsname{\cmcmsugostfont@fontscale}%
         }
-        \@ifundefined{cmcmsugost@xetex@sans@\cmcmsugost@sans}{
+        \@ifundefined{cmcmsugostfont@xetex@sans@\cmcmsugostfont@sans}{
             \PackageError{cmcmsugost-fontselector}{
-                Unknown sans font '\cmcmsugost@sans' in XeTeX/LuaTeX mode}{}
+                Unknown sans font '\cmcmsugostfont@sans' in XeTeX/LuaTeX mode}{}
         }{
-            \edef\cmcmsugost@dispatch{%
-                cmcmsugost@xetex@sans@\cmcmsugost@sans}
-            \expandafter\csname\cmcmsugost@dispatch%
-            \endcsname{\cmcmsugost@sansscale}%
+            \edef\cmcmsugostfont@dispatch{%
+                cmcmsugostfont@xetex@sans@\cmcmsugostfont@sans}
+            \expandafter\csname\cmcmsugostfont@dispatch%
+            \endcsname{\cmcmsugostfont@sansscale}%
         }
-        \@ifundefined{cmcmsugost@xetex@mono@\cmcmsugost@mono}{
+        \@ifundefined{cmcmsugostfont@xetex@mono@\cmcmsugostfont@mono}{
             \PackageError{cmcmsugost-fontselector}{
-                Unknown mono font '\cmcmsugost@mono' in XeTeX/LuaTeX mode}{}
+                Unknown mono font '\cmcmsugostfont@mono' in XeTeX/LuaTeX mode}{}
         }{
-            \edef\cmcmsugost@dispatch{%
-                cmcmsugost@xetex@mono@\cmcmsugost@mono}
-            \expandafter\csname\cmcmsugost@dispatch%
-            \endcsname{\cmcmsugost@monoscale}%
+            \edef\cmcmsugostfont@dispatch{%
+                cmcmsugostfont@xetex@mono@\cmcmsugostfont@mono}
+            \expandafter\csname\cmcmsugostfont@dispatch%
+            \endcsname{\cmcmsugostfont@monoscale}%
         }
         \@ifundefined{%
-            cmcmsugost@xetex@mathfont@\cmcmsugost@mathfont}{
+            cmcmsugostfont@xetex@mathfont@\cmcmsugostfont@mathfont}{
             \PackageError{cmcmsugost-fontselector}{
-                Unknown math font '\cmcmsugost@mathfont' in XeTeX/LuaTeX mode}{}
+                Unknown math font '\cmcmsugostfont@mathfont' in XeTeX/LuaTeX mode}{}
         }{
-            \edef\cmcmsugost@dispatch{%
-                cmcmsugost@xetex@mathfont@\cmcmsugost@mathfont}
-            \expandafter\csname\cmcmsugost@dispatch%
-            \endcsname{\cmcmsugost@mathfontscale}%
+            \edef\cmcmsugostfont@dispatch{%
+                cmcmsugostfont@xetex@mathfont@\cmcmsugostfont@mathfont}
+            \expandafter\csname\cmcmsugostfont@dispatch%
+            \endcsname{\cmcmsugostfont@mathfontscale}%
         }
     }{
-        \edef\cmcmsugost@dispatch{%
-            cmcmsugost@xetex@set@\cmcmsugost@font}
-        \expandafter\csname\cmcmsugost@dispatch\endcsname%
+        \edef\cmcmsugostfont@dispatch{%
+            cmcmsugostfont@xetex@set@\cmcmsugostfont@font}
+        \expandafter\csname\cmcmsugostfont@dispatch\endcsname%
     }
 
 \fi
