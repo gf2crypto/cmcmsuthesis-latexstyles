@@ -51,10 +51,6 @@
 
 \DeclareStringOption[russian]{lang}
 
-\DeclareBoolOption[false]{rumath}
-\DeclareVoidOption{rumathon}{\cmcmsugostfont@rumathtrue}
-\DeclareVoidOption{rumathoff}{\cmcmsugostfont@rumathfalse}
-
 \DeclareBoolOption[false]{upgreek}
 \DeclareVoidOption{upgreekon}{\cmcmsugostfont@upgreektrue}
 \DeclareVoidOption{upgreekoff}{\cmcmsugostfont@upgreekfalse}
@@ -65,9 +61,6 @@
 % Setup-команда
 % ================================================================
 \RequirePackage{keyval}
-\define@key{cmcmsugostfontsetup}{rumath}[true]{%
-    \ifstrequal{#1}{true}{\cmcmsugostfont@rumathtrue}{\cmcmsugostfont@rumathfalse}%
-}
 \define@key{cmcmsugostfontsetup}{upgreek}[true]{%
     \ifstrequal{#1}{true}{\cmcmsugostfont@upgreektrue}{\cmcmsugostfont@upgreekfalse}%
 }
@@ -220,11 +213,6 @@
         \newcommand{\symbfup}[1]{%
             \ensuremath{\boldsymbol{\symup{##1}}}}%
     }{}%
-}
-
-% Применяем ProvideSymbf в конце преамбулы (после загрузки шрифтов)
-\AtEndPreamble{%
-    \cmcmsugostfont@ProvideSymbf%
 }
 
 %% #################################################################
@@ -1316,168 +1304,177 @@
 % ================================================================
 
 % ------------------------------------------------
-% Upright Greek by default in math mode
-% Works with XeLaTeX/LuaLaTeX and pdfLaTeX
+% Upright Greek helpers (split into pre-font and post-font phases)
 % ------------------------------------------------
-\newcommand{\cmcmsugostfont@upgreek@apply}{
-    \ifPDFTeX%
-        \@ifundefined{upalpha}{\RequirePackage{upgreek}}{}
-        \AtEndPreamble{
-            \let\alpha\upalpha%
-            \let\beta\upbeta%
-            \let\gamma\upgamma%
-            \let\delta\updelta%
-            \let\epsilon\upepsilon%
-            \let\varepsilon\upvarepsilon%
-            \let\theta\uptheta%
-            \let\vartheta\upvartheta%
-            \let\lambda\uplambda%
-            \let\mu\upmu%
-            \let\pi\uppi%
-            \let\varpi\upvarpi%
-            \let\rho\uprho%
-            \let\varrho\upvarrho%
-            \let\sigma\upsigma%
-            \let\varsigma\upvarsigma%
-            \let\phi\upphi%
-            \let\varphi\upvarphi%
-            \let\omega\upomega%
-            \let\Gamma\Upgamma%
-            \let\Delta\Updelta%
-            \let\Theta\Uptheta%
-            \let\Lambda\Uplambda%
-            \let\Xi\Upxi%
-            \let\Pi\Uppi%
-            \let\Sigma\Upsigma%
-            \let\Upsilon\Upupsilon%
-            \let\Phi\Upphi%
-            \let\Psi\Uppsi%
-            \let\Omega\Upomega%
-        }
+
+%% Phase 1 (before font dispatcher):
+%%   pdfLaTeX  — load upgreek package
+%%   XeLaTeX   — PassOptionsToPackage{math-style=french}{unicode-math}
+\newcommand{\cmcmsugostfont@upgreek@preload}{%
+    \ifPDFTeX
+        \@ifundefined{upalpha}{\RequirePackage{upgreek}}{}%
     \else
-        % Для XeLaTeX/LuaLaTeX: math-style=french передаётся
-        % через PassOptionsToPackage ниже, до загрузки шрифтов
-        \AtEndPreamble{\unimathsetup{math-style=french}}
+        \PassOptionsToPackage{math-style=french}{unicode-math}%
     \fi
 }
 
-% ================================================================
-% Применение upgreek (до загрузки шрифтов)
-% rumath=true активирует upgreek + экспортирует флаг для extra
-% ================================================================
-\ifcmcmsugostfont@rumath%
-    \cmcmsugostfont@upgreek@apply%
-\else
-    \ifcmcmsugostfont@upgreek%
-        \cmcmsugostfont@upgreek@apply%
+%% Phase 2 (after font dispatcher, i.e. after fonts are loaded):
+%%   pdfLaTeX  — remap Greek letters to upright variants
+%%   XeLaTeX   — nothing (math-style=french already took effect)
+\newcommand{\cmcmsugostfont@upgreek@remap}{%
+    \ifPDFTeX
+        \let\alpha\upalpha%
+        \let\beta\upbeta%
+        \let\gamma\upgamma%
+        \let\delta\updelta%
+        \let\epsilon\upepsilon%
+        \let\varepsilon\upvarepsilon%
+        \let\theta\uptheta%
+        \let\vartheta\upvartheta%
+        \let\lambda\uplambda%
+        \let\mu\upmu%
+        \let\pi\uppi%
+        \let\varpi\upvarpi%
+        \let\rho\uprho%
+        \let\varrho\upvarrho%
+        \let\sigma\upsigma%
+        \let\varsigma\upvarsigma%
+        \let\phi\upphi%
+        \let\varphi\upvarphi%
+        \let\omega\upomega%
+        \let\Gamma\Upgamma%
+        \let\Delta\Updelta%
+        \let\Theta\Uptheta%
+        \let\Lambda\Uplambda%
+        \let\Xi\Upxi%
+        \let\Pi\Uppi%
+        \let\Sigma\Upsigma%
+        \let\Upsilon\Upupsilon%
+        \let\Phi\Upphi%
+        \let\Psi\Uppsi%
+        \let\Omega\Upomega%
     \fi
-\fi
+}
 
-% Для XeLaTeX/LuaLaTeX: если upgreek включён,
-% передаём math-style=french до загрузки unicode-math
-\ifPDFTeX\else
-    \ifcmcmsugostfont@rumath
-        \PassOptionsToPackage{math-style=french}{unicode-math}
-    \else
-        \ifcmcmsugostfont@upgreek
-            \PassOptionsToPackage{math-style=french}{unicode-math}
-        \fi
+%% Legacy alias (kept for compatibility if called elsewhere)
+\newcommand{\cmcmsugostfont@upgreek@apply}{%
+    \cmcmsugostfont@upgreek@preload
+    \cmcmsugostfont@upgreek@remap
+}
+
+% ================================================================
+% Отложенная загрузка: upgreek, PassOptionsToPackage, диспетчер
+% шрифтов и ProvideSymbf — всё выполняется в конце преамбулы,
+% чтобы \cmcmsugostfontsetup{...} успел изменить опции.
+%
+% Порядок:
+%   1. upgreek@preload — грузит upgreek (pdfLaTeX) или
+%      PassOptionsToPackage (XeLaTeX) ДО шрифтов
+%   2. Диспетчер шрифтов — грузит шрифтовые пакеты
+%   3. upgreek@remap — переопределяет греческие буквы ПОСЛЕ шрифтов
+%   4. ProvideSymbf — обеспечивает \symbf и др. ПОСЛЕ шрифтов
+% ================================================================
+\AtEndPreamble{%
+    %% 1. Pre-font: upgreek / math-style=french (до загрузки шрифтов)
+    \ifcmcmsugostfont@upgreek
+        \cmcmsugostfont@upgreek@preload
     \fi
-\fi
-
-% ================================================================
-% Диспетчер загрузки шрифтов
-% ================================================================
-
-\ifPDFTeX%
-    \@ifundefined{cmcmsugostfont@tex@set@\cmcmsugostfont@font}{
-        \@ifundefined{cmcmsugostfont@tex@\cmcmsugostfont@font}{
-            \PackageError{cmcmsugost-fontselector}{
-                Unknown font or font set '\cmcmsugostfont@font' in TeX mode}{}
+    %% 2. Диспетчер загрузки шрифтов
+    \ifPDFTeX%
+        \@ifundefined{cmcmsugostfont@tex@set@\cmcmsugostfont@font}{
+            \@ifundefined{cmcmsugostfont@tex@\cmcmsugostfont@font}{
+                \PackageError{cmcmsugost-fontselector}{
+                    Unknown font or font set '\cmcmsugostfont@font' in TeX mode}{}
+            }{
+                \edef\cmcmsugostfont@dispatch{%
+                    cmcmsugostfont@tex@\cmcmsugostfont@font}
+                \expandafter\csname\cmcmsugostfont@dispatch\endcsname%
+            }
+            \@ifundefined{%
+                cmcmsugostfont@tex@mathfont@\cmcmsugostfont@mathfont}{
+                \PackageError{cmcmsugost-fontselector}{
+                    Unknown math font '\cmcmsugostfont@mathfont' in TeX mode}{}
+            }{
+                \edef\cmcmsugostfont@dispatch{%
+                    cmcmsugostfont@tex@mathfont@\cmcmsugostfont@mathfont}
+                \expandafter\csname\cmcmsugostfont@dispatch\endcsname%
+            }
+            \@ifundefined{%
+                cmcmsugostfont@tex@sans@\cmcmsugostfont@sans}{
+                \PackageError{cmcmsugost-fontselector}{
+                    Unknown sans font '\cmcmsugostfont@sans' in TeX mode}{}
+            }{
+                \edef\cmcmsugostfont@dispatch{%
+                    cmcmsugostfont@tex@sans@\cmcmsugostfont@sans}
+                \expandafter\csname\cmcmsugostfont@dispatch\endcsname%
+            }
+            \@ifundefined{%
+                cmcmsugostfont@tex@mono@\cmcmsugostfont@mono}{
+                \PackageError{cmcmsugost-fontselector}{
+                    Unknown mono font '\cmcmsugostfont@mono' in TeX mode}{}
+            }{
+                \edef\cmcmsugostfont@dispatch{%
+                    cmcmsugostfont@tex@mono@\cmcmsugostfont@mono}
+                \expandafter\csname\cmcmsugostfont@dispatch\endcsname%
+            }
         }{
             \edef\cmcmsugostfont@dispatch{%
-                cmcmsugostfont@tex@\cmcmsugostfont@font}
+                cmcmsugostfont@tex@set@\cmcmsugostfont@font}
             \expandafter\csname\cmcmsugostfont@dispatch\endcsname%
         }
-        \@ifundefined{%
-            cmcmsugostfont@tex@mathfont@\cmcmsugostfont@mathfont}{
-            \PackageError{cmcmsugost-fontselector}{
-                Unknown math font '\cmcmsugostfont@mathfont' in TeX mode}{}
+    \else%
+        % XeTeX/LuaLaTeX
+        \@ifundefined{cmcmsugostfont@xetex@set@\cmcmsugostfont@font}{
+            \@ifundefined{cmcmsugostfont@xetex@\cmcmsugostfont@font}{
+                \PackageError{cmcmsugost-fontselector}{
+                    Unknown font or font set '\cmcmsugostfont@font' in XeTeX/LuaTeX mode}{}
+            }{
+                \edef\cmcmsugostfont@dispatch{%
+                    cmcmsugostfont@xetex@\cmcmsugostfont@font}
+                \expandafter\csname\cmcmsugostfont@dispatch%
+                \endcsname{\cmcmsugostfont@fontscale}%
+            }
+            \@ifundefined{cmcmsugostfont@xetex@sans@\cmcmsugostfont@sans}{
+                \PackageError{cmcmsugost-fontselector}{
+                    Unknown sans font '\cmcmsugostfont@sans' in XeTeX/LuaTeX mode}{}
+            }{
+                \edef\cmcmsugostfont@dispatch{%
+                    cmcmsugostfont@xetex@sans@\cmcmsugostfont@sans}
+                \expandafter\csname\cmcmsugostfont@dispatch%
+                \endcsname{\cmcmsugostfont@sansscale}%
+            }
+            \@ifundefined{cmcmsugostfont@xetex@mono@\cmcmsugostfont@mono}{
+                \PackageError{cmcmsugost-fontselector}{
+                    Unknown mono font '\cmcmsugostfont@mono' in XeTeX/LuaTeX mode}{}
+            }{
+                \edef\cmcmsugostfont@dispatch{%
+                    cmcmsugostfont@xetex@mono@\cmcmsugostfont@mono}
+                \expandafter\csname\cmcmsugostfont@dispatch%
+                \endcsname{\cmcmsugostfont@monoscale}%
+            }
+            \@ifundefined{%
+                cmcmsugostfont@xetex@mathfont@\cmcmsugostfont@mathfont}{
+                \PackageError{cmcmsugost-fontselector}{
+                    Unknown math font '\cmcmsugostfont@mathfont' in XeTeX/LuaTeX mode}{}
+            }{
+                \edef\cmcmsugostfont@dispatch{%
+                    cmcmsugostfont@xetex@mathfont@\cmcmsugostfont@mathfont}
+                \expandafter\csname\cmcmsugostfont@dispatch%
+                \endcsname{\cmcmsugostfont@mathfontscale}%
+            }
         }{
             \edef\cmcmsugostfont@dispatch{%
-                cmcmsugostfont@tex@mathfont@\cmcmsugostfont@mathfont}
+                cmcmsugostfont@xetex@set@\cmcmsugostfont@font}
             \expandafter\csname\cmcmsugostfont@dispatch\endcsname%
         }
-        \@ifundefined{%
-            cmcmsugostfont@tex@sans@\cmcmsugostfont@sans}{
-            \PackageError{cmcmsugost-fontselector}{
-                Unknown sans font '\cmcmsugostfont@sans' in TeX mode}{}
-        }{
-            \edef\cmcmsugostfont@dispatch{%
-                cmcmsugostfont@tex@sans@\cmcmsugostfont@sans}
-            \expandafter\csname\cmcmsugostfont@dispatch\endcsname%
-        }
-        \@ifundefined{%
-            cmcmsugostfont@tex@mono@\cmcmsugostfont@mono}{
-            \PackageError{cmcmsugost-fontselector}{
-                Unknown mono font '\cmcmsugostfont@mono' in TeX mode}{}
-        }{
-            \edef\cmcmsugostfont@dispatch{%
-                cmcmsugostfont@tex@mono@\cmcmsugostfont@mono}
-            \expandafter\csname\cmcmsugostfont@dispatch\endcsname%
-        }
-    }{
-        \edef\cmcmsugostfont@dispatch{%
-            cmcmsugostfont@tex@set@\cmcmsugostfont@font}
-        \expandafter\csname\cmcmsugostfont@dispatch\endcsname%
-    }
-\else%
-    % XeTeX/LuaLaTeX
-    \@ifundefined{cmcmsugostfont@xetex@set@\cmcmsugostfont@font}{
-        \@ifundefined{cmcmsugostfont@xetex@\cmcmsugostfont@font}{
-            \PackageError{cmcmsugost-fontselector}{
-                Unknown font or font set '\cmcmsugostfont@font' in XeTeX/LuaTeX mode}{}
-        }{
-            \edef\cmcmsugostfont@dispatch{%
-                cmcmsugostfont@xetex@\cmcmsugostfont@font}
-            \expandafter\csname\cmcmsugostfont@dispatch%
-            \endcsname{\cmcmsugostfont@fontscale}%
-        }
-        \@ifundefined{cmcmsugostfont@xetex@sans@\cmcmsugostfont@sans}{
-            \PackageError{cmcmsugost-fontselector}{
-                Unknown sans font '\cmcmsugostfont@sans' in XeTeX/LuaTeX mode}{}
-        }{
-            \edef\cmcmsugostfont@dispatch{%
-                cmcmsugostfont@xetex@sans@\cmcmsugostfont@sans}
-            \expandafter\csname\cmcmsugostfont@dispatch%
-            \endcsname{\cmcmsugostfont@sansscale}%
-        }
-        \@ifundefined{cmcmsugostfont@xetex@mono@\cmcmsugostfont@mono}{
-            \PackageError{cmcmsugost-fontselector}{
-                Unknown mono font '\cmcmsugostfont@mono' in XeTeX/LuaTeX mode}{}
-        }{
-            \edef\cmcmsugostfont@dispatch{%
-                cmcmsugostfont@xetex@mono@\cmcmsugostfont@mono}
-            \expandafter\csname\cmcmsugostfont@dispatch%
-            \endcsname{\cmcmsugostfont@monoscale}%
-        }
-        \@ifundefined{%
-            cmcmsugostfont@xetex@mathfont@\cmcmsugostfont@mathfont}{
-            \PackageError{cmcmsugost-fontselector}{
-                Unknown math font '\cmcmsugostfont@mathfont' in XeTeX/LuaTeX mode}{}
-        }{
-            \edef\cmcmsugostfont@dispatch{%
-                cmcmsugostfont@xetex@mathfont@\cmcmsugostfont@mathfont}
-            \expandafter\csname\cmcmsugostfont@dispatch%
-            \endcsname{\cmcmsugostfont@mathfontscale}%
-        }
-    }{
-        \edef\cmcmsugostfont@dispatch{%
-            cmcmsugostfont@xetex@set@\cmcmsugostfont@font}
-        \expandafter\csname\cmcmsugostfont@dispatch\endcsname%
-    }
-
-\fi
+    \fi
+    %% 3. Post-font: remap Greek letters (pdfLaTeX only, после загрузки шрифтов)
+    \ifcmcmsugostfont@upgreek
+        \cmcmsugostfont@upgreek@remap
+    \fi
+    %% 4. ProvideSymbf (после загрузки шрифтов)
+    \cmcmsugostfont@ProvideSymbf
+}
 
 
 \makeatother

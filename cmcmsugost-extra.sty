@@ -20,7 +20,7 @@
 
 %%% alg=off (no algorithms)
 %%% alg=2e -> loading algorithm2e
-\DeclareStringOption[off]{alg}[2e]
+\DeclareStringOption[2e]{alg}[2e]
 \def\cmcmsugostextra@algoff{off}
 \def\cmcmsugostextra@algtwoe{2e}
 
@@ -72,14 +72,6 @@
     \setkeys{cmcmsugostextrasetup}{#1}%
 }
 
-% ================================================================
-% Авто-активация rumathop по флагу rumath из fontselector
-% ================================================================
-\@ifpackageloaded{cmcmsugost-fontselector}{%
-    \ifcmcmsugostfont@rumath%
-        \cmcmsugostextra@rumathoptrue%
-    \fi
-}{}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Translations
@@ -505,89 +497,79 @@ mathescape = true
 }%
 
 \newcommand{\cmcmsugostextra@SetBibLaTeX}{
-    \RequirePackage{csquotes}
-    \RequirePackage[%
-        backend=biber,
-        bibencoding=utf8,
-        sorting=none,
-        style=gost-numeric,
-        autolang=other,
-        clearlang=true,
-        defernumbers=true,
-        sortcites=true,
-        doi=false,
-        isbn=false,
-    ]{biblatex}
-    % # Исправление случая неподдержки знака номера в pdflatex
-    \DefineBibliographyStrings{russian}{number={\textnumero}}
-    \DeclareSourcemap{ % модификация bib-файла перед тем, как им займётся biblatex
-        \maps{
-            \map{% используем media=text по умолчанию
-                \step[fieldset=media, fieldvalue=text]
-            }
-            \map{% перекидываем значения поля language в поле langid, которым пользуется biblatex
-                \step[fieldsource=language, fieldset=langid, origfieldval, final]
-                \step[fieldset=language, null]
-            }
-            \map{% перекидываем значения поля numpages в поле pagetotal, которым пользуется biblatex
-                \step[fieldsource=numpages, fieldset=pagetotal, origfieldval, final]
-                \step[fieldset=numpages, null]
-            }
-            \map{% перекидываем значения поля pagestotal в поле pagetotal, которым пользуется biblatex
-                \step[fieldsource=pagestotal, fieldset=pagetotal, origfieldval, final]
-                \step[fieldset=pagestotal, null]
-            }
-            \map[overwrite]{% если есть shortjournal, используем его вместо journal
-                \step[fieldsource=shortjournal, final]
-                \step[fieldset=journal, origfieldval]
-                \step[fieldset=shortjournal, null]
-            }
-            \map[overwrite]{% если есть shortbooktitle, используем его вместо booktitle
-                \step[fieldsource=shortbooktitle, final]
-                \step[fieldset=booktitle, origfieldval]
-                \step[fieldset=shortbooktitle, null]
-            }
-            \map[overwrite]{% если в поле medium написано "Электронный ресурс", устанавливаем media=eresource
-                \step[fieldsource=medium,
-                    match=\regexp{Электронный\s+ресурс},
-                    final]
-                \step[fieldset=media, fieldvalue=eresource]
-                \step[fieldset=medium, null]
-            }
-            \map[overwrite]{% стираем значения всех полей issn
-                \step[fieldset=issn, null]
-            }
-            \map[overwrite]{% стираем значения поля abstract, поскольку им не пользуемся, а там бывают проблемные символы
-                \step[fieldsource=abstract]
-                \step[fieldset=abstract, null]
-            }
-            \map[overwrite]{% переделка формата записи даты обращения
-                \step[fieldsource=urldate,
-                    match=\regexp{([0-9]{2})\.([0-9]{2})\.([0-9]{4})},
-                    replace={$3-$2-$1$4},
-                    final]
-            }
-            \map[overwrite]{% стираем ключевые слова
-                \step[fieldsource=keywords]
-                \step[fieldset=keywords, null]
-            }
-            \map[overwrite]{% для типа online перекидываем howpublished в organization
-                \step[typesource=online, typetarget=online, final]
-                \step[fieldsource=howpublished, fieldset=organization, origfieldval]
-                \step[fieldset=howpublished, null]
+    \@ifpackageloaded{biblatex}{%
+        \typeout{Loading BIBLATEX and Patching IT}
+        % # Исправление случая неподдержки знака номера в pdflatex
+        \DefineBibliographyStrings{russian}{number={\textnumero}}
+        \DeclareSourcemap{ % модификация bib-файла перед тем, как им займётся biblatex
+            \maps{
+                \map{% используем media=text по умолчанию
+                    \step[fieldset=media, fieldvalue=text]
+                }
+                \map{% перекидываем значения поля language в поле langid, которым пользуется biblatex
+                    \step[fieldsource=language, fieldset=langid, origfieldval, final]
+                    \step[fieldset=language, null]
+                }
+                \map{% перекидываем значения поля numpages в поле pagetotal, которым пользуется biblatex
+                    \step[fieldsource=numpages, fieldset=pagetotal, origfieldval, final]
+                    \step[fieldset=numpages, null]
+                }
+                \map{% перекидываем значения поля pagestotal в поле pagetotal, которым пользуется biblatex
+                    \step[fieldsource=pagestotal, fieldset=pagetotal, origfieldval, final]
+                    \step[fieldset=pagestotal, null]
+                }
+                \map[overwrite]{% если есть shortjournal, используем его вместо journal
+                    \step[fieldsource=shortjournal, final]
+                    \step[fieldset=journal, origfieldval]
+                    \step[fieldset=shortjournal, null]
+                }
+                \map[overwrite]{% если есть shortbooktitle, используем его вместо booktitle
+                    \step[fieldsource=shortbooktitle, final]
+                    \step[fieldset=booktitle, origfieldval]
+                    \step[fieldset=shortbooktitle, null]
+                }
+                \map[overwrite]{% если в поле medium написано "Электронный ресурс", устанавливаем media=eresource
+                    \step[fieldsource=medium,
+                        match=\regexp{Электронный\s+ресурс},
+                        final]
+                    \step[fieldset=media, fieldvalue=eresource]
+                    \step[fieldset=medium, null]
+                }
+                \map[overwrite]{% стираем значения всех полей issn
+                    \step[fieldset=issn, null]
+                }
+                \map[overwrite]{% стираем значения поля abstract, поскольку им не пользуемся, а там бывают проблемные символы
+                    \step[fieldsource=abstract]
+                    \step[fieldset=abstract, null]
+                }
+                \map[overwrite]{% переделка формата записи даты обращения
+                    \step[fieldsource=urldate,
+                        match=\regexp{([0-9]{2})\.([0-9]{2})\.([0-9]{4})},
+                        replace={$3-$2-$1$4},
+                        final]
+                }
+                \map[overwrite]{% стираем ключевые слова
+                    \step[fieldsource=keywords]
+                    \step[fieldset=keywords, null]
+                }
+                \map[overwrite]{% для типа online перекидываем howpublished в organization
+                    \step[typesource=online, typetarget=online, final]
+                    \step[fieldsource=howpublished, fieldset=organization, origfieldval]
+                    \step[fieldset=howpublished, null]
+                }
             }
         }
-    }
 
-    % # В списке литературы обозначение одной буквой диапазона страниц англоязычного источника %%%
-    \DefineBibliographyStrings{english}{%
-        pages = {p\adddot} %заглавность буквы затем по месту определяется работой самого biblatex
-    }
-    % # Set higher penalty for breaking in number, dates and pages ranges
-    \setcounter{abbrvpenalty}{10000} % default is \hyphenpenalty which is 12
-    % # Set higher penalty for breaking in names
-    \setcounter{highnamepenalty}{10000}
-    \setcounter{lownamepenalty}{10000}
+        % # В списке литературы обозначение одной буквой диапазона страниц англоязычного источника %%%
+        \DefineBibliographyStrings{english}{%
+            pages = {p\adddot} %заглавность буквы затем по месту определяется работой самого biblatex
+        }
+        % # Set higher penalty for breaking in number, dates and pages ranges
+        \setcounter{abbrvpenalty}{10000} % default is \hyphenpenalty which is 12
+        % # Set higher penalty for breaking in names
+        \setcounter{highnamepenalty}{10000}
+        \setcounter{lownamepenalty}{10000}
+    }{}
 }
 
 % ================================================================
@@ -632,32 +614,52 @@ mathescape = true
 % ================================================================
 % Применение модулей
 % ================================================================
+\AtEndPreamble{
+    \ifcmcmsugostextra@thm%
+        \cmcmsugostextra@SetTheorems%
+    \fi
 
-\ifcmcmsugostextra@thm%
-    \cmcmsugostextra@SetTheorems%
-\fi
+    \ifcmcmsugostextra@listings%
+        \cmcmsugostextra@SetListings%
+    \fi
 
-\ifcmcmsugostextra@listings%
-    \cmcmsugostextra@SetListings%
-\fi
+    \ifcmcmsugostextra@extramath%
+        \cmcmsugostextra@SetExtraMath%
+    \fi
 
-\ifcmcmsugostextra@extramath%
-    \cmcmsugostextra@SetExtraMath%
-\fi
+    \ifcmcmsugostextra@biber%
+        \cmcmsugostextra@SetBibLaTeX%
+    \fi
 
-\ifcmcmsugostextra@biber%
-    \cmcmsugostextra@SetBibLaTeX%
-\fi
-
-\ifx\cmcmsugostextra@alg\cmcmsugostextra@algtwoe%
-    \cmcmsugostextra@SetAlgorithmE%
-\fi
-
+    \ifx\cmcmsugostextra@alg\cmcmsugostextra@algtwoe%
+        \cmcmsugostextra@SetAlgorithmE%
+    \fi
+}
 % Русские математические операторы + rmathbr
 \ifcmcmsugostextra@rumathop%
     \RequirePackage{rmathbr}%
     \cmcmsugostextra@mathruop@apply%
 \fi
+
+\ifcmcmsugostextra@biber%
+    \PassOptionsToPackage{
+        backend=biber,
+        bibencoding=utf8,
+        sorting=none,
+        style=gost-numeric,
+        autolang=other,
+        clearlang=true,
+        defernumbers=true,
+        sortcites=true,
+        doi=false,
+        isbn=false,
+    }{biblatex}
+    \@ifpackageloaded{csquotes}{
+    }{
+        \RequirePackage{csquotes}
+    }
+\fi
+
 
 \makeatother
 \endinput
