@@ -627,6 +627,13 @@ mathescape = true
         \cmcmsugostextra@SetExtraMath%
     \fi
 
+    % Русские математические операторы + rmathbr
+    \ifcmcmsugostextra@rumathop%
+        \RequirePackage{rmathbr}%
+        \cmcmsugostextra@mathruop@apply%
+    \fi
+
+
     \ifcmcmsugostextra@biber%
         \cmcmsugostextra@SetBibLaTeX%
     \fi
@@ -635,11 +642,6 @@ mathescape = true
         \cmcmsugostextra@SetAlgorithmE%
     \fi
 }
-% Русские математические операторы + rmathbr
-\ifcmcmsugostextra@rumathop%
-    \RequirePackage{rmathbr}%
-    \cmcmsugostextra@mathruop@apply%
-\fi
 
 \ifcmcmsugostextra@biber%
     \PassOptionsToPackage{
