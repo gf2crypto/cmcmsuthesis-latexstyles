@@ -17,6 +17,16 @@
 \DeclareVoidOption{tocpagewordon}{\cmcmsugost@tocpagewordtrue}
 \DeclareVoidOption{tocpagewordoff}{\cmcmsugost@tocpagewordfalse}
 
+%% Каждый раздел - на новой странице.
+%% Имеет эффект только для article.
+%% В report всегда все главы начинаются на новой странице.
+\DeclareBoolOption[false]{sectionclearpage}
+\DeclareVoidOption{sectionclearpageon}{%
+  \cmcmsugost@sectioncleanpagetrue}
+\DeclareVoidOption{sectionclearpageoff}{%
+  \cmcmsugost@sectioncleanpagefalse}
+
+
 \ProcessKeyvalOptions*
 
 % ================================================================
@@ -26,8 +36,16 @@
 \AtBeginDocument{\cmcmsugost@indocumenttrue}
 
 \RequirePackage{keyval}
-\define@key{cmcmsugostsetup}{tocpageword}[true]{%
-    \ifstrequal{#1}{true}{\cmcmsugost@tocpagewordtrue}{\cmcmsugost@tocpagewordfalse}%
+\define@key{cmcmsugostsetup}{tocpageword}[false]{%
+  \ifstrequal{#1}{true}{%
+    \cmcmsugost@tocpagewordtrue}{%
+    \cmcmsugost@tocpagewordfalse}%
+}
+
+\define@key{cmcmsugostsetup}{sectionclearpage}[false]{%
+  \ifstrequal{#1}{true}{%
+    \cmcmsugost@sectionclearpagetrue}{%
+    \cmcmsugost@sectionclearpagefalse}%
 }
 
 \newcommand{\cmcmsugostsetup}[1]{%
@@ -148,7 +166,12 @@
     \titleformat{\section}
     {\cmcmsugost@sectionfont}
     {\thesection\space}{0pt}{}[]
-    % \newcommand{\sectionbreak}{\clearpage}
+    \ifcmcmsugost@haschapter%
+    \else
+        \ifcmcmsugost@sectionclearpage
+            \newcommand{\sectionbreak}{\clearpage}
+        \fi
+    \fi
     \titlespacing*{\section}{0pt}{\cmcmsugost@titleskip}{\cmcmsugost@titleskip}
 
     \titleformat{\subsection}
@@ -296,8 +319,12 @@
 }
 \let\cmcmsugost@tableofcontentsORIG\tableofcontents
 \renewcommand{\tableofcontents}{%
-    \cmcmsugost@tableofcontentsORIG
-    \ifcmcmsugost@tocpageword
+    \ifcmcmsugost@haschapter%
+    \else
+        \clearpage%
+    \fi
+    \cmcmsugost@tableofcontentsORIG%
+    \ifcmcmsugost@tocpageword%
         \addtocontents{toc}{\protect\tocheader}%
     \fi
     \endTOCtrue
