@@ -26,6 +26,8 @@
 \DeclareVoidOption{sectionclearpageoff}{%
   \cmcmsugost@sectioncleanpagefalse}
 
+\DeclareStringOption[15]{spacing}
+
 
 \ProcessKeyvalOptions*
 
@@ -47,6 +49,11 @@
     \cmcmsugost@sectionclearpagetrue}{%
     \cmcmsugost@sectionclearpagefalse}%
 }
+
+\define@key{cmcmsugostsetup}{spacing}[15]{%
+    \def\cmcmsugost@spacing{#1}%
+}
+
 
 \newcommand{\cmcmsugostsetup}[1]{%
     \ifcmcmsugost@indocument
@@ -449,6 +456,19 @@
     }
 }
 
+\@namedef{cmcmsugost@spacing@10}{%
+}
+
+\@namedef{cmcmsugost@spacing@15}{%
+    \renewcommand{\baselinestretch}{1.5}
+}
+
+\@namedef{cmcmsugost@spacing@20}{%
+    \renewcommand{\baselinestretch}{2.0}
+}
+
+
+
 % ================================================================
 % Применение стилей
 % ================================================================
@@ -474,7 +494,7 @@
         right=1cm,
         nomarginpar
     }%
-    \onehalfspacing
+    % \onehalfspacing
     % Абзацный отступ. Должен быть одинаковым по всему тексту и
     % равен пяти знакам (ГОСТ Р 7.0.11-2011, 5.3.7).
     \AtBeginDocument{%
@@ -491,6 +511,9 @@
         \@ifundefined{asbuk}{}{%
             \renewcommand{\thesubfigure}{\asbuk{subfigure}}%
         }%
+        \edef\cmcmsugost@spacing@dispatch{%
+            cmcmsugost@spacing@\cmcmsugost@spacing}
+        \expandafter\csname\cmcmsugost@spacing@dispatch\endcsname%
     }%
 }
 
