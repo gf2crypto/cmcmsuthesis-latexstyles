@@ -1,54 +1,47 @@
-#+LATEX_CLASS: extarticle
-# #+LATEX_CLASS: extreport
-#+LATEX_CLASS_OPTIONS: [12pt]
+# #+LATEX_CLASS: ruarticle
+#+LATEX_CLASS: rureport
+#+LATEX_CLASS_OPTIONS: [14pt]
 #+CITE_EXPORT: bibtex
 #+LANGUAGE: ru
-#+OPTIONS: tags:nil
+#+OPTIONS: tags:nil toc:t
 
-# #+LATEX_COMPILER: xelatex
+#+LATEX_COMPILER: xelatex
 
-
-#+LATEX_HEADER_EXTRA: \usepackage[
-#+LATEX_HEADER_EXTRA:   font=tempora, %xcharter, %dejavu, %libertinus, %heuristica, %paratype, %heros, % tempora, % default,%
-#+LATEX_HEADER_EXTRA:   fontscale=1,%
-#+LATEX_HEADER_EXTRA:   mathfont=,%
-#+LATEX_HEADER_EXTRA:   mathfontscale=1,%
-#+LATEX_HEADER_EXTRA:   sans=,%
-#+LATEX_HEADER_EXTRA:   sansscale=1,%
-#+LATEX_HEADER_EXTRA:   mono=,%
-#+LATEX_HEADER_EXTRA:   monoscale=1%
-#+LATEX_HEADER_EXTRA: ]{cmcmsugost-fontselector}
-
-#+LATEX_HEADER_EXTRA: \usepackage[
-#+LATEX_HEADER_EXTRA: % false/true включает отключает слово Стр. в оглавлении
-#+LATEX_HEADER_EXTRA:     tocpageword=false,
-#+LATEX_HEADER_EXTRA: % false/true русская традиция начертания операторов
-#+LATEX_HEADER_EXTRA:     rumathop=false,
-#+LATEX_HEADER_EXTRA: % false/true русская традиция начертания  греческих букв
+#+LATEX_HEADER_EXTRA: \cmcmsugostsetup{
+#+LATEX_HEADER_EXTRA:   tocpageword=false,
+#+LATEX_HEADER_EXTRA:   spacing=15,
+#+LATEX_HEADER_EXTRA:   sectionclearpage=false}
+#+LATEX_HEADER_EXTRA:
+#+LATEX_HEADER_EXTRA: % === fontselector ===
+#+LATEX_HEADER_EXTRA: \cmcmsugostfontsetup{
 #+LATEX_HEADER_EXTRA:     upgreek=false,
-#+LATEX_HEADER_EXTRA: % true/false русская мат. традиция, включает rumathop, upgreek и добавляет автоматическое удвоение оператора при переносе на другую строку
-#+LATEX_HEADER_EXTRA:     rumath=true,
-#+LATEX_HEADER_EXTRA: ]{cmcmsu-gost}
-
-#+LATEX_HEADER_EXTRA: \usepackage[
-#+LATEX_HEADER_EXTRA: % true/false теоремы, леммы и пр.
+#+LATEX_HEADER_EXTRA:     mathcalold=false,
+#+LATEX_HEADER_EXTRA:     lang=russian,
+#+LATEX_HEADER_EXTRA:     font=,
+#+LATEX_HEADER_EXTRA:     fontscale=1,
+#+LATEX_HEADER_EXTRA:     mathfont=,
+#+LATEX_HEADER_EXTRA:     mathfontscale=1,
+#+LATEX_HEADER_EXTRA:     sans=,
+#+LATEX_HEADER_EXTRA:     sansscale=,
+#+LATEX_HEADER_EXTRA:     mono=,
+#+LATEX_HEADER_EXTRA:     monoscale=}
+#+LATEX_HEADER_EXTRA:
+#+LATEX_HEADER_EXTRA: % === extra ===
+#+LATEX_HEADER_EXTRA: \cmcmsugostextrasetup{
+#+LATEX_HEADER_EXTRA:     rumathop=false,
 #+LATEX_HEADER_EXTRA:     thm=true,
-#+LATEX_HEADER_EXTRA: % true/false листинги, также определено окружение lstpseudocode, которая встраивается в список алгоритмов (но нужна подключенная опция alg)
+#+LATEX_HEADER_EXTRA:     extramath=true,
 #+LATEX_HEADER_EXTRA:     listings=true,
-#+LATEX_HEADER_EXTRA: % off/2e алгоритмы (пакет algorithm2e)
-#+LATEX_HEADER_EXTRA:     alg=off,
-#+LATEX_HEADER_EXTRA: % true/false библиография средствами biber, поддержка ГОСТ, рекомендуется использовать, но для финального текста, так как возможна медленная компиляция при больших списках литературы
 #+LATEX_HEADER_EXTRA:     biber=true,
-#+LATEX_HEADER_EXTRA: % true/false дополнительные команды для оформления математики (\vec, \matr и т.п.)
-#+LATEX_HEADER_EXTRA:     extramath=true
-#+LATEX_HEADER_EXTRA: ]{cmcmsugost-extra}
-
+#+LATEX_HEADER_EXTRA:     alg=2e}
+#+LATEX_HEADER_EXTRA:
 #+LATEX_HEADER_EXTRA: % Для работы BIBER
-#+LATEX_HEADER_EXTRA: % \addbibresource{refs.bib}
+#+LATEX_HEADER_EXTRA: \usepackage{biblatex}
+#+LATEX_HEADER_EXTRA: \addbibresource{refs.bib}
 
 # #+SELECT_TAGS:
 # #+EXCLUDE_TAGS: LISTING ALGORITHM BIBER BIBTEX EXTCHAPTER EXTRARTICLE
-#+EXCLUDE_TAGS: BIBER ALGORITHM
+#+EXCLUDE_TAGS: BIBTEX
 
 #+title: Произведение Шура--Адамара линейных кодов в анализе теоретико-кодовых криптосистем
 #+author: Чижов Иван Владимирович
@@ -57,7 +50,7 @@
 :PROPERTIES:
 :UNNUMBERED: t
 :END:
-#+latex: \addcontentsline{toc}{section}{Введение}
+#+latex: \addcontentsline{toc}{chapter}{Введение}
 
 *Актуальность темы*.
 Обзор, введение в тему, обозначение места данной работы в мировых исследованиях и т.п., можно использовать ссылки на другие
@@ -539,6 +532,7 @@ A_{i}=\left|\left\{\vect{c}\in\code{C}|\ \operatorname{wt}(\vect{c})=i\right\}\r
 - Жирный курсив :: /*это жирный курсив*/ и */этот текст тоже/*.
 - Подчеркивание: :: _этот текст подчеркнут_
 - Зачеркивание: :: +этот текст зачеркнут+
+- Без засечек: :: \textsf{этот текст без засечек, this is sans font}
 
 Но лучше не баловаться подобными украшательствами.
 * Формулы
@@ -1049,7 +1043,7 @@ right $\gets n - 1$\;
 :PROPERTIES:
 :UNNUMBERED: t
 :END:
-#+latex: \addcontentsline{toc}{section}{Заключение}
+#+latex: \addcontentsline{toc}{chapter}{Заключение}
 
 # Согласно ГОСТ Р 7.0.11-2011:
 # 5.3.3 В заключении диссертации излагают итоги выполненного исследования, рекомендации, перспективы дальнейшей разработки темы.
@@ -1074,7 +1068,7 @@ right $\gets n - 1$\;
 # % (ГОСТ Р 7.0.11-2011, 5.3.10)
 \clearpage
 \listoftables
-\addcontentsline{toc}{section}{Список таблиц}
+\addcontentsline{toc}{chapter}{Список таблиц}
 
 * Список литературы :ignore:
 ** Biber (biblatex) :BIBER:ignore:
