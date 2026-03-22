@@ -1,0 +1,86 @@
+### Iosevka Brill — custom build optimized for pairing with Brill Roman font
+### See https://github.com/be5invis/Iosevka/blob/master/doc/custom-build.md
+
+[buildPlans.IosevkaBrill]
+family = "Iosevka Brill"
+spacing = "normal"
+serifs = "slab"
+exportGlyphNames = true
+
+###################################################################################################
+# Configure ligations
+
+[buildPlans.IosevkaBrill.ligations]
+disables = []
+enables  = []
+
+# End ligation section
+###################################################################################################
+
+###################################################################################################
+# Override default building weights
+
+[buildPlans.IosevkaBrill.weights.Regular]
+shape = 400
+menu  = 400
+css   = 400
+
+[buildPlans.IosevkaBrill.weights.Bold]
+shape = 700
+menu  = 700
+css   = 700
+
+# End weight section
+###################################################################################################
+
+###################################################################################################
+# Override default building slope sets
+
+[buildPlans.IosevkaBrill.slopes.Upright]
+angle = 0
+shape = "upright"
+menu  = "upright"
+css   = "normal"
+
+[buildPlans.IosevkaBrill.slopes.Italic]
+angle = 9.4
+shape = "italic"
+menu  = "italic"
+css   = "italic"
+
+# End slope section
+###################################################################################################
+
+###################################################################################################
+# Override default building widths
+
+[buildPlans.IosevkaBrill.widths.Normal]
+shape = 590
+menu  = 5
+css   = "normal"
+
+# End width section
+###################################################################################################
+
+###################################################################################################
+# Metric overrides — matched to Brill Roman (upm=1000)
+#
+#   Brill Roman metrics:
+#     xHeight  = 406    capHeight = 607
+#     ascent   = 736    descent   = -264
+#     lineGap  = 270
+#
+#   Iosevka defaults:
+#     xHeight  = 520    cap = 735
+#     leading  = 1250
+
+[buildPlans.IosevkaBrill.metricOverride]
+leading = 1200
+winMetricAscenderPad = 0
+winMetricDescenderPad = 0
+xHeight = 406
+cap = 607
+ascender = 736
+
+# End metric override section
+###################################################################################################

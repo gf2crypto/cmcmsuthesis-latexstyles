@@ -858,6 +858,18 @@
 
 
 %% ----------------------------------------------------------------
+%%  Iosevka, модифицированная для Brill
+%%  NOTE: доступен только если установлен в системе
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@mono@iosevkabrill}[1]{%
+    \setmonofont[
+        BoldFont        = IosevkaBrill-Bold.ttf,
+        ItalicFont      = IosevkaBrill-Italic.ttf,
+        BoldItalicFont  = IosevkaBrill-BoldItalic.ttf,
+        Scale           = #1
+    ]{IosevkaBrill-Regular.ttf}%
+}
+%% ----------------------------------------------------------------
 %%  Courier New  (системный mono macOS/Windows, требует лицензии)
 %%  NOTE: доступен только если установлен в системе
 %% ----------------------------------------------------------------
@@ -1268,7 +1280,8 @@
     \typeout{Loading Brill KP: Brill + KPMath + Alegreya Sans + Source Code Pro}%
     \cmcmsugostfont@xetex@brill{1}%
     \cmcmsugostfont@xetex@sans@alegreyasans{0.98}%
-    \cmcmsugostfont@xetex@mono@sourcecodepro{MatchLowercase}
+    \cmcmsugostfont@xetex@mono@iosevkabrill{MatchLowercase}%
+    % \cmcmsugostfont@xetex@mono@sourcecodepro{MatchLowercase}
     \cmcmsugostfont@xetex@mathfont@kpmath{1}%
     \cmcmsugostfont@SetMathCalOldStyle%
 }
