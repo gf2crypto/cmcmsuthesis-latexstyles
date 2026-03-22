@@ -55,7 +55,7 @@ css   = "italic"
 # Override default building widths
 
 [buildPlans.IosevkaBrill.widths.Normal]
-shape = 590
+shape = 540
 menu  = 5
 css   = "normal"
 
