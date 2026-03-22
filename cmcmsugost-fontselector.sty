@@ -55,6 +55,11 @@
 \DeclareVoidOption{upgreekon}{\cmcmsugostfont@upgreektrue}
 \DeclareVoidOption{upgreekoff}{\cmcmsugostfont@upgreekfalse}
 
+\DeclareBoolOption[false]{mathcalold}
+\DeclareVoidOption{mathcaloldon}{\cmcmsugostfont@mathcaloldtrue}
+\DeclareVoidOption{mathcaloldoff}{\cmcmsugostfont@mathcaloldfalse}
+
+
 \ProcessKeyvalOptions*
 
 % ================================================================
@@ -90,6 +95,9 @@
 }
 \define@key{cmcmsugostfontsetup}{monoscale}[1]{%
     \def\cmcmsugostfont@monoscale{#1}%
+}
+\define@key{cmcmsugostfontsetup}{mathcalold}[false]{%
+    \ifstrequal{#1}{true}{\cmcmsugostfont@mathcaloldtrue}{\cmcmsugostfont@mathcaloldfalse}%
 }
 \newcommand{\cmcmsugostfontsetup}[1]{%
     \setkeys{cmcmsugostfontsetup}{#1}%
@@ -1262,7 +1270,7 @@
     \cmcmsugostfont@xetex@sans@alegreyasans{0.98}%
     \cmcmsugostfont@xetex@mono@sourcecodepro{MatchLowercase}
     \cmcmsugostfont@xetex@mathfont@kpmath{1}%
-    \setmathfont[range=\mathcal]{STIXTwoMath-Regular.otf}%
+    \cmcmsugostfont@SetMathCalOldStyle%
 }
 
 \newcommand{\cmcmsugostfont@xetex@set@brillstix}{%
@@ -1281,7 +1289,7 @@
     \cmcmsugostfont@xetex@mono@newcm{1}%
     \cmcmsugostfont@xetex@mono@sourcecodepro{MatchLowercase}
     \cmcmsugostfont@xetex@mathfont@libertinusmath{1}
-    \setmathfont[range=\mathcal]{STIXTwoMath-Regular.otf}%
+    \cmcmsugostfont@SetMathCalOldStyle%
 }
 
 %% ----------------------------------------------------------------
@@ -1358,8 +1366,16 @@
 
 %% Legacy alias (kept for compatibility if called elsewhere)
 \newcommand{\cmcmsugostfont@upgreek@apply}{%
-    \cmcmsugostfont@upgreek@preload
-    \cmcmsugostfont@upgreek@remap
+    \cmcmsugostfont@upgreek@preload%
+    \cmcmsugostfont@upgreek@remap%
+}
+
+%% Set mathcal
+\newcommand{\cmcmsugostfont@SetMathCalOldStyle}{
+    \@ifpackageloaded{unicode-math}{}{
+        \RequirePackage{unicode-math}
+    }
+    \setmathfont[range=\mathcal]{STIXTwoMath-Regular.otf}
 }
 
 % ================================================================
@@ -1467,6 +1483,9 @@
                 cmcmsugostfont@xetex@set@\cmcmsugostfont@font}
             \expandafter\csname\cmcmsugostfont@dispatch\endcsname%
         }
+        \ifcmcmsugostfont@mathcalold%
+            \cmcmsugostfont@SetMathCalOldStyle%
+        \fi
     \fi
     %% 3. Post-font: remap Greek letters (pdfLaTeX only, после загрузки шрифтов)
     \ifcmcmsugostfont@upgreek
