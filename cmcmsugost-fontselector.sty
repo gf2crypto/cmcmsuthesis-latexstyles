@@ -59,6 +59,10 @@
 \DeclareVoidOption{mathcaloldon}{\cmcmsugostfont@mathcaloldtrue}
 \DeclareVoidOption{mathcaloldoff}{\cmcmsugostfont@mathcaloldfalse}
 
+\DeclareBoolOption[true]{microtype}
+\DeclareVoidOption{microtypeon}{\cmcmsugostfont@microtypetrue}
+\DeclareVoidOption{microtypeoff}{\cmcmsugostfont@microtypefalse}
+
 
 \ProcessKeyvalOptions*
 
@@ -99,6 +103,11 @@
 \define@key{cmcmsugostfontsetup}{mathcalold}[false]{%
     \ifstrequal{#1}{true}{\cmcmsugostfont@mathcaloldtrue}{\cmcmsugostfont@mathcaloldfalse}%
 }
+
+\define@key{cmcmsugostfontsetup}{microtype}[true]{%
+    \ifstrequal{#1}{true}{\cmcmsugostfont@microtypetrue}{\cmcmsugostfont@microtypefalse}%
+}
+
 \newcommand{\cmcmsugostfontsetup}[1]{%
     \setkeys{cmcmsugostfontsetup}{#1}%
 }
@@ -1498,12 +1507,23 @@
             \cmcmsugostfont@SetMathCalOldStyle%
         \fi
     \fi
+
+    \ifcmcmsugostfont@microtype%
+        \RequirePackage[%
+            protrusion=true,
+            expansion=true]{microtype}
+    \else
+        \RequirePackage[%
+            protrusion=true,
+            expansion=false]{microtype}
+    \fi
+
     %% 3. Post-font: remap Greek letters (pdfLaTeX only, после загрузки шрифтов)
-    \ifcmcmsugostfont@upgreek
-        \cmcmsugostfont@upgreek@remap
+    \ifcmcmsugostfont@upgreek%
+        \cmcmsugostfont@upgreek@remap%
     \fi
     %% 4. ProvideSymbf (после загрузки шрифтов)
-    \cmcmsugostfont@ProvideSymbf
+    \cmcmsugostfont@ProvideSymbf%
 }
 
 
