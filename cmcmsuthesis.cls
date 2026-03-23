@@ -95,7 +95,7 @@
     subtitle                     = {Выпускная квалификационная работа},
     %
     logo/.store in            = \cmcmsu@thesis@logo,
-    logo                      = {cmcmsuthesis-\cmcmsu@titlepagesty.png},
+    logo                      = {cmcmsuthesis-\cmcmsu@titlepagesty},
     %
     copyright/.store in       = \cmcmsu@thesis@copyright,
     copyright                 = {На правах рукописи},
@@ -274,6 +274,13 @@
         \newpage
     }%
 }
+
+\def\cmcmsu@imagesdir{{images/}{cmcmsuthesis-latexstyles/images/}}
+
+\AtEndPreamble{
+    \edef\Ginput@path{\cmcmsu@imagesdir\Ginput@path}
+}
+
 % ---------------------------------------------------------------
 % Dispatch: call the selected title page style handler.
 % If an unknown style is given, raise an error.
