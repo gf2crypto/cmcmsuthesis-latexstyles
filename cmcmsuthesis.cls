@@ -91,7 +91,7 @@
     state/.store in           = \cmcmsu@thesis@state,
     state                     = Москва,
     %
-    subtitle/.store in           = \cmcmsu@thesis@subtitle,
+    subtitle/.store in           = \@subtitle,
     subtitle                     = {Выпускная квалификационная работа},
     %
     logo/.store in            = \cmcmsu@thesis@logo,
@@ -99,20 +99,20 @@
     %
     copyright/.store in       = \cmcmsu@thesis@copyright,
     copyright                 = {На правах рукописи},
-    %% --- advisor ---
-    advisor/.is family,
-    /cmcmsu/thesis/advisor,
+    %% --- supervisor ---
+    supervisor/.is family,
+    /cmcmsu/thesis/supervisor,
     %
-    name/.store in            = \cmcmsu@thesis@advisor@name,
-    name                      = {Фамилия И.О.},
+    name/.store in            = \cmcmsu@thesis@supervisor@name,
+    name                      = {уч.~степень, уч.~звание Фамилия~Имя~Отчество},
+    % %
+    % degree/.store in          = \cmcmsu@thesis@advisor@degree,
+    % degree                    = {канд.~физ.-мат.~наук},
     %
-    degree/.store in          = \cmcmsu@thesis@advisor@degree,
-    degree                    = {канд.~физ.-мат.~наук},
-    %
-    prefix/.store in          = \cmcmsu@thesis@advisor@prefix,
+    prefix/.store in          = \cmcmsu@thesis@supervior@prefix,
     prefix                    = {Научный руководитель},
     %
-    prefix sep/.store in      = \cmcmsu@thesis@advisor@prefixsep,
+    prefix sep/.store in      = \cmcmsu@thesis@supervisor@prefixsep,
     prefix sep                = {: \\},
     %
     % --- specialty (style one) ---
@@ -122,10 +122,10 @@
     /cmcmsu/thesis/specialty,
     %
     code/.store in            = \cmcmsu@thesis@specialty@code,
-    code                      = {1.2.3},
+    code                      = {X.Y.Z},
     %
     name/.store in            = \cmcmsu@thesis@specialty@name,
-    name                      = {теоретическая информатика, кибернетика},
+    name                      = {название специальности согласно действующей номенклатуре},
     %
     sep/.store in             = \cmcmsu@thesis@specialty@sep,
     sep                       = {~---~},
@@ -138,6 +138,11 @@
 % Keys can be short (relative to /cmcmsu/thesis) or full-path.
 \newcommand{\thesissetup}[1]{\pgfkeys{/cmcmsu/thesis, #1}}
 
+% \supervisor{name={канд.физ.-мат.наук, доцент Фамилия~Имя~Отчество}, prefix={Научный руководитель}}
+\newcommand{\supervisor}[1]{\pgfkeys{/cmcmsu/thesis/supervisor, #1}}
+
+% \speciality{code={1.2.3}, name={теоретическая информатика, кибернетика}}
+\newcommand{\speciality}[1]{\pgfkeys{/cmcmsu/thesis/speciality, #}}
 % ---------------------------------------------------------------
 % Title page style ONE
 %   Dissertation style (ГОСТ Р 7.0.11-2001, 5.1)
@@ -174,13 +179,13 @@
             \vspace{0pt plus6fill}
 
             \begin{center}
-                {\large \UseName{@author}}
+                {\large \@author}
             \end{center}
 
             \vspace{0pt plus1fill}
 
             \begin{center}
-                {\bfseries\large \UseName{@title}}\par
+                {\bfseries\large \@title}\par
             \end{center}
 
             \vspace{0pt plus2fill}
@@ -195,21 +200,20 @@
             \vspace{0pt plus2fill}
 
             \begin{center}
-                \UseName{@subtitle}\par
+                \@subtitle\par
             \end{center}
 
             \vspace{0pt plus4fill}
 
             \begin{flushright}
-                \cmcmsu@thesis@advisor@prefix
-                \cmcmsu@thesis@advisor@prefixsep
-                \cmcmsu@thesis@advisor@degree\
-                \cmcmsu@thesis@advisor@name\par
+                \cmcmsu@thesis@supervisor@prefix%
+                \cmcmsu@thesis@supervisor@prefixsep%
+                \cmcmsu@thesis@supervisor@name\par
             \end{flushright}
 
             \vspace{0pt plus4fill}
 
-            {\centering\cmcmsu@thesis@state~---~\UseName{@date}\par}
+            {\centering\cmcmsu@thesis@state~---~\@date\par}
         }
         \newpage
     }%
@@ -243,33 +247,32 @@
             \vspace{0pt plus2fill}
 
             \begin{center}
-                {\large \UseName{@author}}
+                {\large \@author}
             \end{center}
 
             \vspace{0pt plus1fill}
 
             \begin{center}
-                {\bfseries\large \UseName{@title}}\par
+                {\bfseries\large \@title}\par
             \end{center}
 
             \vspace{0pt plus-1fill}
 
             \begin{center}
-                \MakeUppercase{\UseName{@subtitle}}\par
+                \MakeUppercase{\@subtitle}\par
             \end{center}
 
             \vspace{0pt plus4fill}
 
             \begin{flushright}
-                {\bfseries\cmcmsu@thesis@advisor@prefix}%
-                \cmcmsu@thesis@advisor@prefixsep\\
-                \cmcmsu@thesis@advisor@degree\space
-                \cmcmsu@thesis@advisor@name\par
+                {\bfseries\cmcmsu@thesis@supervisor@prefix}%
+                \cmcmsu@thesis@supervisor@prefixsep\\
+                \cmcmsu@thesis@supervisor@name%
             \end{flushright}
 
             \vspace{0pt plus4fill}
 
-            {\centering\cmcmsu@thesis@state,\space\UseName{@date}\par}
+            {\centering\cmcmsu@thesis@state,\space\@date\par}
         }% end \baselinestretch group
         \newpage
     }%
