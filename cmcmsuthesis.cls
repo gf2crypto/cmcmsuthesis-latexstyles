@@ -294,31 +294,31 @@
 
             \fi
 
-            \vspace{1em plus2fill}
+            \vspace{0pt plus1fill}
 
             \begin{flushright}
                 \cmcmsu@thesis@copyright%
             \end{flushright}
 
-            \vspace{0pt plus2fill}
+            \vspace{0pt plus1fill}
 
             \begin{center}
                 {\large \@author}
             \end{center}
 
-            \vspace{0pt plus1fill}
+            \vspace{0pt plus2fill}
 
             \begin{center}
                 {\bfseries\large \@title}\par
             \end{center}
 
-            \vspace{0pt plus-1fill}
+            \vspace{0pt plus4fill}
 
             \begin{center}
                 \MakeUppercase{\cmcmsu@thesis@subtitle}\par
             \end{center}
 
-            \vspace{0pt plus4fill}
+            \vspace{0pt plus8fill}
 
             \hfill%
             \begin{minipage}{0.5\linewidth}
@@ -329,7 +329,7 @@
                 \end{flushright}
             \end{minipage}
 
-            \vspace{0pt plus4fill}
+            \vspace{0pt plus8fill}
 
             {\centering\cmcmsu@thesis@state,\space\the\year\par}
         }% end \baselinestretch group
