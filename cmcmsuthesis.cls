@@ -142,7 +142,7 @@
 \newcommand{\supervisor}[1]{\pgfkeys{/cmcmsu/thesis/supervisor, #1}}
 
 % \speciality{code={1.2.3}, name={теоретическая информатика, кибернетика}}
-\newcommand{\speciality}[1]{\pgfkeys{/cmcmsu/thesis/speciality, #}}
+\newcommand{\specialty}[1]{\pgfkeys{/cmcmsu/thesis/specialty, #}}
 % ---------------------------------------------------------------
 % Title page style ONE
 %   Dissertation style (ГОСТ Р 7.0.11-2001, 5.1)
