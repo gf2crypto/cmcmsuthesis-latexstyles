@@ -1509,9 +1509,15 @@
     \fi
 
     \ifcmcmsugostfont@microtype%
-        \RequirePackage[%
-            protrusion=true,
-            expansion=true]{microtype}
+        \ifPDFTeX%
+            \RequirePackage[%
+                protrusion=true,
+                expansion=true]{microtype}
+        \else
+            \RequirePackage[%
+                protrusion=true,
+                expansion=false]{microtype}
+        \fi
     \else
         \RequirePackage[%
             protrusion=true,

@@ -109,7 +109,7 @@
     % degree/.store in          = \cmcmsu@thesis@advisor@degree,
     % degree                    = {канд.~физ.-мат.~наук},
     %
-    prefix/.store in          = \cmcmsu@thesis@supervior@prefix,
+    prefix/.store in          = \cmcmsu@thesis@supervisor@prefix,
     prefix                    = {Научный руководитель},
     %
     prefix sep/.store in      = \cmcmsu@thesis@supervisor@prefixsep,
@@ -142,7 +142,7 @@
 \newcommand{\supervisor}[1]{\pgfkeys{/cmcmsu/thesis/supervisor, #1}}
 
 % \speciality{code={1.2.3}, name={теоретическая информатика, кибернетика}}
-\newcommand{\specialty}[1]{\pgfkeys{/cmcmsu/thesis/specialty, #}}
+\newcommand{\specialty}[1]{\pgfkeys{/cmcmsu/thesis/specialty, #1}}
 % ---------------------------------------------------------------
 % Title page style ONE
 %   Dissertation style (ГОСТ Р 7.0.11-2001, 5.1)
@@ -158,24 +158,16 @@
             \end{center}
 
             \vspace{0pt plus4fill}
-
-            \IfFileExists{\cmcmsu@thesis@logo}{%
-                \begin{minipage}[t]{0.5\linewidth}
-                    \begin{flushleft}
-                        \includegraphics[height=3.5cm]{\cmcmsu@thesis@logo}
-                    \end{flushleft}
-                \end{minipage}%
-                \begin{minipage}[b]{0.5\linewidth}
-                    \begin{flushright}
-                        \cmcmsu@thesis@copyright%
-                    \end{flushright}
-                \end{minipage}%
-            }{%
+            \begin{minipage}[t]{0.5\linewidth}
+                \begin{flushleft}
+                    \includegraphics[height=3.5cm]{\cmcmsu@thesis@logo}
+                \end{flushleft}
+            \end{minipage}%
+            \begin{minipage}[b]{0.5\linewidth}
                 \begin{flushright}
                     \cmcmsu@thesis@copyright%
                 \end{flushright}
-            }
-
+            \end{minipage}%
             \vspace{0pt plus6fill}
 
             \begin{center}
@@ -230,9 +222,7 @@
         \thispagestyle{empty}%
         {\renewcommand{\baselinestretch}{1}\selectfont
             \begin{center}
-                \IfFileExists{\cmcmsu@thesis@logo}{%
-                    \includegraphics[height=3.5cm]{\cmcmsu@thesis@logo}\par
-                }{}%
+                \includegraphics[height=3.5cm]{\cmcmsu@thesis@logo}\par
                 \cmcmsu@thesis@university\par
                 \cmcmsu@thesis@faculty\par
                 \cmcmsu@thesis@department\par
@@ -275,7 +265,7 @@
             {\centering\cmcmsu@thesis@state,\space\@date\par}
         }% end \baselinestretch group
         \newpage
-    }%
+    }
 }
 
 \def\cmcmsu@imagesdir{{images/}{cmcmsuthesis-latexstyles/images/}}
