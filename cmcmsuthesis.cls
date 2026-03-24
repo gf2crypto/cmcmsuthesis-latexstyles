@@ -71,6 +71,37 @@
 \RequirePackage{pgfkeys}
 \RequirePackage{graphicx}
 
+\newif\ifcmcmsu@graphicexists
+
+\newcommand{\cmcmsu@checkgraphicpath}[1]{%
+    \begingroup
+    \let\input@path\Ginput@path
+    \edef\Gin@extensions{\detokenize\expandafter{\Gin@extensions}}%
+    \filename@parse{#1}%
+    \let\Gin@ext\relax
+    \ifx\filename@ext\relax
+        \@for\Gin@temp:=\Gin@extensions\do{%
+            \ifx\Gin@ext\relax
+                \Gin@getbase\Gin@temp
+            \fi}%
+    \else
+        \Gin@getbase{\Gin@sepdefault\filename@ext}%
+    \fi
+    \ifx\Gin@ext\relax
+        \global\cmcmsu@graphicexistsfalse
+    \else
+        \global\cmcmsu@graphicexiststrue
+    \fi
+    \endgroup
+}
+
+% Публичная команда (для пользователей)
+\newcommand{\IfGraphicExists}[3]{%
+    % #1 = имя файла, #2 = true, #3 = false
+    \cmcmsu@checkgraphic{#1}%
+    \ifcmcmsu@graphicexists #2\else #3\fi
+}
+
 % All keys live under /cmcmsu/thesis/.
 % Stored variables follow the same naming convention: \cmcmsu@thesis@<name>.
 % Slashes in key names map to nested paths in pgfkeys.
@@ -149,7 +180,8 @@
 % ---------------------------------------------------------------
 % Title page style ONE
 %   Dissertation style (ГОСТ Р 7.0.11-2001, 5.1)
-% ---------------------------------------------------------------
+%   ---------------------------------------------------------------
+
 \def\cmcmsu@titlepagesty@gost{%
 
     \renewcommand{\maketitle}{%
@@ -162,21 +194,21 @@
 
             \vspace{0pt plus4fill}
 
-            \Gin@getbase{\cmcmsu@thesis@logo}%
-            \ifx\Gin@ext\relax
-                \hfill%
-                \begin{minipage}[b]{0.47\linewidth}
-                    \begin{flushright}
-                        \cmcmsu@thesis@copyright%
-                    \end{flushright}
-                \end{minipage}%
-            \else
+            \cmcmsu@checkgraphicpath{\cmcmsu@thesis@logo}%
+            \ifcmcmsu@graphicexists%
                 \begin{minipage}[t]{0.45\linewidth}
                     \begin{flushleft}
                         \includegraphics[height=3.5cm]{%
                             \cmcmsu@thesis@logo}
                     \end{flushleft}
                 \end{minipage}%
+                \begin{minipage}[b]{0.47\linewidth}
+                    \begin{flushright}
+                        \cmcmsu@thesis@copyright%
+                    \end{flushright}
+                \end{minipage}%
+            \else
+                \hfill%
                 \begin{minipage}[b]{0.47\linewidth}
                     \begin{flushright}
                         \cmcmsu@thesis@copyright%
@@ -240,15 +272,8 @@
         \clearpage
         \thispagestyle{empty}%
         {\renewcommand{\baselinestretch}{1}\selectfont
-            \Gin@getbase{\cmcmsu@thesis@logo}%
-            \ifx\Gin@ext\relax
-                \begin{center}
-                    \cmcmsu@thesis@university\par
-                    \cmcmsu@thesis@faculty\par
-                    \cmcmsu@thesis@department\par
-                \end{center}
-
-            \else
+            \cmcmsu@checkgraphicpath{\cmcmsu@thesis@logo}%
+            \ifcmcmsu@graphicexists%
                 \begin{center}
                     \includegraphics[height=3.5cm]{%
                         \cmcmsu@thesis@logo}\par
@@ -257,9 +282,19 @@
                     \cmcmsu@thesis@department\par
                 \end{center}
 
+            \else
+                \typeout{File "\cmcmsu@thesis@logo" is not found}
+                \typeout{DEBUG graphicspath: "\Ginput@path"}
+                \typeout{Extensions: \Gin@extensions}
+                \begin{center}
+                    \cmcmsu@thesis@university\par
+                    \cmcmsu@thesis@faculty\par
+                    \cmcmsu@thesis@department\par
+                \end{center}
+
             \fi
 
-            \vspace{0pt plus2fill}
+            \vspace{1em plus2fill}
 
             \begin{flushright}
                 \cmcmsu@thesis@copyright%
@@ -302,7 +337,7 @@
     }
 }
 
-\def\cmcmsu@imagesdir{{images/}{cmcmsuthesis-latexstyles/images/}}
+\def\cmcmsu@imagesdir{{}{./}{images/}{cmcmsuthesis-latexstyles/images/}{./images/}{./cmcmsuthesis-latexstyles/images/}}
 
 \AtBeginDocument{%
     \ifdefined\Ginput@path%
