@@ -161,16 +161,29 @@
             \end{center}
 
             \vspace{0pt plus4fill}
-            \begin{minipage}[t]{0.45\linewidth}
-                \begin{flushleft}
-                    \includegraphics[height=3.5cm]{\cmcmsu@thesis@logo}
-                \end{flushleft}
-            \end{minipage}%
-            \begin{minipage}[b]{0.47\linewidth}
-                \begin{flushright}
-                    \cmcmsu@thesis@copyright%
-                \end{flushright}
-            \end{minipage}%
+
+            \Gin@getbase{\cmcmsu@thesis@logo}%
+            \ifx\Gin@ext\relax
+                \hfill%
+                \begin{minipage}[b]{0.47\linewidth}
+                    \begin{flushright}
+                        \cmcmsu@thesis@copyright%
+                    \end{flushright}
+                \end{minipage}%
+            \else
+                \begin{minipage}[t]{0.45\linewidth}
+                    \begin{flushleft}
+                        \includegraphics[height=3.5cm]{%
+                            \cmcmsu@thesis@logo}
+                    \end{flushleft}
+                \end{minipage}%
+                \begin{minipage}[b]{0.47\linewidth}
+                    \begin{flushright}
+                        \cmcmsu@thesis@copyright%
+                    \end{flushright}
+                \end{minipage}%
+            \fi
+
             \vspace{0pt plus6fill}
 
             \begin{center}
@@ -227,12 +240,24 @@
         \clearpage
         \thispagestyle{empty}%
         {\renewcommand{\baselinestretch}{1}\selectfont
-            \begin{center}
-                \includegraphics[height=3.5cm]{\cmcmsu@thesis@logo}\par
-                \cmcmsu@thesis@university\par
-                \cmcmsu@thesis@faculty\par
-                \cmcmsu@thesis@department\par
-            \end{center}
+            \Gin@getbase{\cmcmsu@thesis@logo}%
+            \ifx\Gin@ext\relax
+                \begin{center}
+                    \cmcmsu@thesis@university\par
+                    \cmcmsu@thesis@faculty\par
+                    \cmcmsu@thesis@department\par
+                \end{center}
+
+            \else
+                \begin{center}
+                    \includegraphics[height=3.5cm]{%
+                        \cmcmsu@thesis@logo}\par
+                    \cmcmsu@thesis@university\par
+                    \cmcmsu@thesis@faculty\par
+                    \cmcmsu@thesis@department\par
+                \end{center}
+
+            \fi
 
             \vspace{0pt plus2fill}
 
@@ -300,6 +325,18 @@
     }%
 }{%
     \csname cmcmsu@titlepagesty@\cmcmsu@titlepagesty\endcsname
+}
+
+\RequirePackage{xcolor}
+\definecolor{linkcolor}{RGB}{0, 40, 100}
+\definecolor{urlcolor}{RGB}{0, 0, 140}
+\definecolor{citecolor}{RGB}{0, 80, 40}
+
+\hypersetup{
+    colorlinks = true,
+    linkcolor  = linkcolor,
+    urlcolor   = urlcolor,
+    citecolor  = citecolor,
 }
 
 \makeatother
