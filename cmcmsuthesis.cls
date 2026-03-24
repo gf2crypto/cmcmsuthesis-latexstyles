@@ -11,7 +11,7 @@
     prefix=cmcmsu@
 }
 
-\DeclareStringOption[article]{parent}
+\DeclareStringOption[extarticle]{parent}
 \DeclareStringOption[14pt]{fontsize}
 \DeclareStringOption[cmc]{titlepagesty}  % cmc or gost
 
@@ -91,7 +91,7 @@
     state/.store in           = \cmcmsu@thesis@state,
     state                     = Москва,
     %
-    subtitle/.store in           = \@subtitle,
+    subtitle/.store in           = \cmcmsu@thesis@subtitle,
     subtitle                     = {Выпускная квалификационная работа},
     %
     logo/.store in            = \cmcmsu@thesis@logo,
@@ -143,6 +143,9 @@
 
 % \speciality{code={1.2.3}, name={теоретическая информатика, кибернетика}}
 \newcommand{\specialty}[1]{\pgfkeys{/cmcmsu/thesis/specialty, #1}}
+
+%
+\newcommand{\subtitle}[1]{\pgfkeys{/cmcmsu/thesis/subtitle=#1}}
 % ---------------------------------------------------------------
 % Title page style ONE
 %   Dissertation style (ГОСТ Р 7.0.11-2001, 5.1)
@@ -158,12 +161,12 @@
             \end{center}
 
             \vspace{0pt plus4fill}
-            \begin{minipage}[t]{0.5\linewidth}
+            \begin{minipage}[t]{0.45\linewidth}
                 \begin{flushleft}
                     \includegraphics[height=3.5cm]{\cmcmsu@thesis@logo}
                 \end{flushleft}
             \end{minipage}%
-            \begin{minipage}[b]{0.5\linewidth}
+            \begin{minipage}[b]{0.47\linewidth}
                 \begin{flushright}
                     \cmcmsu@thesis@copyright%
                 \end{flushright}
@@ -192,20 +195,23 @@
             \vspace{0pt plus2fill}
 
             \begin{center}
-                \@subtitle\par
+                \cmcmsu@thesis@subtitle\par
             \end{center}
 
             \vspace{0pt plus4fill}
 
-            \begin{flushright}
-                \cmcmsu@thesis@supervisor@prefix%
-                \cmcmsu@thesis@supervisor@prefixsep%
-                \cmcmsu@thesis@supervisor@name\par
-            \end{flushright}
+            \hfill%
+            \begin{minipage}{0.5\linewidth}
+                \begin{flushright}
+                    \cmcmsu@thesis@supervisor@prefix%
+                    \cmcmsu@thesis@supervisor@prefixsep%
+                    \cmcmsu@thesis@supervisor@name\par
+                \end{flushright}
+            \end{minipage}
 
             \vspace{0pt plus4fill}
 
-            {\centering\cmcmsu@thesis@state~---~\@date\par}
+            {\centering\cmcmsu@thesis@state~---~\the\year\par}
         }
         \newpage
     }%
@@ -249,20 +255,23 @@
             \vspace{0pt plus-1fill}
 
             \begin{center}
-                \MakeUppercase{\@subtitle}\par
+                \MakeUppercase{\cmcmsu@thesis@subtitle}\par
             \end{center}
 
             \vspace{0pt plus4fill}
 
-            \begin{flushright}
-                {\bfseries\cmcmsu@thesis@supervisor@prefix}%
-                \cmcmsu@thesis@supervisor@prefixsep\\
-                \cmcmsu@thesis@supervisor@name%
-            \end{flushright}
+            \hfill%
+            \begin{minipage}{0.5\linewidth}
+                \begin{flushright}
+                    {\bfseries\cmcmsu@thesis@supervisor@prefix}%
+                    \cmcmsu@thesis@supervisor@prefixsep%
+                    \cmcmsu@thesis@supervisor@name%
+                \end{flushright}
+            \end{minipage}
 
             \vspace{0pt plus4fill}
 
-            {\centering\cmcmsu@thesis@state,\space\@date\par}
+            {\centering\cmcmsu@thesis@state,\space\the\year\par}
         }% end \baselinestretch group
         \newpage
     }
@@ -270,8 +279,12 @@
 
 \def\cmcmsu@imagesdir{{images/}{cmcmsuthesis-latexstyles/images/}}
 
-\AtEndPreamble{
-    \edef\Ginput@path{\cmcmsu@imagesdir\Ginput@path}
+\AtBeginDocument{%
+    \ifdefined\Ginput@path%
+        \edef\Ginput@path{\cmcmsu@imagesdir\Ginput@path}
+    \else
+        \graphicspath{\cmcmsu@imagesdir}
+    \fi
 }
 
 % ---------------------------------------------------------------
