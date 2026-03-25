@@ -1308,9 +1308,19 @@
     \cmcmsugostfont@xetex@brill{1}%
     \cmcmsugostfont@xetex@sans@alegreyasans{0.98}%
     \cmcmsugostfont@xetex@mono@iosevkabrill{MatchLowercase}%
-    \cmcmsugostfont@xetex@mathfont@libertinusmath{1}
+    \cmcmsugostfont@xetex@mathfont@libertinusmath{MatchLowercase}
     \cmcmsugostfont@SetMathCalOldStyle%
 }
+
+\newcommand{\cmcmsugostfont@xetex@set@brillcm}{%
+    \typeout{Loading Brill Libertinus: Brill + New Computer Modern + Alegreya Sans + Iosevka}%
+    \cmcmsugostfont@xetex@brill{1}%
+    \cmcmsugostfont@xetex@sans@alegreyasans{0.98}%
+    \cmcmsugostfont@xetex@mono@iosevkabrill{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@newcm{MatchLowercase}
+    \cmcmsugostfont@SetMathCalOldStyle%
+}
+
 
 %% ----------------------------------------------------------------
 %%  set@msoffice  — Times New Roman + Arial + Courier New
