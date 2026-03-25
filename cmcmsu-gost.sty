@@ -485,7 +485,8 @@
     \RequirePackage{indentfirst}
     \RequirePackage{hyperref}
     \hypersetup{linktoc=page, plainpages=false}
-
+    % solve the problem with xelatex and \ell symbol
+    \pdfstringdefDisableCommands{\def\ell{ℓ}}
     \geometry{%
         a4paper,
         top=2cm,
