@@ -21,7 +21,7 @@
 \section{Введение}
 Текст работы.
 
-\printbibliography[heading=bibintoc]
+\printbibliography
 \end{document}
 ```
 
@@ -148,18 +148,38 @@
 
 ## Установка
 
+### Требования
+
+- TeX Live 2020+ или MiKTeX
+- `latexmk` (рекомендуется, обычно входит в TeX Live)
+- `biber` (для библиографии по ГОСТ)
+
 ### Из репозитория (рекомендуется)
 
 ```bash
 git clone https://github.com/<user>/cmcmsuthesis-latexstyles.git
 ```
 
-**Вариант 1 — в папку проекта.** Скопируйте `.sty` и `.cls` файлы рядом с вашим `.tex` документом.
-
-**Вариант 2 — глобальная установка.** Скопируйте в `~/texmf/tex/latex/cmcmsuthesis/` и выполните:
+**Вариант 1 — в папку проекта.** Скопируйте `.sty`, `.cls` и нужный `latexmkrc-*` файл:
 
 ```bash
+cp cmcmsuthesis-latexstyles/*.sty cmcmsuthesis-latexstyles/*.cls ./
+cp cmcmsuthesis-latexstyles/latexmkrc-xelatex .latexmkrc
+latexmk main.tex
+```
+
+**Вариант 2 — глобальная установка.**
+
+```bash
+# Стили и классы
+mkdir -p ~/texmf/tex/latex/cmcmsuthesis
+cp cmcmsuthesis-latexstyles/*.sty cmcmsuthesis-latexstyles/*.cls \
+   ~/texmf/tex/latex/cmcmsuthesis/
 mktexlsr
+
+# Конфиг latexmk (глобальный)
+mkdir -p ~/.config/latexmk
+cp cmcmsuthesis-latexstyles/latexmkrc-xelatex ~/.config/latexmk/latexmkrc
 ```
 
 ### Проверка
@@ -174,6 +194,8 @@ kpsewhich cmcmsuthesis.cls
 cmcmsuthesis-latexstyles/
 │
 ├── README.md                           ← этот файл
+├── latexmkrc-xelatex                   ← конфиг latexmk для XeLaTeX
+├── latexmkrc-pdflatex                  ← конфиг latexmk для pdfLaTeX
 │
 ├── cmcmsu-gost.sty                     ← пакет: оформление по ГОСТ
 ├── cmcmsugost-fontselector.sty         ← пакет: шрифты и математика
@@ -246,25 +268,123 @@ cmcmsuthesis-latexstyles/
 
 ## Компиляция
 
-```bash
-# XeLaTeX (рекомендуется)
-xelatex main.tex
-biber main
-xelatex main.tex
-xelatex main.tex
+### latexmk (рекомендуется)
 
-# pdfLaTeX
-pdflatex main.tex
-biber main
-pdflatex main.tex
-pdflatex main.tex
+Самый удобный способ — [`latexmk`](https://ctan.org/pkg/latexmk). Он сам определяет сколько проходов нужно и в каком порядке запускать `biber`.
+
+В репозитории два готовых конфигурационных файла:
+
+| Файл | Движок | Когда использовать |
+|---|---|---|
+| [`latexmkrc-xelatex`](latexmkrc-xelatex) | XeLaTeX | Системные шрифты (Times New Roman, Arial), OTF-шрифты, `unicode-math` |
+| [`latexmkrc-pdflatex`](latexmkrc-pdflatex) | pdfLaTeX | Пакетные шрифты TeX Live, максимальная совместимость |
+
+**Быстрый старт:**
+
+```bash
+# 1. Скопируйте нужный конфиг в папку проекта
+cp latexmkrc-xelatex .latexmkrc     # для XeLaTeX
+# или
+cp latexmkrc-pdflatex .latexmkrc    # для pdfLaTeX
+
+# 2. Соберите PDF
+latexmk main.tex
+
+# 3. Очистите вспомогательные файлы
+latexmk -c
+
+# 4. Очистите всё, включая PDF
+latexmk -C
 ```
 
-### Org-mode
+**Непрерывная сборка** (пересобирает при каждом сохранении файла):
 
-1. Добавьте [`cmcmsuthesis-org.el`](examples/org-setup/cmcmsuthesis-org.el) в ваш `~/.emacs`.
-2. Откройте `.org` файл.
+```bash
+latexmk -pvc main.tex
+```
+
+**Глобальная установка** (чтобы не копировать в каждый проект):
+
+```bash
+# Linux / macOS
+mkdir -p ~/.config/latexmk
+cp latexmkrc-xelatex ~/.config/latexmk/latexmkrc
+
+# Windows
+copy latexmkrc-xelatex %USERPROFILE%\.latexmkrc
+```
+
+### Ручная сборка
+
+Если `latexmk` недоступен, запустите цепочку вручную:
+
+```bash
+# XeLaTeX
+xelatex -interaction=nonstopmode -halt-on-error main.tex
+biber main
+xelatex -interaction=nonstopmode -halt-on-error main.tex
+xelatex -interaction=nonstopmode -halt-on-error main.tex
+
+# pdfLaTeX
+pdflatex -interaction=nonstopmode -halt-on-error main.tex
+biber main
+pdflatex -interaction=nonstopmode -halt-on-error main.tex
+pdflatex -interaction=nonstopmode -halt-on-error main.tex
+```
+
+Три прохода нужны для корректного построения оглавления, списка таблиц и перекрёстных ссылок.
+
+### Makefile (опционально)
+
+Если вы предпочитаете `make`:
+
+```makefile
+TEX      = main
+ENGINE   = xelatex
+FLAGS    = -interaction=nonstopmode -halt-on-error -synctex=1
+
+.PHONY: all clean distclean watch
+
+all:
+    latexmk -r latexmkrc-$(subst xelatex,xelatex,$(ENGINE)) $(TEX).tex
+
+watch:
+    latexmk -r latexmkrc-$(ENGINE) -pvc $(TEX).tex
+
+clean:
+    latexmk -c
+
+distclean:
+    latexmk -C
+```
+
+### Org-mode (Emacs)
+
+1. Добавьте [`cmcmsuthesis-org.el`](examples/org-setup/cmcmsuthesis-org.el) в ваш `~/.emacs` — он уже содержит настройку цепочки `xelatex → biber → xelatex → xelatex`.
+2. Откройте `.org` файл в Emacs.
 3. `C-c C-e l p` — экспорт в PDF.
+
+### VS Code
+
+Для пользователей VS Code с расширением [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop) добавьте в `settings.json`:
+
+```json
+{
+    "latex-workshop.latex.tools": [
+        {
+            "name": "latexmk-xelatex",
+            "command": "latexmk",
+            "args": ["-r", "latexmkrc-xelatex", "%DOC%"]
+        }
+    ],
+    "latex-workshop.latex.recipes": [
+        {
+            "name": "latexmk (XeLaTeX)",
+            "tools": ["latexmk-xelatex"]
+        }
+    ]
+}
+```
 
 ## Минимальные примеры
 
@@ -427,6 +547,10 @@ pdflatex main.tex
 **Алгоритмы** — `algorithm2e` (`\KwInput`, `\KwOutput`, `\While`, `\For`, `\uIf`/`\uElseIf`/`\Else`, `\Comment`, `\tcp*`, `\Return`); листинг Python с русскими комментариями; листинг C с русскими комментариями; псевдокод `style=pseudocode` (`\lstInput`, `\lstOutput`); `lstpseudocode` (общий счётчик с `algorithm2e`).
 
 **Библиография** — одиночная и множественная ссылки; `\printbibliography`.
+
+## Благодарности
+
+Проект вдохновлён шаблоном [Russian-Phd-LaTeX-Dissertation-Template](https://github.com/AndreyAkinshin/Russian-Phd-LaTeX-Dissertation-Template) Андрея Акиньшина и соавторов. Их работа стала отправной точкой и источником множества идей по оформлению диссертаций в LaTeX по российским стандартам. Мы выражаем искреннюю благодарность всем участникам этого проекта за огромный вклад в русскоязычное LaTeX-сообщество.
 
 ## Лицензия
 
