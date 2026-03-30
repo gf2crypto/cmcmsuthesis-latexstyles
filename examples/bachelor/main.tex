@@ -1,0 +1,318 @@
+%%% Бакалаврская ВКР — полный шаблон (все элементы)
+%%% Тематика: Машинное обучение, классификация текстов
+%%% Компиляция: xelatex → biber → xelatex → xelatex
+
+\documentclass[font=modern]{cmcmsuthesis-bachelor}
+
+\author{Петрова Мария Сергеевна}
+\title{Методы машинного обучения для задачи
+       классификации текстов}
+\subtitle{Выпускная квалификационная работа бакалавра}
+\thesissetup{department={Кафедра математических методов прогнозирования}}
+\supervisor{name={канд.~физ.-мат.~наук, доцент Козлов~А.Б.}}
+
+\usepackage{biblatex}
+\addbibresource{refs.bib}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+% ================================================================
+\section*{Введение}
+\addcontentsline{toc}{section}{Введение}
+
+Задача классификации текстов~\cite{shannon1948} является центральной в NLP.
+
+\textbf{Целью} работы является сравнительный анализ методов классификации.
+
+\textbf{Задачи}:
+\begin{enumerate}[beginpenalty=10000]
+    \item провести обзор методов;
+    \item реализовать модели Байеса, SVM, LSTM;
+    \item оценить качество на корпусе текстов;
+    \item сформулировать рекомендации.
+\end{enumerate}
+
+% ================================================================
+\section{Теоретические основы}\label{sec:theory}
+
+\subsection{Основные определения}
+
+Пусть $\vect{x} \in \mathbb{R}^m$~--- вектор признаков документа.
+
+\begin{definition}\label{def:bow}
+\emph{Мешком слов} документа $d$ называется вектор
+$\vect{x}_d \in \mathbb{R}^m$, где $x_{d,i}$~--- число вхождений
+$i$-го слова.
+\end{definition}
+
+\begin{definition}\label{def:tfidf}
+TF-IDF вес: $\operatorname{tf\text{-}idf}(w,d) =
+\operatorname{tf}(w,d)\cdot\log\frac{|D|}{|\{d'\in D\mid w\in d'\}|}$.
+\end{definition}
+
+\begin{theorem}[Байесовский классификатор]\label{thm:bayes}
+Оптимальный классификатор: $\hat{y} = \arg\max_{c\in\mathcal{Y}}
+P(\vect{x}\mid c)\cdot P(c)$.
+\end{theorem}
+
+\begin{proof}
+Следует из теоремы Байеса и минимизации
+$P(\text{ошибка}) = 1 - P(\hat{y}\mid\vect{x})$.
+\end{proof}
+
+\begin{corollary}\label{cor:nb}
+При условной независимости признаков:
+$P(\vect{x}\mid c) = \prod_j P(x_j\mid c)$.
+\end{corollary}
+
+\begin{lemma}\label{lem:margin}
+Если данные линейно разделимы, то $\exists\,\vect{w}$:
+$y_i(\vect{w}^\top\vect{x}_i+b)\geq 1$.
+\end{lemma}
+
+\begin{proposition}\label{prop:svmcomplexity}
+Обучение SVM решается за $\compl{O}(n^2 m)$.
+\end{proposition}
+
+\begin{remark}\label{rem:overfit}
+При малой выборке возможно переобучение.
+\end{remark}
+
+\begin{example}\label{ex:spam}
+Задача фильтрации спама: $\mathcal{Y}=\{\text{спам},\text{не спам}\}$.
+\end{example}
+
+\begin{problem}\label{prob:multiclass}
+Обобщить бинарный SVM на $|\mathcal{Y}|>2$ классов.
+\end{problem}
+
+Команды: $\matr{W}\in\mathbb{F}^{k\times n}_q$,
+$\str{S}_n$, $\elt{\sigma}$, $\code{C}$,
+$\algo{NaiveBayes}$, $\compl{O}(nm)$, $\crypto{E}$.
+
+% ================================================================
+\section{Формулы}\label{sec:formulas}
+
+\subsection{Ненумерованные формулы}
+Inline: $x\approx\sin x$ при $x\to 0$.
+Display: \[(x_1+x_2)^2=x_1^2+2x_1x_2+x_2^2.\]
+Непрерывная дробь:
+\[\frac{1}{\sqrt{2}+\displaystyle\frac{1}{\sqrt{2}+\displaystyle\frac{1}{\sqrt{2}+\cdots}}}\]
+
+\subsection{Нумерованные формулы}
+\begin{equation}\label{eq:euler}
+e=\lim_{n\to\infty}\left(1+\frac{1}{n}\right)^{\!n}.
+\end{equation}
+\begin{equation}\label{eq:basel}
+\lim_{n\to\infty}\sum_{k=1}^n\frac{1}{k^2}=\frac{\pi^2}{6}.
+\end{equation}
+Ссылки: \eqref{eq:euler} и~\eqref{eq:basel}.
+
+\begin{equation}\label{eq:long}
+\begin{multlined}
+1+2+3+\dots+50+\dots+\\+96+97+98+99+100=5050.
+\end{multlined}
+\end{equation}
+
+\subsection{Многострочные формулы}
+\[\begin{aligned}
+f_W&=\min\!\left(1,\max\!\left(0,\frac{W/W_{\max}}{W_{\text{crit}}}\right)\right),\\
+f_T&=\min\!\left(1,\max\!\left(0,\frac{T_s/T_{\text{melt}}}{T_{\text{crit}}}\right)\right).
+\end{aligned}\]
+
+\[|x|=\left\{\begin{alignedat}{2}
+& &x,\quad&\text{если }x\geqslant 0;\\
+&-&x,\quad&\text{если }x<0.
+\end{alignedat}\right.\]
+
+\[|x|=\begin{cases}\phantom{-}x,&\text{если }x\geqslant 0;\\-x,&\text{если }x<0.\end{cases}\]
+
+\begin{equation}\label{eq:softmax}
+\begin{alignedat}{2}
+P(y=c\mid\vect{x})&=\frac{\exp(\vect{w}_c^\top\vect{x})}{\sum_{j=1}^C\exp(\vect{w}_j^\top\vect{x})},&\quad&c=1,\ldots,C.
+\end{alignedat}
+\end{equation}
+
+\subsection{Субформулы}
+\begin{subequations}\label{eq:sub1}
+\begin{gather}y=x^2+1\label{eq:s1a}\\y=2x^2-x+1\label{eq:s1b}\\y=3x^2-4x+8\label{eq:s1c}\end{gather}
+\end{subequations}
+\begin{subequations}\label{eq:sub2}
+\begin{align}y&=x^3+x^2+x+1\label{eq:s2a}\\y&=x^2\label{eq:s2b}\end{align}
+\end{subequations}
+Ссылки: \eqref{eq:s1a}, \eqref{eq:s1b}, \eqref{eq:s2a}, \eqref{eq:s1c}.
+
+Система (Лоренц):
+\[\left\{\begin{array}{rl}\dot x=&\sigma(y-x)\\\dot y=&x(r-z)-y\\\dot z=&xy-bz\end{array}\right..\]
+
+Матрица:
+\[\left(\begin{array}{ccc}a_{11}&\ldots&a_{1n}\\\vdots&\ddots&\vdots\\a_{n1}&\ldots&a_{nn}\end{array}\right).\]
+
+Длинная inline: $a_1+a_2+a_3+a_4+a_5+a_6+a_7+a_8+a_9+a_{10}+a_{11}+a_{12}+a_{13}+a_{14}+a_{15}+a_{16}+a_{17}+a_{18}+a_{19}+a_{20}=\sum_{i=1}^{20}a_i.$
+
+\subsection{Греческие буквы и алфавиты}
+Обычные: $\alpha\beta\gamma\delta\epsilon\theta\lambda\mu\pi\sigma\phi\omega\Gamma\Delta\Omega$.
+Прямые: $\symup{\alpha}\symup{\beta}\symup{\gamma}\symup{\delta}\symup{\Gamma}\symup{\Omega}$.
+Жирные: $\symbf{\alpha}\symbf{\beta}\symbf{\gamma}\symbf{\Gamma}\symbf{\Omega}$.
+Жирные прямые: $\symbfup{\alpha}\symbfup{\beta}\symbfup{\gamma}\symbfup{\Gamma}\symbfup{\Omega}$.
+
+\[\begin{aligned}\mathcal{ABCDEFGHIJKLMNOPQRSTUVWXYZ}\\\mathfrak{ABCDEFGHIJKLMNOPQRSTUVWXYZ}\\\mathbb{ABCDEFGHIJKLMNOPQRSTUVWXYZ}\end{aligned}\]
+
+Русские операторы: $\tan\alpha$/$\cot\beta$/$\csc\gamma$; $\le$/$\leqslant$; $\phi$/$\varphi$; $\epsilon$/$\varepsilon$; $\kappa$/$\varkappa$; $\emptyset$/$\varnothing$.
+
+Отступы:
+\[\begin{aligned}\backslash!&\quad f(x)=x^2\!+3x\!+2\\\text{default}&\quad f(x)=x^2+3x+2\\\backslash,&\quad f(x)=x^2\,+3x\,+2\\\backslash;&\quad f(x)=x^2\;+3x\;+2\\\backslash\text{quad}&\quad f(x)=x^2\quad+3x\quad+2\end{aligned}\]
+
+% ================================================================
+\section{Форматирование текста}
+\begin{description}
+\item[Жирный:] \textbf{жирный}.\item[Курсив:] \emph{курсив}.
+\item[Жирный курсив:] \textbf{\emph{жирный курсив}}.
+\item[Подчёркивание:] \underline{подчёркнутый}.
+\item[Зачёркивание:] \sout{зачёркнутый}.
+\item[Sans:] \textsf{sans serif font}.
+\end{description}
+
+% ================================================================
+\section{Таблицы}
+
+\begin{table}[htbp]\caption{Простая таблица}\label{tab:simple}\centering
+\begin{tabular}{|l|c|c|c|}\hline Метод&Precision&Recall&F1\\\hline
+Байес&0.82&0.79&0.80\\\hline SVM&0.89&0.87&0.88\\\hline
+LSTM&0.91&0.90&0.90\\\hline\end{tabular}\end{table}
+
+\begin{table}[htbp]\caption{Booktabs}\label{tab:booktabs}\centering
+\begin{tabular}{lrcc}\toprule
+\textbf{Метод}&\textbf{Accuracy}&\textbf{Время,с}&\textbf{Модель}\\\midrule
+Наивный Байес&0.82&0.3&линейная\\
+SVM&0.89&2.1&ядерная\\
+LSTM&0.91&45.7&нейросеть\\\bottomrule\end{tabular}\end{table}
+
+\begin{longtable}{@{}rr@{}}\caption{Длинная таблица}\label{tab:long}\\
+\toprule Эпоха&Loss\\\midrule\endfirsthead
+\toprule Эпоха&Loss\\\midrule\endhead\bottomrule\endfoot
+1&2.30\\2&1.85\\3&1.42\\4&1.10\\5&0.87\\
+6&0.71\\7&0.58\\8&0.49\\9&0.42\\10&0.37\\\end{longtable}
+
+Ссылка: таблица~\ref{tab:booktabs}.
+
+% ================================================================
+\section{Изображения}
+%% \begin{figure}[htbp]\centering
+%% \includegraphics[width=0.8\textwidth]{images/roc.png}
+%% \caption{ROC-кривая}\label{fig:roc}\end{figure}
+%%
+%% \begin{figure}[htbp]\centering
+%% \includegraphics[scale=0.5]{images/confusion.png}
+%% \caption{Матрица ошибок (масштаб 0.5)}\label{fig:cm}\end{figure}
+%%
+%% Ссылка: рисунок~\ref{fig:roc}.
+
+% ================================================================
+\section{Списки}
+\subsection{Нумерованный}
+\begin{enumerate}\item Первый\begin{enumerate}\item Второй\begin{enumerate}\item Третий\begin{enumerate}\item Четвёртый\end{enumerate}\end{enumerate}\end{enumerate}\end{enumerate}
+\subsection{Ненумерованный}
+\begin{itemize}\item Первый\begin{itemize}\item Второй\begin{itemize}\item Третий\begin{itemize}\item Четвёртый\end{itemize}\end{itemize}\end{itemize}\end{itemize}
+
+% ================================================================
+\section{Алгоритмы и листинги}
+
+\begin{algorithm}[H]\caption{Наивный Байес}\label{alg:nb}
+\KwInput{выборка $\{(\vect{x}_i,y_i)\}$, тестовый $\vect{x}$}
+\KwOutput{метка $\hat{y}$}
+\For{каждый класс $c$}{
+    Оценить $\hat{P}(c)$\;
+    \For{каждый признак $j$}{$\hat{P}(x_j\mid c)$\tcp*{сглаживание}}
+}
+\Comment{классифицируем}
+\uIf{$\max_c\hat{P}(c\mid\vect{x})>\theta$}{\Return{$\hat{y}$}\;}
+\uElseIf{два класса равновероятны}{\Return{«неопределённо»}\;}
+\Else{\Return{$\arg\max_c\hat{P}(c)\prod_j\hat{P}(x_j\mid c)$}\;}
+\end{algorithm}
+
+Ссылка: алгоритм~\ref{alg:nb}.
+
+\begin{lstlisting}[language=Python,caption={Python},label={lst:py}]
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score
+# Обучение модели
+clf = MultinomialNB()
+clf.fit(X_train, y_train)
+predictions = clf.predict(X_test)
+acc = accuracy_score(y_test, predictions)
+print(f"Точность: {acc:.3f}")  # Выводим результат
+\end{lstlisting}
+
+\begin{lstlisting}[language=C,caption={C},label={lst:c}]
+#include <stdio.h>
+#include <math.h>
+/* Логарифм правдоподобия */
+double log_likelihood(int *counts, int n, double alpha) {
+    double ll = 0.0;
+    // Суммируем логарифмы
+    for (int i = 0; i < n; ++i)
+        ll += lgamma(counts[i] + alpha);
+    return ll;
+}
+int main(void) { printf("%.4f\n", log_likelihood((int[]){3,5,2}, 3, 1.0)); return 0; }
+\end{lstlisting}
+
+\begin{lstlisting}[style=pseudocode,caption={Псевдокод}]
+(*@\lstInput@*): выборка $\{(\vect{x}_i,y_i)\}$, тестовый $\vect{x}$
+(*@\lstOutput@*): метка класса
+procedure Classify($\vect{x}$)
+begin
+    for each class $c$ do
+    begin
+        $\log P(c\mid\vect{x}) \gets \log P(c) + \sum_j \log P(x_j\mid c)$
+    end
+    return $\arg\max_c \log P(c\mid\vect{x})$
+end
+\end{lstlisting}
+
+\begin{lstpseudocode}[caption={k-NN},label={alg:knn}]
+(*@\lstInput@*): выборка, тестовый $\vect{x}$, число соседей $k$
+(*@\lstOutput@*): метка класса
+function kNN($\vect{x}$, $k$)
+begin
+    for each $(\vect{x}_i, y_i)$ do
+        $d_i \gets \|\vect{x}-\vect{x}_i\|$
+    end
+    $N_k \gets$ $k$ ближайших
+    return голосование по $N_k$
+end
+\end{lstpseudocode}
+
+% ================================================================
+\section{Библиография}
+Одиночная~\cite{shannon1948}. Книга~\cite{knuth1984}.
+Множественная~\cite{shannon1948,knuth1984,macwilliams1979}.
+
+% ================================================================
+\section*{Заключение}
+\addcontentsline{toc}{section}{Заключение}
+\begin{enumerate}
+\item Реализованы три модели классификации.
+\item Сравнение в таблице~\ref{tab:booktabs}.
+\item LSTM показал лучшее качество.
+\end{enumerate}
+
+\clearpage\listoftables\addcontentsline{toc}{section}{Список таблиц}
+\printbibliography
+
+\appendix
+\section{Исходный код}
+\subsection{Модуль предобработки}
+Код очистки текстов.
+\subsection{Модуль моделей}
+Код обучения.
+
+\section{Дополнительные графики}
+Дополнительные ROC-кривые.
+\subsection{Байес vs SVM}
+Данные.
+
+\end{document}

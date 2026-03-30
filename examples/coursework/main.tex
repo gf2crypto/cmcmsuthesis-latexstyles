@@ -1,0 +1,422 @@
+%%% Курсовая работа — полный шаблон (все элементы)
+%%% Тематика: Численные методы решения ОДУ
+%%% Компиляция: xelatex → biber → xelatex → xelatex
+
+\documentclass[font=modern]{cmcmsuthesis-cw}
+
+\author{Иванов Иван Иванович}
+\title{Численные методы решения обыкновенных
+       дифференциальных уравнений}
+\thesissetup{department = {Кафедра вычислительной математики}}
+\supervisor{name = {канд.~физ.-мат.~наук, доцент Петров~П.П.}}
+
+\usepackage{biblatex}
+\addbibresource{refs.bib}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+% ================================================================
+\section*{Введение}
+\addcontentsline{toc}{section}{Введение}
+
+Задача численного интегрирования ОДУ является фундаментальной
+в вычислительной математике~\cite{shannon1948}.
+
+\textbf{Целью} данной работы является сравнительный анализ методов
+численного интегрирования ОДУ.
+
+Для достижения цели необходимо решить следующие \textbf{задачи}:
+\begin{enumerate}[beginpenalty=10000]
+    \item реализовать методы Эйлера и Рунге--Кутты;
+    \item исследовать устойчивость и точность;
+    \item провести эксперименты на тестовых задачах;
+    \item подготовить рекомендации по выбору метода.
+\end{enumerate}
+
+% ================================================================
+\section{Теоретические основы}
+\label{sec:theory}
+
+\subsection{Основные определения}
+
+Пусть $\vect{x}(t) \in \mathbb{R}^n$~--- вектор неизвестных.
+
+\begin{definition}\label{def:cauchy}
+\emph{Задачей Коши} называется задача нахождения решения
+\begin{equation}\label{eq:ode}
+    \frac{d\vect{x}}{dt} = \vect{f}(t, \vect{x}),
+    \quad \vect{x}(t_0) = \vect{x}_0,
+\end{equation}
+где $\vect{f}\colon \mathbb{R} \times \mathbb{R}^n \to \mathbb{R}^n$.
+\end{definition}
+
+\begin{definition}\label{def:lipschitz}
+Функция $\vect{f}$ удовлетворяет \emph{условию Липшица} по $\vect{x}$,
+если $\exists L>0$: $\|\vect{f}(t,\vect{x})-\vect{f}(t,\vect{y})\|
+\leq L\|\vect{x}-\vect{y}\|$.
+\end{definition}
+
+\begin{theorem}[Пикара--Линделёфа]\label{thm:picard}
+Если $\vect{f}$ непрерывна и липшицева
+(определение~\ref{def:lipschitz}), то задача
+Коши~\eqref{eq:ode} имеет единственное решение.
+\end{theorem}
+
+\begin{proof}
+Рассмотрим итерации Пикара
+$\vect{x}^{(k+1)}(t) = \vect{x}_0 +
+\int_{t_0}^{t}\vect{f}(s,\vect{x}^{(k)}(s))\,ds$
+и покажем сходимость по лемме~\ref{lem:gronwall}.
+\end{proof}
+
+\begin{corollary}\label{cor:global}
+Если $\vect{f}$ глобально липшицева, решение существует
+на $[t_0,+\infty)$.
+\end{corollary}
+
+\begin{lemma}\label{lem:gronwall}
+Если $u(t) \leq a + b\int_{t_0}^t u(s)\,ds$,
+то $u(t) \leq a\,e^{b(t-t_0)}$.
+\end{lemma}
+
+\begin{proposition}\label{prop:euler-stable}
+Метод Эйлера устойчив для $\dot{x}=\lambda x$
+при $|1+h\lambda|<1$.
+\end{proposition}
+
+\begin{remark}\label{rem:stiff}
+Для жёстких систем явные методы требуют малого шага $h$.
+\end{remark}
+
+\begin{example}\label{ex:harmonic}
+Осциллятор $\ddot{x}+\omega^2 x=0$ сводится к системе:
+$\dot{x}_1=x_2$, $\dot{x}_2=-\omega^2 x_1$.
+\end{example}
+
+\begin{problem}\label{prob:pendulum}
+Исследовать нелинейный маятник $\ddot{\theta}+\sin\theta=0$.
+\end{problem}
+
+Команды пакета: $\matr{A}\in\mathbb{F}^{k\times n}_q$,
+группа $\str{S}_n$, элемент $\elt{\sigma}$, код $\code{C}$,
+алгоритм $\algo{RK4}$, сложность $\compl{O}(n^4)$,
+шифр $\crypto{E}$.
+
+% ================================================================
+\section{Формулы}
+\label{sec:formulas}
+
+\subsection{Ненумерованные формулы}
+
+Inline: $x \approx \sin x$ при $x \to 0$.
+Display: \[(x_1+x_2)^2 = x_1^2 + 2x_1 x_2 + x_2^2.\]
+Непрерывная дробь:
+\[\frac{1}{\sqrt{2}+\displaystyle\frac{1}{\sqrt{2}+
+    \displaystyle\frac{1}{\sqrt{2}+\cdots}}}\]
+
+\subsection{Нумерованные формулы}
+\begin{equation}\label{eq:euler-num}
+e=\lim_{n\to\infty}\left(1+\frac{1}{n}\right)^{\!n}.
+\end{equation}
+\begin{equation}\label{eq:basel}
+\lim_{n\to\infty}\sum_{k=1}^n\frac{1}{k^2}=\frac{\pi^2}{6}.
+\end{equation}
+Ссылки: \eqref{eq:euler-num} и~\eqref{eq:basel}.
+
+С \texttt{multlined}:
+\begin{equation}\label{eq:longsum}
+\begin{multlined}
+1+2+3+\dots+50+51+\dots+\\+96+97+98+99+100=5050.
+\end{multlined}
+\end{equation}
+
+\subsection{Многострочные формулы}
+
+\texttt{aligned}:
+\[\begin{aligned}
+f_W &= \min\!\left(1,\max\!\left(0,
+    \frac{W/W_{\max}}{W_{\text{crit}}}\right)\right),\\
+f_T &= \min\!\left(1,\max\!\left(0,
+    \frac{T_s/T_{\text{melt}}}{T_{\text{crit}}}\right)\right).
+\end{aligned}\]
+
+\texttt{alignedat}:
+\[|x|=\left\{\begin{alignedat}{2}
+& & x,\quad &\text{если }x\geqslant 0;\\
+&-& x,\quad &\text{если }x<0.
+\end{alignedat}\right.\]
+
+\texttt{cases}:
+\[|x|=\begin{cases}\phantom{-}x,&\text{если }x\geqslant 0;\\
+-x,&\text{если }x<0.\end{cases}\]
+
+Нумерованная с \texttt{alignedat}:
+\begin{equation}\label{eq:rk}
+\begin{alignedat}{2}
+\vect{k}_1 &= h\,\vect{f}(t_n,\vect{x}_n), &\quad&\\
+\vect{k}_2 &= h\,\vect{f}(t_n+\tfrac{h}{2},
+    \vect{x}_n+\tfrac{\vect{k}_1}{2}), &&\\
+\vect{k}_3 &= h\,\vect{f}(t_n+\tfrac{h}{2},
+    \vect{x}_n+\tfrac{\vect{k}_2}{2}), &&\\
+\vect{k}_4 &= h\,\vect{f}(t_n+h,\vect{x}_n+\vect{k}_3).&&
+\end{alignedat}
+\end{equation}
+
+\subsection{Субформулы}
+\begin{subequations}\label{eq:sub1}
+\begin{gather}
+y = x^2+1 \label{eq:sub1a}\\
+y = 2x^2-x+1 \label{eq:sub1b}\\
+y = 3x^2-4x+8 \label{eq:sub1c}
+\end{gather}
+\end{subequations}
+\begin{subequations}\label{eq:sub2}
+\begin{align}
+y &= x^3+x^2+x+1 \label{eq:sub2a}\\
+y &= x^2 \label{eq:sub2b}
+\end{align}
+\end{subequations}
+Ссылки: \eqref{eq:sub1a}, \eqref{eq:sub1b}, \eqref{eq:sub2a}, \eqref{eq:sub1c}.
+
+Система уравнений (Лоренц):
+\[\left\{\begin{array}{rl}
+\dot x=&\sigma(y-x)\\\dot y=&x(r-z)-y\\\dot z=&xy-bz
+\end{array}\right..\]
+
+Матрица:
+\[\left(\begin{array}{ccc}
+a_{11}&\ldots&a_{1n}\\\vdots&\ddots&\vdots\\a_{n1}&\ldots&a_{nn}
+\end{array}\right).\]
+
+Длинная inline формула:
+$a_1+a_2+a_3+a_4+a_5+a_6+a_7+a_8+a_9+a_{10}+a_{11}+a_{12}+a_{13}+a_{14}+a_{15}+a_{16}+a_{17}+a_{18}+a_{19}+a_{20}=\sum_{i=1}^{20}a_i.$
+
+\subsection{Греческие буквы и алфавиты}
+
+Обычные: $\alpha\beta\gamma\delta\epsilon\theta\lambda\mu\pi\sigma\phi\omega\Gamma\Delta\Omega$.
+
+Прямые: $\symup{\alpha}\symup{\beta}\symup{\gamma}\symup{\delta}\symup{\Gamma}\symup{\Omega}$.
+
+Жирные: $\symbf{\alpha}\symbf{\beta}\symbf{\gamma}\symbf{\Gamma}\symbf{\Omega}$.
+
+Жирные прямые: $\symbfup{\alpha}\symbfup{\beta}\symbfup{\gamma}\symbfup{\Gamma}\symbfup{\Omega}$.
+
+Алфавиты:
+\[\begin{aligned}
+\mathcal{ABCDEFGHIJKLMNOPQRSTUVWXYZ}\\
+\mathfrak{ABCDEFGHIJKLMNOPQRSTUVWXYZ}\\
+\mathbb{ABCDEFGHIJKLMNOPQRSTUVWXYZ}
+\end{aligned}\]
+
+Русские операторы: $\tan\alpha$/$\cot\beta$/$\csc\gamma$;
+$\le$, $\leqslant$; $\phi$/$\varphi$; $\epsilon$/$\varepsilon$;
+$\kappa$/$\varkappa$; $\emptyset$/$\varnothing$.
+
+Отступы:
+\[\begin{aligned}
+\backslash! &\quad f(x)=x^2\!+3x\!+2\\
+\text{default}&\quad f(x)=x^2+3x+2\\
+\backslash, &\quad f(x)=x^2\,+3x\,+2\\
+\backslash; &\quad f(x)=x^2\;+3x\;+2\\
+\backslash\text{quad}&\quad f(x)=x^2\quad+3x\quad+2
+\end{aligned}\]
+
+% ================================================================
+\section{Форматирование текста}
+
+\begin{description}
+\item[Жирный:] \textbf{жирный шрифт}.
+\item[Курсив:] \emph{курсивный шрифт}.
+\item[Жирный курсив:] \textbf{\emph{жирный курсив}}.
+\item[Подчёркивание:] \underline{подчёркнутый текст}.
+\item[Зачёркивание:] \sout{зачёркнутый текст}.
+\item[Sans:] \textsf{текст без засечек, sans font}.
+\end{description}
+
+% ================================================================
+\section{Таблицы}
+
+\begin{table}[htbp]
+\caption{Простая таблица}\label{tab:simple}
+\centering
+\begin{tabular}{|l|c|c|c|}
+\hline Метод & $h$ & $h/2$ & $h/4$ \\\hline
+Эйлер & 8.62 & 8.77 & 8.70 \\\hline
+РК-2 & 7.90 & 7.93 & 7.93 \\\hline
+РК-4 & 8.70 & 8.70 & 8.70 \\\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\caption{Таблица booktabs}\label{tab:booktabs}
+\centering
+\begin{tabular}{lrcc}
+\toprule
+\textbf{Метод}&\textbf{Погрешность}&\textbf{Время,с}&\textbf{Порядок}\\
+\midrule
+Эйлер & $1.2\times10^{-2}$ & 0.001 & 1\\
+РК-4  & $5.6\times10^{-8}$ & 0.004 & 4\\
+Адамс & $1.1\times10^{-6}$ & 0.003 & 4\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{longtable}{@{}rr@{}}
+\caption{Длинная таблица}\label{tab:long}\\
+\toprule $t$&$x(t)$\\\midrule\endfirsthead
+\toprule $t$&$x(t)$\\\midrule\endhead\bottomrule\endfoot
+0.0&1.000\\0.1&1.105\\0.2&1.221\\0.3&1.350\\
+0.4&1.492\\0.5&1.649\\0.6&1.822\\0.7&2.014\\
+0.8&2.226\\0.9&2.460\\1.0&2.718\\
+\end{longtable}
+
+Ссылка на таблицу~\ref{tab:booktabs}.
+
+% ================================================================
+\section{Изображения}
+
+%% Раскомментируйте при наличии файлов:
+% \begin{figure}[htbp]\centering
+% \includegraphics[width=0.8\textwidth]{images/plot.png}
+% \caption{График решения}\label{fig:plot}
+% \end{figure}
+%
+% \begin{figure}[htbp]\centering
+% \includegraphics[scale=0.5]{images/logo.png}
+% \caption{Логотип (масштаб 0.5)}\label{fig:logo}
+% \end{figure}
+%
+% Ссылка на рисунок~\ref{fig:plot}.
+
+% ================================================================
+\section{Списки}
+
+\subsection{Нумерованный}
+\begin{enumerate}
+\item Первый\begin{enumerate}
+\item Второй\begin{enumerate}
+\item Третий\begin{enumerate}
+\item Четвёртый\end{enumerate}\end{enumerate}\end{enumerate}
+\end{enumerate}
+
+\subsection{Ненумерованный}
+\begin{itemize}
+\item Первый\begin{itemize}
+\item Второй\begin{itemize}
+\item Третий\begin{itemize}
+\item Четвёртый\end{itemize}\end{itemize}\end{itemize}
+\end{itemize}
+
+% ================================================================
+\section{Алгоритмы и листинги}
+
+\begin{algorithm}[H]
+\caption{Метод Рунге--Кутты}\label{alg:rk4}
+\KwInput{$\vect{f}$, $t_0$, $\vect{x}_0$, $h$, $N$}
+\KwOutput{массив решений}
+\For{$i=1$ \KwTo $N$}{
+    $\vect{k}_1\gets h\,\vect{f}(t,\vect{x})$\;
+    $\vect{k}_2\gets h\,\vect{f}(t+h/2,\vect{x}+\vect{k}_1/2)$
+        \tcp*{стадия 2}
+    \Comment{обновляем}
+    \uIf{$\|\vect{x}\|>10^{10}$}{\Return{ошибка}\;}
+    \uElseIf{$h<10^{-15}$}{\Return{предупреждение}\;}
+    \Else{сохранить $(t,\vect{x})$\;}
+}
+\Return{массив}\;
+\end{algorithm}
+
+Ссылка: алгоритм~\ref{alg:rk4}.
+
+\begin{lstlisting}[language=Python,caption={Python},label={lst:py}]
+import numpy as np
+def euler(f, t0, x0, h, n):
+    """Метод Эйлера для решения ОДУ."""
+    t, x = t0, np.array(x0, dtype=float)
+    for _ in range(n):
+        x = x + h * f(t, x)  # Шаг Эйлера
+        t += h
+    return x
+print("Результат:", euler(lambda t,x: -x, 0, [1.0], 0.1, 100))
+\end{lstlisting}
+
+\begin{lstlisting}[language=C,caption={C},label={lst:c}]
+#include <stdio.h>
+/* Правая часть ОДУ */
+double f(double t, double x) { return -x; }
+int main(void) {
+    double t=0, x=1, h=0.01;
+    // Интегрируем
+    for (int i=0; i<1000; ++i) { x+=h*f(t,x); t+=h; }
+    printf("x(%.1f) = %.6f\n", t, x);
+    return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=pseudocode,caption={Псевдокод}]
+(*@\lstInput@*): $f$, $t_0$, $x_0$, $\varepsilon$
+(*@\lstOutput@*): решение с точностью $\varepsilon$
+procedure AdaptiveStep($f$, $t_0$, $x_0$, $\varepsilon$)
+begin
+    $h \gets 0.1$
+    while $t < T$ do
+    begin
+        if $|x_1 - x_2| < \varepsilon$ then
+            $t \gets t + h$
+        else
+            $h \gets h / 2$
+    end
+    return $x$
+end
+\end{lstlisting}
+
+\begin{lstpseudocode}[caption={Бисекция},label={alg:bisect}]
+(*@\lstInput@*): $[a,b]$, $g$, $\varepsilon$
+(*@\lstOutput@*): корень $x^*$
+function Bisection($a$, $b$, $g$, $\varepsilon$)
+begin
+    while $b - a > \varepsilon$ do
+    begin
+        $c \gets (a+b)/2$
+        if $g(a)\cdot g(c)<0$ then $b\gets c$
+        else $a\gets c$
+    end
+    return $(a+b)/2$
+end
+\end{lstpseudocode}
+
+% ================================================================
+\section{Библиография}
+
+Одиночная~\cite{shannon1948}. Книга~\cite{knuth1984}.
+Множественная~\cite{shannon1948,knuth1984,macwilliams1979}.
+
+% ================================================================
+\section*{Заключение}
+\addcontentsline{toc}{section}{Заключение}
+
+\begin{enumerate}
+\item Реализованы методы Эйлера и Рунге--Кутты.
+\item Сравнение приведено в таблице~\ref{tab:booktabs}.
+\item Теоретические оценки подтверждены экспериментами.
+\end{enumerate}
+
+\clearpage\listoftables\addcontentsline{toc}{section}{Список таблиц}
+\printbibliography
+
+\appendix
+\section{Полный код}
+\subsection{Модуль интегрирования}
+Код модуля.
+\subsection{Модуль визуализации}
+Код графиков.
+
+\section{Дополнительные результаты}
+Таблицы при разных шагах.
+\subsection{Эксперимент 1}
+Данные.
+
+\end{document}

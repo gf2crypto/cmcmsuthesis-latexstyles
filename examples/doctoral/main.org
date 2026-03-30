@@ -1,0 +1,264 @@
+# -*- mode: org; coding: utf-8 -*-
+# Докторская — полный шаблон (Org-mode)
+# Тематика: Стохастическое управление
+
+#+LATEX_CLASS: rureport
+#+LATEX_CLASS_OPTIONS: [14pt]
+#+LATEX_COMPILER: xelatex
+#+LANGUAGE: ru
+#+CITE_EXPORT: bibtex
+#+OPTIONS: toc:t tags:nil
+#+LATEX_HEADER_EXTRA: \cmcmsugostfontsetup{font=modern}
+#+LATEX_HEADER_EXTRA: \cmcmsugostextrasetup{rumathop=false,thm=true,extramath=true,listings=true,biber=true,alg=2e}
+#+LATEX_HEADER_EXTRA: \usepackage{biblatex}
+#+LATEX_HEADER_EXTRA: \addbibresource{refs.bib}
+#+EXCLUDE_TAGS: BIBTEX
+
+#+title: Теория устойчивости стохастических систем с марковскими переключениями
+#+author: Петров Сергей Николаевич
+
+* Введение
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+#+latex: \addcontentsline{toc}{chapter}{Введение}
+Стохастические системы[cite:@shannon1948;@macwilliams1979]. *Цель*: теория устойчивости.
+*Задачи*:
+#+attr_latex: :options [beginpenalty=10000]
+1. критерий устойчивости; 2. синтез управлений; 3. запаздывание; 4. робастность.
+
+* Устойчивость линейных систем
+** Определения
+\( \vect{x}(t)\in\mathbb{R}^n \), \( \matr{A}\in\mathbb{F}^{k\times n}_q \), \( \str{S}_n \), \( \elt{\sigma} \), \( \code{C} \), \( \algo{LMI} \), \( \compl{O}(n^{3.5}) \), \( \crypto{E} \).
+
+#+name: def:system
+#+begin_definition
+/Стохастическая система/:
+#+name: eq:sde
+\begin{equation}
+d\vect{x}=\matr{A}(\xi_t)\vect{x}\,dt+\matr{B}(\xi_t)\vect{x}\,dW.
+\end{equation}
+#+end_definition
+#+name: def:ms
+#+begin_definition
+/Устойчива в среднеквадратичном/, если \( \lim_{t\to\infty}\mathbb{E}\|\vect{x}(t)\|^2=0 \).
+#+end_definition
+#+name: thm:lmi
+#+begin_theorem
+Система\nbsp{}\eqref{eq:sde} экспоненциально устойчива \( \Leftrightarrow \exists\matr{P}_i\succ 0 \):
+\[\matr{A}_i^\top\matr{P}_i+\matr{P}_i\matr{A}_i+\matr{B}_i^\top\matr{P}_i\matr{B}_i+\sum_j q_{ij}\matr{P}_j\prec 0.\]
+#+end_theorem
+#+begin_proof
+Ляпунов \( V=\vect{x}^\top\matr{P}_i\vect{x} \) + формула Ито.
+#+end_proof
+#+begin_corollary
+LMI проверяется за \( \compl{O}(N\cdot n^{3.5}) \).
+#+end_corollary
+#+name: lem:lyapunov
+#+begin_lemma
+\( \mathcal{L}V\leq-\alpha V \Rightarrow \mathbb{E}V(t)\leq e^{-\alpha t}V(0) \).
+#+end_lemma
+#+begin_proposition
+Устойчивость \( \Rightarrow \operatorname{Re}\lambda_i(\matr{A}_j)<0 \) для некоторого \( j \).
+#+end_proposition
+#+begin_remark
+Устойчивость подсистем не гарантирует устойчивости системы.
+#+end_remark
+#+begin_example
+Двухрежимная: \( \matr{A}_1=\begin{pmatrix}-1&0\\0&-2\end{pmatrix} \), \( \matr{A}_2=\begin{pmatrix}-0.5&1\\-1&-0.5\end{pmatrix} \).
+#+end_example
+#+begin_problem
+Обобщить теорему\nbsp{}[[thm:lmi]] на системы с запаздыванием.
+#+end_problem
+
+* Формулы
+** Ненумерованные
+Inline: \( x\approx\sin x \). Display: \[(x_1+x_2)^2=x_1^2+2x_1x_2+x_2^2.\]
+Дробь: \[\frac{1}{\sqrt{2}+\displaystyle\frac{1}{\sqrt{2}+\displaystyle\frac{1}{\sqrt{2}+\cdots}}}\]
+** Нумерованные
+#+name: eq:euler
+\begin{equation}e=\lim_{n\to\infty}\left(1+\frac{1}{n}\right)^{\!n}.\end{equation}
+#+name: eq:basel
+\begin{equation}\lim_{n\to\infty}\sum_{k=1}^n\frac{1}{k^2}=\frac{\pi^2}{6}.\end{equation}
+Ссылки: \eqref{eq:euler}, \eqref{eq:basel}.
+\begin{equation}\begin{multlined}1+2+\dots+50+\dots+\\+96+\dots+100=5050.\end{multlined}\end{equation}
+** Многострочные
+\[\begin{aligned}f_W&=\min\!\left(1,\max\!\left(0,\frac{W/W_{\max}}{W_{\text{crit}}}\right)\right),\\f_T&=\min\!\left(1,\max\!\left(0,\frac{T_s/T_{\text{melt}}}{T_{\text{crit}}}\right)\right).\end{aligned}\]
+\[|x|=\left\{\begin{alignedat}{2}& &x,\quad&\text{если }x\geqslant 0;\\&-&x,\quad&\text{если }x<0.\end{alignedat}\right.\]
+\[|x|=\begin{cases}\phantom{-}x,&\text{если }x\geqslant 0;\\-x,&\text{если }x<0.\end{cases}\]
+\begin{equation}\begin{alignedat}{2}d\mathbb{E}V&=-\alpha\mathbb{E}V\,dt,&\quad&\\\mathbb{E}V(t)&=e^{-\alpha t}V(0).&&\end{alignedat}\end{equation}
+** Субформулы
+\begin{subequations}\begin{gather}y=x^2+1\label{eq:s1a}\\y=2x^2-x+1\label{eq:s1b}\\y=3x^2-4x+8\label{eq:s1c}\end{gather}\end{subequations}
+\begin{subequations}\begin{align}y&=x^3+x^2+x+1\label{eq:s2a}\\y&=x^2\label{eq:s2b}\end{align}\end{subequations}
+Ссылки: \eqref{eq:s1a}, \eqref{eq:s1b}, \eqref{eq:s2a}, \eqref{eq:s1c}.
+Лоренц: \[\left\{\begin{array}{rl}\dot x=&\sigma(y-x)\\\dot y=&x(r-z)-y\\\dot z=&xy-bz\end{array}\right..\]
+Матрица: \[\left(\begin{array}{ccc}a_{11}&\ldots&a_{1n}\\\vdots&\ddots&\vdots\\a_{n1}&\ldots&a_{nn}\end{array}\right).\]
+Длинная: \( a_1+a_2+a_3+a_4+a_5+a_6+a_7+a_8+a_9+a_{10}+a_{11}+a_{12}+a_{13}+a_{14}+a_{15}+a_{16}+a_{17}+a_{18}+a_{19}+a_{20}=\sum_{i=1}^{20}a_i. \)
+** Греческие и алфавиты
+Обычные: \( \alpha\beta\gamma\delta\Gamma\Omega \). Прямые: \( \symup{\alpha}\symup{\beta}\symup{\gamma} \). Жирные: \( \symbf{\alpha}\symbf{\beta} \). Жирные прямые: \( \symbfup{\alpha}\symbfup{\beta} \).
+\[\begin{aligned}\mathcal{ABCDEFGHIJKLMNOPQRSTUVWXYZ}\\\mathfrak{ABCDEFGHIJKLMNOPQRSTUVWXYZ}\\\mathbb{ABCDEFGHIJKLMNOPQRSTUVWXYZ}\end{aligned}\]
+Операторы: \( \tan/\cot/\csc \); \( \le/\leqslant \); \( \phi/\varphi \); \( \epsilon/\varepsilon \); \( \kappa/\varkappa \); \( \emptyset/\varnothing \).
+Отступы: \[\begin{aligned}\backslash!&\quad f=x^2\!+3x\!+2\\\text{default}&\quad f=x^2+3x+2\\\backslash,&\quad f=x^2\,+3x\,+2\\\backslash\text{quad}&\quad f=x^2\quad+3x\quad+2\end{aligned}\]
+
+* Форматирование, таблицы, изображения и списки
+** Форматирование
+- Жирный: :: *жирный*
+- Курсив: :: /курсив/
+- Жирный курсив: :: /*жирный курсив*/
+- Подчёркивание: :: _подчёркнутый_
+- Зачёркивание: :: +зачёркнутый+
+- Sans: :: \textsf{sans serif}
+** Таблицы
+#+caption: Простая
+#+name: tab:simple
+|---------------+----+----+----------|
+| Система       |$n$ |$N$ |Устойчива |
+|---------------+----+----+----------|
+| Двухрежимная  | 2  | 2  | да       |
+| Трёхрежимная  | 3  | 3  | нет      |
+| С запаздыванием| 4 | 2  | да       |
+|---------------+----+----+----------|
+
+#+attr_latex: :booktabs t
+#+caption: Booktabs
+#+name: tab:booktabs
+| *$n$* | *$N$* | *Время SDP,с* | *$\lambda_{\max}$* |
+|-------+-------+---------------+---------------------|
+|     2 |     3 |          0.01 |              -0.42  |
+|     5 |     4 |          0.08 |              -0.31  |
+|    10 |     5 |          0.95 |              -0.18  |
+|    20 |     8 |          12.4 |              -0.09  |
+
+#+ATTR_LATEX: :booktabs t :environment longtable :align @{}rr@{}
+#+caption: Длинная
+#+name: tab:long
+| *$t$* | *$\mathbb{E}\|\vect{x}\|^2$* |
+|-------+-------------------------------|
+|   0.0 |                         1.000 |
+|   1.0 |                         0.432 |
+|   2.0 |                         0.187 |
+|   4.0 |                         0.035 |
+
+Ссылка: таблица\nbsp{}[[tab:booktabs]].
+** Изображения
+# #+caption: Траектории
+# #+name: fig:traj
+# [[./images/trajectories.png]]
+# #+caption: Ляпунов (масштаб 0.5)
+# #+attr_latex: :scale 0.5
+# [[./images/lyapunov.png]]
+** Списки
+*** Нумерованный
+1. Первый
+   1. Второй
+      1. Третий
+         1. Четвёртый
+*** Ненумерованный
++ Первый
+  + Второй
+    + Третий
+      + Четвёртый
+
+* Алгоритмы и листинги
+#+caption: Синтез стабилизации
+#+name: alg:synth
+\begin{algorithm}[H]
+\KwInput{$\matr{A}_i,\matr{B}_i,\matr{D}_i$, $\matr{Q}$}
+\KwOutput{$\matr{K}_i$ или «невозможно»}
+Сформировать LMI\;
+Решить SDP\tcp*{полуопределённое}
+\Comment{проверяем}
+\uIf{разрешимо}{
+    \For{$i=1$ \KwTo $N$}{$\matr{K}_i\gets\matr{Y}_i\matr{X}_i^{-1}$\;}
+    \Return{$\matr{K}_1,\ldots,\matr{K}_N$}\;
+}
+\uElseIf{граница}{\Return{на границе}\;}
+\Else{\Return{невозможно}\;}
+\end{algorithm}
+Ссылка: алгоритм\nbsp{}\ref{alg:synth}.
+
+\begin{lstlisting}[language=Python,caption={Python},label={lst:py}]
+import numpy as np
+from scipy.linalg import solve_lyapunov
+def check(A):
+    """Проверка устойчивости."""
+    n = A[0].shape[0]
+    P = solve_lyapunov(A[0].T, -np.eye(n))
+    # Проверяем положительную определённость
+    return np.all(np.linalg.eigvals(P) > 0), P
+A = [np.array([[-1, 0.5], [-0.5, -2]])]
+ok, P = check(A)
+print("Устойчива:", ok)
+\end{lstlisting}
+
+\begin{lstlisting}[language=C,caption={C},label={lst:c}]
+#include <stdio.h>
+#include <math.h>
+/* Моделирование */
+void sim(double *x, double A[2][2], double dt, int n) {
+    // Эйлер--Маруяма
+    for (int i=0; i<n; ++i) {
+        double d0=A[0][0]*x[0]+A[0][1]*x[1];
+        double d1=A[1][0]*x[0]+A[1][1]*x[1];
+        x[0]+=d0*dt; x[1]+=d1*dt;
+    }
+}
+int main(void) {
+    double x[2]={1,0.5}, A[2][2]={{-1,0},{0,-2}};
+    sim(x,A,0.01,1000);
+    printf("x=(%.4f,%.4f)\n",x[0],x[1]);return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=pseudocode,caption={Проверка устойчивости}]
+(*@\lstInput@*): $\{\matr{A}_i\}$, $\matr{Q}$
+(*@\lstOutput@*): устойчива / нет
+procedure CheckStability
+begin
+    Построить LMI
+    if SDP разрешимо then return "устойчива"
+    else return "неустойчива"
+end
+\end{lstlisting}
+
+\begin{lstpseudocode}[caption={Монте-Карло},label={alg:mc}]
+(*@\lstInput@*): система, $M$, $T$
+(*@\lstOutput@*): $\mathbb{E}\|\vect{x}(T)\|^2$
+function MC($M$, $T$)
+begin
+    $S\gets 0$
+    for $j=1$ to $M$ do
+        Смоделировать $\vect{x}^{(j)}(T)$
+        $S\gets S+\|\vect{x}^{(j)}\|^2$
+    return $S/M$
+end
+\end{lstpseudocode}
+
+* Библиография и ссылки
+Одиночная[cite:@shannon1948]. Книга[cite:@knuth1984]. Множественная[cite:@shannon1948;@knuth1984;@macwilliams1979].
+Теорема\nbsp{}[[thm:lmi]], определение\nbsp{}[[def:system]], формула\nbsp{}\eqref{eq:sde}, таблица\nbsp{}[[tab:booktabs]], алгоритм\nbsp{}\ref{alg:synth}.
+
+* Заключение
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+#+latex: \addcontentsline{toc}{chapter}{Заключение}
+1. Критерий устойчивости (теорема\nbsp{}[[thm:lmi]]).
+2. Метод синтеза (алгоритм\nbsp{}\ref{alg:synth}).
+3. Эксперименты (таблица\nbsp{}[[tab:booktabs]]).
+
+* Список таблиц :ignore:
+#+LATEX: \clearpage\listoftables\addcontentsline{toc}{chapter}{Список таблиц}
+* Список литературы :ignore:
+#+LATEX: \printbibliography[heading=bibintoc]
+* Приложения :ignore:
+#+latex: \appendix
+* Доказательства лемм
+** Лемма Ляпунова
+Доказательство леммы\nbsp{}[[lem:lyapunov]].
+** Оценки скорости
+Выкладки.
+* Параметры экспериментов
+Данные.
+** Двухрежимные системы
+Таблицы.

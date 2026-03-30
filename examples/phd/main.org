@@ -1,0 +1,261 @@
+# -*- mode: org; coding: utf-8 -*-
+# Кандидатская — полный шаблон (Org-mode)
+# Тематика: Теория линейных кодов
+
+#+LATEX_CLASS: rureport
+#+LATEX_CLASS_OPTIONS: [14pt]
+#+LATEX_COMPILER: xelatex
+#+LANGUAGE: ru
+#+CITE_EXPORT: bibtex
+#+OPTIONS: toc:t tags:nil
+#+LATEX_HEADER_EXTRA: \cmcmsugostfontsetup{font=modern}
+#+LATEX_HEADER_EXTRA: \cmcmsugostextrasetup{rumathop=false,thm=true,extramath=true,listings=true,biber=true,alg=2e}
+#+LATEX_HEADER_EXTRA: \usepackage{biblatex}
+#+LATEX_HEADER_EXTRA: \addbibresource{refs.bib}
+#+EXCLUDE_TAGS: BIBTEX
+
+#+title: Произведение Шура--Адамара линейных кодов в анализе теоретико-кодовых криптосистем
+#+author: Сидоров Алексей Михайлович
+
+* Введение
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+#+latex: \addcontentsline{toc}{chapter}{Введение}
+Теория кодов[cite:@shannon1948;@macwilliams1979]. *Цель*: свойства произведения Шура--Адамара.
+*Задачи*:
+#+attr_latex: :options [beginpenalty=10000]
+1. структура произведения; 2. оценки расстояния; 3. алгоритм спектра; 4. анализ стойкости.
+
+* Сведения из теории линейных кодов
+** Определения
+Поле \( \mathbb{F}_q \), векторы \( \vect{v}\in\mathbb{F}^n_q \), матрицы \( \matr{M}\in\mathbb{F}^{k\times n}_q \), группа \( \str{S}_n \), элемент \( \elt{\sigma} \), код \( \code{C} \), алгоритм \( \algo{Decode} \), сложность \( \compl{O}(n^2) \), шифр \( \crypto{E} \).
+
+#+name: def:nkcode
+#+begin_definition
+\( [n]_q \)-код \( \code{C} \) называется \( [n,k]_q \)-кодом, если \( \dim\code{C}=k \).
+#+end_definition
+#+name: def:generator
+#+begin_definition
+Матрица \( \matr{G}\in\mathbb{F}^{k\times n}_q \), строки --- базис \( \code{C} \), называется /порождающей/.
+#+end_definition
+#+name: thm:dual
+#+begin_theorem
+\( \code{C}^\perp \)~--- \( [n,n{-}k]_q \)-код и \( (\code{C}^\perp)^\perp=\code{C} \).
+#+end_theorem
+#+begin_proof
+Из теории линейных пространств.
+#+end_proof
+#+begin_corollary
+\( \matr{G}=(\matr{I}_k\mid\matr{G}') \Rightarrow \matr{H}=(-\matr{G}'^\top\mid\matr{I}_{n-k}) \).
+#+end_corollary
+#+name: lem:weight
+#+begin_lemma
+\( d(\code{C})=\min_{\vect{c}\neq\vect{0}}\operatorname{wt}(\vect{c}) \).
+#+end_lemma
+#+begin_proposition
+Число порождающих матриц: \( (q^k{-}1)(q^k{-}q)\cdots(q^k{-}q^{k-1}) \).
+#+end_proposition
+#+begin_remark
+Не у каждого кода есть систематическая матрица.
+#+end_remark
+#+begin_example
+Код Хемминга \( [7,4,3]_2 \) исправляет одну ошибку.
+#+end_example
+#+begin_problem
+Описать самодуальные \( [n,n/2]_2 \)-коды при \( n\leq 24 \).
+#+end_problem
+
+** Кодовое расстояние и спектр
+#+begin_definition
+Минимальное расстояние: \( d=\min_{\vect{c}\neq\vect{0}}\operatorname{wt}(\vect{c}) \).
+#+end_definition
+#+begin_definition
+Спектр весов: \( \vect{A}(\code{C})=(A_0,\ldots,A_n) \), \( A_i=|\{\vect{c}\mid\operatorname{wt}(\vect{c})=i\}| \).
+#+end_definition
+
+* Формулы
+** Ненумерованные
+Inline: \( x\approx\sin x \). Display: \[(x_1+x_2)^2=x_1^2+2x_1x_2+x_2^2.\]
+Дробь: \[\frac{1}{\sqrt{2}+\displaystyle\frac{1}{\sqrt{2}+\displaystyle\frac{1}{\sqrt{2}+\cdots}}}\]
+** Нумерованные
+#+name: eq:euler
+\begin{equation}e=\lim_{n\to\infty}\left(1+\frac{1}{n}\right)^{\!n}.\end{equation}
+#+name: eq:basel
+\begin{equation}\lim_{n\to\infty}\sum_{k=1}^n\frac{1}{k^2}=\frac{\pi^2}{6}.\end{equation}
+Ссылки: \eqref{eq:euler}, \eqref{eq:basel}.
+\begin{equation}\begin{multlined}1+2+\dots+50+\dots+\\+96+\dots+100=5050.\end{multlined}\end{equation}
+** Многострочные
+\[\begin{aligned}f_W&=\min\!\left(1,\max\!\left(0,\frac{W/W_{\max}}{W_{\text{crit}}}\right)\right),\\f_T&=\min\!\left(1,\max\!\left(0,\frac{T_s/T_{\text{melt}}}{T_{\text{crit}}}\right)\right).\end{aligned}\]
+\[|x|=\left\{\begin{alignedat}{2}& &x,\quad&\text{если }x\geqslant 0;\\&-&x,\quad&\text{если }x<0.\end{alignedat}\right.\]
+\[|x|=\begin{cases}\phantom{-}x,&\text{если }x\geqslant 0;\\-x,&\text{если }x<0.\end{cases}\]
+#+name: eq:hadamard
+\begin{equation}\begin{alignedat}{2}(\code{C}_1\star\code{C}_2)&=\langle\vect{c}_1\star\vect{c}_2\rangle,&\quad&\\\dim(\code{C}_1\star\code{C}_2)&\leq\min(n,k_1 k_2).&&\end{alignedat}\end{equation}
+** Субформулы
+\begin{subequations}\begin{gather}y=x^2+1\label{eq:s1a}\\y=2x^2-x+1\label{eq:s1b}\\y=3x^2-4x+8\label{eq:s1c}\end{gather}\end{subequations}
+\begin{subequations}\begin{align}y&=x^3+x^2+x+1\label{eq:s2a}\\y&=x^2\label{eq:s2b}\end{align}\end{subequations}
+Ссылки: \eqref{eq:s1a}, \eqref{eq:s1b}, \eqref{eq:s2a}, \eqref{eq:s1c}.
+Лоренц: \[\left\{\begin{array}{rl}\dot x=&\sigma(y-x)\\\dot y=&x(r-z)-y\\\dot z=&xy-bz\end{array}\right..\]
+Матрица: \[\left(\begin{array}{ccc}a_{11}&\ldots&a_{1n}\\\vdots&\ddots&\vdots\\a_{n1}&\ldots&a_{nn}\end{array}\right).\]
+Длинная: \( a_1+a_2+a_3+a_4+a_5+a_6+a_7+a_8+a_9+a_{10}+a_{11}+a_{12}+a_{13}+a_{14}+a_{15}+a_{16}+a_{17}+a_{18}+a_{19}+a_{20}=\sum_{i=1}^{20}a_i. \)
+** Греческие и алфавиты
+Обычные: \( \alpha\beta\gamma\delta\Gamma\Omega \). Прямые: \( \symup{\alpha}\symup{\beta}\symup{\gamma} \). Жирные: \( \symbf{\alpha}\symbf{\beta} \). Жирные прямые: \( \symbfup{\alpha}\symbfup{\beta} \).
+\[\begin{aligned}\mathcal{ABCDEFGHIJKLMNOPQRSTUVWXYZ}\\\mathfrak{ABCDEFGHIJKLMNOPQRSTUVWXYZ}\\\mathbb{ABCDEFGHIJKLMNOPQRSTUVWXYZ}\end{aligned}\]
+Операторы: \( \tan/\cot/\csc \); \( \le/\leqslant \); \( \phi/\varphi \); \( \epsilon/\varepsilon \); \( \kappa/\varkappa \); \( \emptyset/\varnothing \).
+Отступы: \[\begin{aligned}\backslash!&\quad f=x^2\!+3x\!+2\\\text{default}&\quad f=x^2+3x+2\\\backslash,&\quad f=x^2\,+3x\,+2\\\backslash\text{quad}&\quad f=x^2\quad+3x\quad+2\end{aligned}\]
+
+* Форматирование, таблицы, изображения и списки
+** Форматирование
+- Жирный: :: *жирный*
+- Курсив: :: /курсив/
+- Жирный курсив: :: /*жирный курсив*/
+- Подчёркивание: :: _подчёркнутый_
+- Зачёркивание: :: +зачёркнутый+
+- Sans: :: \textsf{sans serif}
+** Таблицы
+#+caption: Простая
+#+name: tab:simple
+|----------+----+----+----|
+| Код      |$n$ |$k$ |$d$ |
+|----------+----+----+----|
+| Хемминга | 7  | 4  | 3  |
+| Голея    | 23 | 12 | 7  |
+| РМ       | 32 | 16 | 8  |
+|----------+----+----+----|
+
+#+attr_latex: :booktabs t
+#+caption: Booktabs
+#+name: tab:booktabs
+| *Код* | *$|\code{C}|$* | *$d(\code{C}\star\code{C})$* | *Стойкость* |
+|-------+----------------+------------------------------+-------------|
+| $[15,5,7]$ | 32 | 3 | высокая |
+| $[31,16,7]$ | 65536 | 3 | средняя |
+| $[63,32,11]$ | $2^{32}$ | 5 | высокая |
+
+#+ATTR_LATEX: :booktabs t :environment longtable :align @{}rr@{}
+#+caption: Длинная
+#+name: tab:long
+| *$i$* | *$A_i$* |
+|-------+---------|
+|     0 |       1 |
+|     3 |       7 |
+|     4 |       7 |
+|     7 |      16 |
+
+Ссылка: таблица\nbsp{}[[tab:booktabs]].
+** Изображения
+# #+caption: Граф Таннера
+# #+name: fig:tanner
+# [[./images/tanner.png]]
+# #+caption: Спектр (масштаб 0.5)
+# #+attr_latex: :scale 0.5
+# [[./images/spectrum.png]]
+** Списки
+*** Нумерованный
+1. Первый
+   1. Второй
+      1. Третий
+         1. Четвёртый
+*** Ненумерованный
++ Первый
+  + Второй
+    + Третий
+      + Четвёртый
+
+* Алгоритмы и листинги
+#+caption: Спектр весов
+#+name: alg:spectrum
+\begin{algorithm}[H]
+\KwInput{$\matr{G}\in\mathbb{F}^{k\times n}_2$}
+\KwOutput{спектр $\vect{A}$}
+\For{$\vect{a}\in\mathbb{F}^k_2$}{
+    $\vect{c}\gets\vect{a}\matr{G}$\tcp*{кодовое слово}
+    $w\gets\operatorname{wt}(\vect{c})$\;
+    \Comment{обновляем}
+    \uIf{$w=0$}{$A_0{+}{+}$\;}
+    \uElseIf{$w=n$}{$A_n{+}{+}$\;}
+    \Else{$A_w{+}{+}$\;}
+}
+\Return{$\vect{A}$}\;
+\end{algorithm}
+Ссылка: алгоритм\nbsp{}\ref{alg:spectrum}.
+
+\begin{lstlisting}[language=Python,caption={Python},label={lst:py}]
+import numpy as np
+def weight_spectrum(G):
+    """Спектр весов двоичного кода."""
+    k, n = G.shape
+    A = np.zeros(n+1, dtype=int)
+    for i in range(2**k):
+        a = np.array([(i>>j)&1 for j in range(k)])
+        c = a @ G % 2  # Кодовое слово
+        A[np.sum(c)] += 1
+    return A
+print("Спектр:", weight_spectrum(np.array([[1,0,1,1],[0,1,1,0]])))
+\end{lstlisting}
+
+\begin{lstlisting}[language=C,caption={C},label={lst:c}]
+#include <stdio.h>
+/* Вес Хемминга */
+int wt(unsigned x) {
+    int w=0;
+    // Считаем биты
+    while(x){w+=x&1;x>>=1;}
+    return w;
+}
+int main(void){printf("wt(0xB)=%d\n",wt(0xB));return 0;}
+\end{lstlisting}
+
+\begin{lstlisting}[style=pseudocode,caption={Декодирование}]
+(*@\lstInput@*): $\vect{y}$, $\matr{H}$
+(*@\lstOutput@*): ближайшее кодовое слово
+procedure Decode($\vect{y}$, $\matr{H}$)
+begin
+    $\vect{s}\gets\matr{H}\vect{y}^\top$
+    if $\vect{s}=\vect{0}$ then return $\vect{y}$
+    for $j=1$ to $n$ do
+        if $\vect{s}$ = столбец $j$ then return $\vect{y}\oplus\vect{e}_j$
+    return nil
+end
+\end{lstlisting}
+
+\begin{lstpseudocode}[caption={Произведение Шура},label={alg:schur}]
+(*@\lstInput@*): базисы $\code{C}_1$, $\code{C}_2$
+(*@\lstOutput@*): базис $\code{C}_1\star\code{C}_2$
+function SchurProduct($\code{C}_1$, $\code{C}_2$)
+begin
+    $B\gets\emptyset$
+    for each $\vect{c}_1,\vect{c}_2$ do
+        $B\gets B\cup\{\vect{c}_1\star\vect{c}_2\}$
+    return RowReduce($B$)
+end
+\end{lstpseudocode}
+
+* Библиография и ссылки
+Одиночная[cite:@shannon1948]. Книга[cite:@knuth1984]. Множественная[cite:@shannon1948;@knuth1984;@macwilliams1979].
+Теорема\nbsp{}[[thm:dual]], определение\nbsp{}[[def:nkcode]], формула\nbsp{}\eqref{eq:hadamard}, таблица\nbsp{}[[tab:booktabs]], алгоритм\nbsp{}\ref{alg:spectrum}.
+
+* Заключение
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
+#+latex: \addcontentsline{toc}{chapter}{Заключение}
+1. Оценки расстояния произведения.
+2. Алгоритм спектра (алгоритм\nbsp{}\ref{alg:spectrum}).
+3. Анализ стойкости.
+
+* Список таблиц :ignore:
+#+LATEX: \clearpage\listoftables\addcontentsline{toc}{chapter}{Список таблиц}
+* Список литературы :ignore:
+#+LATEX: \printbibliography[heading=bibintoc]
+* Приложения :ignore:
+#+latex: \appendix
+* Доказательства лемм
+** Лемма о весе
+Доказательство леммы\nbsp{}[[lem:weight]].
+** Оценка размерности
+Выкладки.
+* Результаты экспериментов
+Спектры.
+** Коды БЧХ
+Таблицы.

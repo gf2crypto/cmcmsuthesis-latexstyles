@@ -1,0 +1,318 @@
+%%% Магистерская диссертация — полный шаблон (все элементы)
+%%% Тематика: Теория графов и сетевые алгоритмы
+%%% Компиляция: xelatex → biber → xelatex → xelatex
+
+\documentclass[font=modern]{cmcmsuthesis-master}
+
+\author{Смирнова Елена Андреевна}
+\title{Алгоритмы поиска кратчайших путей в больших графах}
+\thesissetup{department={Кафедра математической кибернетики}}
+\supervisor{name={д-р~физ.-мат.~наук, проф. Иванов~И.И.}}
+
+\usepackage{biblatex}
+\addbibresource{refs.bib}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+% ================================================================
+\section*{Введение}
+\addcontentsline{toc}{section}{Введение}
+
+Задача поиска кратчайших путей~\cite{shannon1948} имеет
+приложения в навигации, телекоммуникациях и социальных сетях.
+
+\textbf{Целью} работы является разработка алгоритма поиска
+кратчайших путей для графов с миллионами вершин.
+
+\textbf{Задачи}:
+\begin{enumerate}[beginpenalty=10000]
+    \item формализовать задачу на языке теории графов;
+    \item реализовать алгоритмы Дейкстры и A*;
+    \item разработать эвристику для ускорения;
+    \item провести эксперименты на реальных графах.
+\end{enumerate}
+
+% ================================================================
+\section{Теоретические основы}\label{sec:theory}
+
+\subsection{Основные определения}
+
+Пусть $G=(V,E)$~--- ориентированный взвешенный граф,
+$\vect{w}\in\mathbb{R}^{|E|}$~--- вектор весов.
+
+\begin{definition}\label{def:graph}
+\emph{Графом} $G=(V,E)$ называется пара, где $V$~---
+множество вершин, $E\subseteq V\times V$~--- рёбер.
+\end{definition}
+
+\begin{definition}\label{def:path}
+\emph{Путём} из $s$ в $t$ называется последовательность
+$(v_0,v_1,\ldots,v_k)$, где $v_0=s$, $v_k=t$,
+$(v_i,v_{i+1})\in E$. Длина пути:
+$\ell(\pi)=\sum_{i=0}^{k-1}w(v_i,v_{i+1})$.
+\end{definition}
+
+\begin{theorem}[Оптимальность Дейкстры]\label{thm:dijkstra}
+Алгоритм Дейкстры корректно находит кратчайший путь
+в графе с неотрицательными весами.
+\end{theorem}
+
+\begin{proof}
+По индукции: на каждом шаге вершина $u$ с минимальным
+$d[u]$ имеет окончательное значение расстояния.
+\end{proof}
+
+\begin{corollary}\label{cor:complexity}
+Сложность с бинарной кучей: $\compl{O}((|V|+|E|)\log|V|)$.
+\end{corollary}
+
+\begin{lemma}\label{lem:triangle}
+Для кратчайших расстояний: $d(s,t)\leq d(s,u)+d(u,t)$.
+\end{lemma}
+
+\begin{proposition}\label{prop:negative}
+При отрицательных рёбрах Дейкстра может дать неверный ответ.
+\end{proposition}
+
+\begin{remark}\label{rem:bellman}
+Алгоритм Беллмана--Форда корректен при отрицательных весах.
+\end{remark}
+
+\begin{example}\label{ex:road}
+Граф дорожной сети: вершины~--- перекрёстки, рёбра~--- дороги.
+\end{example}
+
+\begin{problem}\label{prob:allpairs}
+Найти кратчайшие пути между всеми парами вершин
+за $\compl{O}(|V|^3)$.
+\end{problem}
+
+Команды: $\matr{A}\in\mathbb{F}^{k\times n}_q$,
+$\str{S}_n$, $\elt{\sigma}$, $\code{C}$,
+$\algo{Dijkstra}$, $\compl{O}(n\log n)$, $\crypto{E}$.
+
+% ================================================================
+\section{Формулы}\label{sec:formulas}
+
+\subsection{Ненумерованные формулы}
+Inline: $x\approx\sin x$ при $x\to 0$.
+Display: \[(x_1+x_2)^2=x_1^2+2x_1x_2+x_2^2.\]
+Непрерывная дробь:
+\[\frac{1}{\sqrt{2}+\displaystyle\frac{1}{\sqrt{2}+\displaystyle\frac{1}{\sqrt{2}+\cdots}}}\]
+
+\subsection{Нумерованные формулы}
+\begin{equation}\label{eq:euler}e=\lim_{n\to\infty}\left(1+\frac{1}{n}\right)^{\!n}.\end{equation}
+\begin{equation}\label{eq:basel}\lim_{n\to\infty}\sum_{k=1}^n\frac{1}{k^2}=\frac{\pi^2}{6}.\end{equation}
+Ссылки: \eqref{eq:euler} и~\eqref{eq:basel}.
+\begin{equation}\label{eq:long}\begin{multlined}1+2+3+\dots+50+\dots+\\+96+97+98+99+100=5050.\end{multlined}\end{equation}
+
+\subsection{Многострочные формулы}
+\[\begin{aligned}f_W&=\min\!\left(1,\max\!\left(0,\frac{W/W_{\max}}{W_{\text{crit}}}\right)\right),\\f_T&=\min\!\left(1,\max\!\left(0,\frac{T_s/T_{\text{melt}}}{T_{\text{crit}}}\right)\right).\end{aligned}\]
+
+\[|x|=\left\{\begin{alignedat}{2}& &x,\quad&\text{если }x\geqslant 0;\\&-&x,\quad&\text{если }x<0.\end{alignedat}\right.\]
+
+\[|x|=\begin{cases}\phantom{-}x,&\text{если }x\geqslant 0;\\-x,&\text{если }x<0.\end{cases}\]
+
+\begin{equation}\label{eq:relax}\begin{alignedat}{2}
+d[v]&\gets\min(d[v],\;d[u]+w(u,v)),&\quad&\forall(u,v)\in E,\\
+\pi[v]&\gets u,&\quad&\text{если }d[v]\text{ уменьшилось}.
+\end{alignedat}\end{equation}
+
+\subsection{Субформулы}
+\begin{subequations}\label{eq:sub1}\begin{gather}y=x^2+1\label{eq:s1a}\\y=2x^2-x+1\label{eq:s1b}\\y=3x^2-4x+8\label{eq:s1c}\end{gather}\end{subequations}
+\begin{subequations}\label{eq:sub2}\begin{align}y&=x^3+x^2+x+1\label{eq:s2a}\\y&=x^2\label{eq:s2b}\end{align}\end{subequations}
+Ссылки: \eqref{eq:s1a}, \eqref{eq:s1b}, \eqref{eq:s2a}, \eqref{eq:s1c}.
+
+Система (Лоренц):
+\[\left\{\begin{array}{rl}\dot x=&\sigma(y-x)\\\dot y=&x(r-z)-y\\\dot z=&xy-bz\end{array}\right..\]
+
+Матрица:
+\[\left(\begin{array}{ccc}a_{11}&\ldots&a_{1n}\\\vdots&\ddots&\vdots\\a_{n1}&\ldots&a_{nn}\end{array}\right).\]
+
+Длинная inline: $a_1+a_2+a_3+a_4+a_5+a_6+a_7+a_8+a_9+a_{10}+a_{11}+a_{12}+a_{13}+a_{14}+a_{15}+a_{16}+a_{17}+a_{18}+a_{19}+a_{20}=\sum_{i=1}^{20}a_i.$
+
+\subsection{Греческие буквы и алфавиты}
+Обычные: $\alpha\beta\gamma\delta\epsilon\theta\lambda\mu\pi\sigma\phi\omega\Gamma\Delta\Omega$.
+Прямые: $\symup{\alpha}\symup{\beta}\symup{\gamma}\symup{\delta}\symup{\Gamma}\symup{\Omega}$.
+Жирные: $\symbf{\alpha}\symbf{\beta}\symbf{\gamma}\symbf{\Gamma}\symbf{\Omega}$.
+Жирные прямые: $\symbfup{\alpha}\symbfup{\beta}\symbfup{\gamma}\symbfup{\Gamma}\symbfup{\Omega}$.
+
+\[\begin{aligned}\mathcal{ABCDEFGHIJKLMNOPQRSTUVWXYZ}\\\mathfrak{ABCDEFGHIJKLMNOPQRSTUVWXYZ}\\\mathbb{ABCDEFGHIJKLMNOPQRSTUVWXYZ}\end{aligned}\]
+
+Русские операторы: $\tan\alpha$/$\cot\beta$/$\csc\gamma$; $\le$/$\leqslant$; $\phi$/$\varphi$; $\epsilon$/$\varepsilon$; $\kappa$/$\varkappa$; $\emptyset$/$\varnothing$.
+
+Отступы:
+\[\begin{aligned}\backslash!&\quad f(x)=x^2\!+3x\!+2\\\text{default}&\quad f(x)=x^2+3x+2\\\backslash,&\quad f(x)=x^2\,+3x\,+2\\\backslash;&\quad f(x)=x^2\;+3x\;+2\\\backslash\text{quad}&\quad f(x)=x^2\quad+3x\quad+2\end{aligned}\]
+
+% ================================================================
+\section{Форматирование текста}
+\begin{description}
+\item[Жирный:] \textbf{жирный}.\item[Курсив:] \emph{курсив}.
+\item[Жирный курсив:] \textbf{\emph{жирный курсив}}.
+\item[Подчёркивание:] \underline{подчёркнутый}.
+\item[Зачёркивание:] \sout{зачёркнутый}.
+\item[Sans:] \textsf{sans serif font}.
+\end{description}
+
+% ================================================================
+\section{Таблицы}
+\begin{table}[htbp]\caption{Простая таблица}\label{tab:simple}\centering
+\begin{tabular}{|l|c|c|c|}\hline Граф&$|V|$&$|E|$&Диаметр\\\hline
+Решётка&10000&39600&198\\\hline
+Случайный&10000&50000&8\\\hline
+Дорожный&10000&25000&312\\\hline
+\end{tabular}\end{table}
+
+\begin{table}[htbp]\caption{Booktabs}\label{tab:booktabs}\centering
+\begin{tabular}{lrcc}\toprule
+\textbf{Алгоритм}&\textbf{Время,мс}&\textbf{Вершин}&\textbf{Корректен}\\\midrule
+Дейкстра&120&все&да\\
+A*&45&часть&да\\
+BFS&80&все&нет (невзвеш.)\\\bottomrule
+\end{tabular}\end{table}
+
+\begin{longtable}{@{}rr@{}}\caption{Длинная таблица}\label{tab:long}\\
+\toprule Вершина&$d[v]$\\\midrule\endfirsthead
+\toprule Вершина&$d[v]$\\\midrule\endhead\bottomrule\endfoot
+1&0\\2&4\\3&7\\4&9\\5&12\\6&15\\7&18\\8&21\\9&24\\10&27\\\end{longtable}
+
+Ссылка: таблица~\ref{tab:booktabs}.
+
+% ================================================================
+\section{Изображения}
+%% \begin{figure}[htbp]\centering\includegraphics[width=0.8\textwidth]{images/graph.png}\caption{Визуализация графа}\label{fig:graph}\end{figure}
+%% \begin{figure}[htbp]\centering\includegraphics[scale=0.5]{images/tree.png}\caption{Дерево кратчайших путей (масштаб 0.5)}\label{fig:tree}\end{figure}
+%% Ссылка: рисунок~\ref{fig:graph}.
+
+% ================================================================
+\section{Списки}
+\subsection{Нумерованный}
+\begin{enumerate}\item Первый\begin{enumerate}\item Второй\begin{enumerate}\item Третий\begin{enumerate}\item Четвёртый\end{enumerate}\end{enumerate}\end{enumerate}\end{enumerate}
+\subsection{Ненумерованный}
+\begin{itemize}\item Первый\begin{itemize}\item Второй\begin{itemize}\item Третий\begin{itemize}\item Четвёртый\end{itemize}\end{itemize}\end{itemize}\end{itemize}
+
+% ================================================================
+\section{Алгоритмы и листинги}
+
+\begin{algorithm}[H]\caption{Алгоритм Дейкстры}\label{alg:dijkstra}
+\KwInput{граф $G=(V,E,w)$, начальная вершина $s$}
+\KwOutput{массив расстояний $d[v]$}
+$d[s]\gets 0$; $d[v]\gets\infty$ для $v\neq s$\;
+$Q\gets V$\tcp*{приоритетная очередь}
+\While{$Q\neq\emptyset$}{
+    $u\gets\arg\min_{v\in Q}d[v]$\;
+    \Comment{извлекаем минимум}
+    \For{каждый $(u,v)\in E$}{
+        \uIf{$d[u]+w(u,v)<d[v]$}{$d[v]\gets d[u]+w(u,v)$\;}
+        \uElseIf{$d[u]+w(u,v)=d[v]$}{обновить предка\;}
+        \Else{пропустить\;}
+    }
+}
+\Return{$d$}\;
+\end{algorithm}
+Ссылка: алгоритм~\ref{alg:dijkstra}.
+
+\begin{lstlisting}[language=Python,caption={Python},label={lst:py}]
+import heapq
+def dijkstra(graph, s):
+    """Алгоритм Дейкстры с кучей."""
+    dist = {v: float('inf') for v in graph}
+    dist[s] = 0
+    pq = [(0, s)]
+    while pq:
+        d, u = heapq.heappop(pq)  # Извлекаем минимум
+        if d > dist[u]: continue
+        for v, w in graph[u]:
+            if dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+                heapq.heappush(pq, (dist[v], v))
+    return dist
+print("Расстояния:", dijkstra({0:[(1,4),(2,1)],1:[],2:[(1,2)]}, 0))
+\end{lstlisting}
+
+\begin{lstlisting}[language=C,caption={C},label={lst:c}]
+#include <stdio.h>
+#include <limits.h>
+/* Релаксация ребра */
+void relax(int u, int v, int w, int *dist) {
+    // Если найден более короткий путь
+    if (dist[u] + w < dist[v])
+        dist[v] = dist[u] + w;
+}
+int main(void) {
+    int dist[5] = {0, INT_MAX, INT_MAX, INT_MAX, INT_MAX};
+    relax(0, 1, 4, dist);
+    printf("d[1] = %d\n", dist[1]);
+    return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=pseudocode,caption={Псевдокод A*}]
+(*@\lstInput@*): граф $G$, старт $s$, цель $t$, эвристика $h$
+(*@\lstOutput@*): кратчайший путь $s \to t$
+procedure AStar($G$, $s$, $t$, $h$)
+begin
+    $g[s] \gets 0$; $f[s] \gets h(s)$
+    while очередь не пуста do
+    begin
+        $u \gets$ вершина с мин. $f[u]$
+        if $u = t$ then return путь
+        for each $(u,v) \in E$ do
+            $g' \gets g[u] + w(u,v)$
+            if $g' < g[v]$ then $f[v] \gets g' + h(v)$
+    end
+    return nil
+end
+\end{lstlisting}
+
+\begin{lstpseudocode}[caption={BFS},label={alg:bfs}]
+(*@\lstInput@*): граф $G$, стартовая вершина $s$
+(*@\lstOutput@*): массив расстояний
+function BFS($G$, $s$)
+begin
+    $d[s] \gets 0$
+    $Q \gets \{s\}$
+    while $Q \neq \emptyset$ do
+    begin
+        $u \gets$ dequeue($Q$)
+        for each $(u,v) \in E$ do
+            if $d[v] = \infty$ then
+                $d[v] \gets d[u] + 1$
+                enqueue($Q$, $v$)
+    end
+    return $d$
+end
+\end{lstpseudocode}
+
+% ================================================================
+\section{Библиография}
+Одиночная~\cite{shannon1948}. Книга~\cite{knuth1984}.
+Множественная~\cite{shannon1948,knuth1984,macwilliams1979}.
+
+% ================================================================
+\section*{Заключение}
+\addcontentsline{toc}{section}{Заключение}
+\begin{enumerate}
+\item Реализованы Дейкстра и A*.
+\item Сравнение в таблице~\ref{tab:booktabs}.
+\item A* в 2.7 раза быстрее Дейкстры на дорожных графах.
+\end{enumerate}
+
+\clearpage\listoftables\addcontentsline{toc}{section}{Список таблиц}
+\printbibliography
+
+\appendix
+\section{Исходный код}
+\subsection{Модуль графа}
+Код.
+\subsection{Модуль визуализации}
+Код.
+
+\section{Дополнительные эксперименты}
+Таблицы.
+\subsection{Графы социальных сетей}
+Данные.
+
+\end{document}
