@@ -979,7 +979,7 @@
     \cmcmsugostfont@xetex@mathfont@newcm{1}%
 }
 
-\newcommand{\cmcmsugostfont@xetex@stix}{%
+\newcommand{\cmcmsugostfont@xetex@stix}[1]{%
     \typeout{Loading STIX2 font set}%
     \cmcmsugostfont@xetex@stixtwo{1}%
     \cmcmsugostfont@xetex@sans@newcm{1}%
@@ -991,7 +991,7 @@
 %% ----------------------------------------------------------------
 %%  playfair  — Domitian + Fira Sans + DejaVu Mono + NewCM Math
 %% ----------------------------------------------------------------
-\newcommand{\cmcmsugostfont@xetex@playfair}{%
+\newcommand{\cmcmsugostfont@xetex@playfair}[1]{%
     \typeout{Loading Playfair Display font set}%
     \cmcmsugostfont@xetex@domitian{1}%
     \cmcmsugostfont@xetex@sans@firasans{1}%
@@ -999,20 +999,20 @@
     \cmcmsugostfont@xetex@mathfont@newcm{1}%
 }
 
-\newcommand{\cmcmsugostfont@xetex@old}{%
-    \cmcmsugostfont@xetex@default%
+\newcommand{\cmcmsugostfont@xetex@old}[1]{%
+    \cmcmsugostfont@xetex@default{#1}%
 }
 
-\newcommand{\cmcmsugostfont@xetex@modern}{%
-    \cmcmsugostfont@xetex@stix%
+\newcommand{\cmcmsugostfont@xetex@modern}[1]{%
+    \cmcmsugostfont@xetex@stix{#1}%
 }
 
-\newcommand{\cmcmsugostfont@xetex@libert}{%
-    \cmcmsugostfont@xetex@libertinus%
+\newcommand{\cmcmsugostfont@xetex@libert}[1]{%
+    \cmcmsugostfont@xetex@libertinus{#1}%
 }
 
-\newcommand{\cmcmsugostfont@xetex@fashion}{%
-    \cmcmsugostfont@xetex@ebgaramond%
+\newcommand{\cmcmsugostfont@xetex@fashion}[1]{%
+    \cmcmsugostfont@xetex@ebgaramond{#1}%
 }
 
 %% ################################################################
