@@ -1,18 +1,17 @@
 #+LATEX_CLASS: rureport
 #+LATEX_CLASS_OPTIONS: [12pt]
-#+LATEX_COMPILER: xelatex
 #+LANGUAGE: ru
-#+CITE_EXPORT: bibtex
+#+CITE_EXPORT: biblatex
+# #+LATEX_COMPILER: xelatex
 #+OPTIONS: toc:t tags:nil
-#+LATEX_HEADER_EXTRA: \cmcmsugostfontsetup{font=liberbrill}
+#+LATEX_HEADER_EXTRA: \cmcmsugostfontsetup{font=modern}
 #+LATEX_HEADER_EXTRA: \cmcmsugostextrasetup{rumathop=false,thm=true,extramath=true,listings=true,biber=true,alg=2e}
 #+LATEX_HEADER_EXTRA: \usepackage{biblatex}
 #+LATEX_HEADER_EXTRA: \addbibresource{refs.bib}
-#+EXCLUDE_TAGS: BIBTEX
-# #+EXCLUDE_TAGS: LISTING ALGORITHM BIBER BIBTEX EXTCHAPTER EXTRARTICLE
+
 
 #+title: Произведение Шура--Адамара линейных кодов в анализе теоретико-кодовых криптосистем
-#+author: Чижов Иван Владимирович
+#+author: Сидоров Сергей Иванович
 
 * Введение
 :PROPERTIES:
@@ -134,7 +133,7 @@
 Список литературы содержит XXX\nbsp{}наименований.
 
 * Сведения из теории линейных блоковых кодов
-#+name: ch:linear-codes
+#+name: sec:linear-codes
 Теория кодов, исправляющих ошибки, обязана своему появлению классическим работам Клода Шеннона.
 В 50-е года XX века в связи с появлением работ Шеннона возник большой поток исследований,
 посвящённых построению эффективных схем кодирования информации для передачи по реальным каналам с шумами.
@@ -1039,18 +1038,8 @@ right $\gets n - 1$\;
 \addcontentsline{toc}{chapter}{Список таблиц}
 
 * Список литературы :ignore:
-** Biber (biblatex) :BIBER:ignore:
+** Biber (biblatex) :ignore:
 #+LATEX: \printbibliography[heading=bibintoc]
-
-** Bibtex :EXTARTICLE:BIBTEX:ignore:
-#+latex: \bibliographystyle{ugost2008}
-#+latex: \bibliography{refs}
-#+LATEX: \addcontentsline{toc}{section}{\refname}
-
-** Bibtex (REPORT) :EXTREPORT:BIBTEX:ignore:
-#+latex: \bibliographystyle{ugost2008}
-#+latex: \bibliography{refs}
-#+LATEX: \addcontentsline{toc}{chapter}{\refname}
 
 
 * Приложения :ignore:
