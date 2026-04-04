@@ -172,7 +172,7 @@
 % \supervisor{name={канд.физ.-мат.наук, доцент Фамилия~Имя~Отчество}, prefix={Научный руководитель}}
 \newcommand{\supervisor}[1]{\pgfkeys{/cmcmsu/thesis/supervisor, #1}}
 
-% \speciality{code={1.2.3}, name={теоретическая информатика, кибернетика}}
+% \specialty{code={1.2.3}, name={теоретическая информатика, кибернетика}}
 \newcommand{\specialty}[1]{\pgfkeys{/cmcmsu/thesis/specialty, #1}}
 
 %
