@@ -1,23 +1,30 @@
-#+LATEX_CLASS: ruarticle
-#+LATEX_CLASS_OPTIONS: [12pt]
-#+LATEX_COMPILER: xelatex
+# -*- mode: org; coding: utf-8 -*-
+# Кандидатская — полный шаблон (Org-mode)
+# Тематика: Теория линейных кодов
+
+#+LATEX_CLASS: cmcmsuthesis-phd
 #+LANGUAGE: ru
-#+CITE_EXPORT: biblatex
-#+OPTIONS: toc:nil tags:nil
-#+LATEX_HEADER_EXTRA: \cmcmsugostfontsetup{font=modern}
-#+LATEX_HEADER_EXTRA: \cmcmsugostextrasetup{rumathop=false,thm=true,extramath=true,listings=true,biber=true,alg=2e}
+#+CITE_EXPORT: bibtex
+#+LATEX_COMPILER: xelatex
+#+OPTIONS: toc:t tags:nil
+#+LATEX_HEADER_EXTRA: \supervisor{%
+#+LATEX_HEADER_EXTRA:   name={канд.физ.-мат.наук, доцент Фамилия~Имя~Отчество}}
+#+LATEX_HEADER_EXTRA: \specialty{%
+#+LATEX_HEADER_EXTRA:   code={1.2.3},
+#+LATEX_HEADER_EXTRA:   name={теоретическая информатика, кибернетика}}
+#+LATEX_HEADER_EXTRA: \subtitle{Диссертация на соискание ученой степени кандидата физико-математических наук}
 #+LATEX_HEADER_EXTRA: \usepackage{biblatex}
 #+LATEX_HEADER_EXTRA: \addbibresource{refs.bib}
 
 
-#+title: Произведение Шура--Адамара линейных кодов в анализе теоретико-кодовых криптосистем
+#+title: Ключевое пространство криптоистемы Мак-Элиса--Сидельникова
 #+author: Сидоров Сергей Иванович
 
 * Введение
 :PROPERTIES:
 :UNNUMBERED: t
 :END:
-#+latex: \addcontentsline{toc}{section}{Введение}
+#+latex: \addcontentsline{toc}{chapter}{Введение}
 
 *Актуальность темы*.
 Обзор, введение в тему, обозначение места данной работы в мировых исследованиях и т.п., можно использовать ссылки на другие
@@ -1010,7 +1017,7 @@ right $\gets n - 1$\;
 :PROPERTIES:
 :UNNUMBERED: t
 :END:
-#+latex: \addcontentsline{toc}{section}{Заключение}
+#+latex: \addcontentsline{toc}{chapter}{Заключение}
 
 # Согласно ГОСТ Р 7.0.11-2011:
 # 5.3.3 В заключении диссертации излагают итоги выполненного исследования, рекомендации, перспективы дальнейшей разработки темы.
@@ -1035,7 +1042,7 @@ right $\gets n - 1$\;
 # % (ГОСТ Р 7.0.11-2011, 5.3.10)
 \clearpage
 \listoftables
-\addcontentsline{toc}{section}{Список таблиц}
+\addcontentsline{toc}{chapter}{Список таблиц}
 
 * Список литературы :ignore:
 ** Biber (biblatex) :ignore:

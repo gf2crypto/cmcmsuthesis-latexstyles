@@ -1,11 +1,18 @@
-#+LATEX_CLASS: rureport
+#+LATEX_CLASS: ruarticle
 #+LATEX_CLASS_OPTIONS: [12pt]
+#+LATEX_COMPILER: xelatex
 #+LANGUAGE: ru
 #+CITE_EXPORT: biblatex
-# #+LATEX_COMPILER: xelatex
-#+OPTIONS: toc:t tags:nil
+#+OPTIONS: toc:nil tags:nil
 #+LATEX_HEADER_EXTRA: \cmcmsugostfontsetup{font=modern}
-#+LATEX_HEADER_EXTRA: \cmcmsugostextrasetup{rumathop=false,thm=true,extramath=true,listings=true,biber=true,alg=2e}
+#+LATEX_HEADER_EXTRA: \cmcmsugostextrasetup{%
+#+LATEX_HEADER_EXTRA:   rumathop=false,
+#+LATEX_HEADER_EXTRA:   thm=true,
+#+LATEX_HEADER_EXTRA:   extramath=true,
+#+LATEX_HEADER_EXTRA:   listings=true,
+#+LATEX_HEADER_EXTRA:   biber=true,
+#+LATEX_HEADER_EXTRA:   alg=2e
+#+LATEX_HEADER_EXTRA: }
 #+LATEX_HEADER_EXTRA: \usepackage{biblatex}
 #+LATEX_HEADER_EXTRA: \addbibresource{refs.bib}
 
@@ -17,7 +24,7 @@
 :PROPERTIES:
 :UNNUMBERED: t
 :END:
-#+latex: \addcontentsline{toc}{chapter}{Введение}
+#+latex: \addcontentsline{toc}{section}{Введение}
 
 *Актуальность темы*.
 Обзор, введение в тему, обозначение места данной работы в мировых исследованиях и т.п., можно использовать ссылки на другие
@@ -1010,7 +1017,7 @@ right $\gets n - 1$\;
 :PROPERTIES:
 :UNNUMBERED: t
 :END:
-#+latex: \addcontentsline{toc}{chapter}{Заключение}
+#+latex: \addcontentsline{toc}{section}{Заключение}
 
 # Согласно ГОСТ Р 7.0.11-2011:
 # 5.3.3 В заключении диссертации излагают итоги выполненного исследования, рекомендации, перспективы дальнейшей разработки темы.
@@ -1035,7 +1042,7 @@ right $\gets n - 1$\;
 # % (ГОСТ Р 7.0.11-2011, 5.3.10)
 \clearpage
 \listoftables
-\addcontentsline{toc}{chapter}{Список таблиц}
+\addcontentsline{toc}{section}{Список таблиц}
 
 * Список литературы :ignore:
 ** Biber (biblatex) :ignore:

@@ -1,20 +1,20 @@
-% Created 2026-04-02 Thu 14:52
+% Created 2026-04-04 Sat 23:53
 % Intended LaTeX compiler: xelatex
-\documentclass[12pt]{extarticle}
-\usepackage{cmcmsugost-fontselector}
-\usepackage{cmcmsu-gost}
-\usepackage{cmcmsugost-extra}
-\cmcmsugostfontsetup{font=modern}
-\cmcmsugostextrasetup{rumathop=false,thm=true,extramath=true,listings=true,biber=true,alg=2e}
+\documentclass{cmcmsuthesis-phd}
+\supervisor{%
+name={канд.физ.-мат.наук, доцент Фамилия~Имя~Отчество}}
+\specialty{%
+code={1.2.3},
+name={теоретическая информатика, кибернетика}}
+\subtitle{Диссертация на соискание ученой степени кандидата физико-математических наук}
 \usepackage{biblatex}
-
 \addbibresource{refs.bib}
 \author{Сидоров Сергей Иванович}
 \date{\today}
-\title{Произведение Шура--Адамара линейных кодов в анализе теоретико-кодовых криптосистем}
+\title{Ключевое пространство криптоистемы Мак-Элиса--Сидельникова}
 \hypersetup{
  pdfauthor={Сидоров Сергей Иванович},
- pdftitle={Произведение Шура--Адамара линейных кодов в анализе теоретико-кодовых криптосистем},
+ pdftitle={Ключевое пространство криптоистемы Мак-Элиса--Сидельникова},
  pdfkeywords={},
  pdfsubject={},
  pdfcreator={Emacs 30.2 (Org mode 9.7.11)}, 
@@ -22,9 +22,11 @@
 \begin{document}
 
 \maketitle
-\section*{Введение}
-\label{sec:org228edf5}
-\addcontentsline{toc}{section}{Введение}
+\tableofcontents
+
+\chapter*{Введение}
+\label{sec:orga7aa2da}
+\addcontentsline{toc}{chapter}{Введение}
 
 \textbf{Актуальность темы}.
 Обзор, введение в тему, обозначение места данной работы в мировых исследованиях и т.п., можно использовать ссылки на другие
@@ -56,7 +58,7 @@
 
 \textbf{Степень разработанности темы}.
 Этот раздел должен быть отдельным структурным элементом по ГОСТ, но он, как правило, включается в описание актуальности темы.
-Нужен он отдельным структурынм элементом или нет --- смотрите другие диссертации вашего совета, скорее всего не нужен.
+Нужен он отдельным структурынм элементом или нет~--- смотрите другие диссертации вашего совета, скорее всего не нужен.
 
 В диссертации решены актуаль ные и трудные математические задачи, представляющие исключительную важность для обеспечения защищенного взаимодействия средств защиты информации.
 В рамках вводных разделов диссертации к каждой главе диссертации представлен исчерпывающий обзор предшествующих результатов по теме исследования, наиболее важные из которых указаны далее в разделе {}<<Краткое содержание работы>>{}.
@@ -146,8 +148,8 @@
 четырех глав, заключения, одного приложения, списка литературы.
 Полный объём диссертации составляет XXX страниц с~XX~рисунками и~XX~таблицами.
 Список литературы содержит XXX~наименований.
-\section{Сведения из теории линейных блоковых кодов}
-\label{sec:orgdf07847}
+\chapter{Сведения из теории линейных блоковых кодов}
+\label{sec:org5019441}
 Теория кодов, исправляющих ошибки, обязана своему появлению классическим работам Клода Шеннона.
 В 50-е года XX века в связи с появлением работ Шеннона возник большой поток исследований,
 посвящённых построению эффективных схем кодирования информации для передачи по реальным каналам с шумами.
@@ -167,8 +169,8 @@
 Например, таким свойством является линейность.
 Линейные коды, т.~е. коды, которые образуют линейное пространство над полем Галуа, на сегодняшний день изучены наиболее полно по сравнению с другими классами кодов.
 Именно такие коды находят приложения в современной криптографии.
-\subsection{Базовые термины и определения}
-\label{sec:orgcba6e77}
+\section{Базовые термины и определения}
+\label{sec:org3d5df15}
 Рассмотрим конечное поле \(\mathbb{F}_q\) порядка \(q\).
 Тогда векторное пространство размерности \(n\) над полем \(\mathbb{F}_q\) будем обозначать через \(\mathbb{F}^n_q\).
 Элементами \(\mathbb{F}^{n}_{q}\), как это принято в теории кодов, исправляющих ошибки, являются векторы-строки \(\vect{v} = \left(v_{1}, v_{2}, \dotsc, v_{n}\right)\).
@@ -258,8 +260,8 @@
 Получается, что если \(\vect{v}_{T}= \left(u_{1}, u_{2}, \dotsc, u_{n}\right)\), то для всех \(i\in [\![n]\!]\setminus T\) выполняется равенство \(u_{i}=v_{i}\), а для \(i\in T\)~--- равенство \(u_{i}=0\), т.е. \((\vect{v}_{T})\vert_{T}=\vect{0}^{|T|}\) и \((\vect{v}_{T})_{\setminus T}=v_{\setminus T}\).
 
 Аналогичную систему обозначений перенесем и на матрицы.
-\subsection{Линейные коды}
-\label{sec:org3cc5d33}
+\section{Линейные коды}
+\label{sec:org2c6f0ec}
 Линейные коды впервые появились в работах Киясу и Слепяна.
 В силу того, что эти коды образуют такую хорошо изученную структуру как линейное пространство, они стали основным объектом исследований.
 Линейные коды могут быть определены над любым конечным полем.
@@ -470,8 +472,8 @@ d=\min_{\vect{c}\in \code{C},\;\vect{c}\neq \vect{0}}\operatorname{wt}(\vect{c})
 A_{i}=\left|\left\{\vect{c}\in\code{C}|\ \operatorname{wt}(\vect{c})=i\right\}\right|,\ \ i=0\ldots n.
 \]
 \end{definition}
-\section{Форматирование текста}
-\label{sec:orgc31e7eb}
+\chapter{Форматирование текста}
+\label{sec:orgd70b562}
 Можно использовать:
 \begin{description}
 \item[{Жирный шрифт:}] \textbf{Это жирный шрифт}
@@ -483,9 +485,9 @@ A_{i}=\left|\left\{\vect{c}\in\code{C}|\ \operatorname{wt}(\vect{c})=i\right\}\r
 \end{description}
 
 Но лучше не баловаться подобными украшательствами.
-\section{Формулы}
+\chapter{Формулы}
 \label{sec:ch1/sec3}
-\subsection{Ненумерованные одиночные формулы}
+\section{Ненумерованные одиночные формулы}
 \label{subsec:ch1/sec3/sub1}
 Вот так может выглядеть формула, которую необходимо вставить в строку по тексту: \(x \approx \sin x\) при \(x \to 0\).
 
@@ -524,8 +526,8 @@ A_{i}=\left|\left\{\vect{c}\in\code{C}|\ \operatorname{wt}(\vect{c})=i\right\}\r
 также жирные прямые с помощью \texttt{\textbackslash{}symbfup}
 \[ \symbfup{\alpha}\symbfup{\beta}\symbfup{\gamma}\symbfup{\delta}\symbfup{\epsilon}\symbfup{\zeta}\symbfup{\eta}\symbfup{\theta}\symbfup{\vartheta}\symbfup{\iota}\symbfup{\kappa}\symbfup{\varkappa}\symbfup{\lambda}\symbfup{\mu}\symbfup{\nu}\symbfup{\xi}\symbfup{\pi}\symbfup{\varpi}\symbfup{\rho}\symbfup{\varrho}\symbfup{\sigma}\symbfup{\varsigma}\symbfup{\tau}\symbfup{\upsilon}\symbfup{\phi}\symbfup{\chi}\symbfup{\psi}\symbfup{\omega}\symbfup{\Gamma}\symbfup{\Delta}\symbfup{\Theta}\symbfup{\Lambda}\symbfup{\Xi}\symbfup{\Pi}\symbfup{\Sigma}\symbfup{\Upsilon}\symbfup{\Phi}\symbfup{\Psi}\symbfup{\Omega} \]
 Для добавления формул нужно использовать команды \texttt{\textbackslash{}(...\textbackslash{})} и \texttt{\textbackslash{}[...\textbackslash{}]}.
-\subsection{Ненумерованные многострочные формулы}
-\label{sec:org398ac8f}
+\section{Ненумерованные многострочные формулы}
+\label{sec:org9ca3db4}
 
 Вот так можно написать две формулы, не нумеруя их, чтобы знаки {}<<равно>>{} были строго друг под другом:
 \[\begin{aligned}
@@ -615,7 +617,7 @@ a_{n1} & \ldots & a_{nn} \\
 \end{array} \right).\]
 
 В следующем разделе поговорим про нумерованные формулы.
-\subsection{Нумерованные формулы}
+\section{Нумерованные формулы}
 \label{subsec:ch1/sec3/sub3}
 А вот так пишется нумерованная формула:
 \begin{equation}
@@ -668,10 +670,10 @@ a_{n1} & \ldots & a_{nn} \\
 Такого переноса можно достичь с помощью пакет \texttt{rmathbr}.
 
 На этом с уравнениями мы закончим.
-\section{Верстка таблиц}
-\label{sec:org5ebfa28}
-\subsection{Таблицы и прочее}
-\label{sec:org4569232}
+\chapter{Верстка таблиц}
+\label{sec:org0ded324}
+\section{Таблицы и прочее}
+\label{sec:org9fcb0d7}
 В разделе мы рассмотрим способ оформления таблиц.
 Начнем с самой простой таблицы, которую легко можно сверстать в \texttt{org-mode}.
 \begin{table}[htbp]
@@ -742,11 +744,11 @@ Sim. Shaft + {}<<bearings>>{} (without package) & 12000\\
 Sim. Shaft + {}<<bearings>>{} 10 mm & 20030\\
 \bottomrule
 \end{longtable}
-\section{Очень крутая глава, которая демонстрирует работу с изображениями, математическими окружениями, списками и некоторым типом ссылок}
-\label{sec:org7102e44}
+\chapter{Очень крутая глава, которая демонстрирует работу с изображениями, математическими окружениями, списками и некоторым типом ссылок}
+\label{sec:orgf13819e}
 Это очень крутая глава.
-\subsection{Вставка изображений}
-\label{sec:org2e29732}
+\section{Вставка изображений}
+\label{sec:org91e3d44}
 
 Главное здание МГУ имени М.~В.~Ломоносова и корпус факультета вычислительной математики и кибернетики показаны на одном рисунке~\ref{img:cmcmsu}.
 
@@ -766,15 +768,15 @@ Sim. Shaft + {}<<bearings>>{} 10 mm & 20030\\
 \includegraphics[scale=0.5]{./images/msu-cmc-logo2.png}
 \caption{\label{img:msu}Главное здание МГУ}
 \end{figure}
-\subsubsection{Это подраздел}
-\label{sec:org72a2b67}
+\subsection{Это подраздел}
+\label{sec:orgd0e8245}
 
 Это подраздел.
-\subsection{Демонстрируем работу со списками}
-\label{sec:org196475c}
+\section{Демонстрируем работу со списками}
+\label{sec:orgc756f9a}
 
-\subsubsection{Нумерованный список}
-\label{sec:orgb45966c}
+\subsection{Нумерованный список}
+\label{sec:org455cd84}
 
 Рассмотрим список:
 \begin{enumerate}
@@ -794,8 +796,8 @@ Sim. Shaft + {}<<bearings>>{} 10 mm & 20030\\
 \end{enumerate}
 \end{enumerate}
 \end{enumerate}
-\subsubsection{Ненумерованный список}
-\label{sec:org04c605c}
+\subsection{Ненумерованный список}
+\label{sec:org2186feb}
 
 Вот пример списка без номеров:
 \begin{itemize}
@@ -816,8 +818,8 @@ Sim. Shaft + {}<<bearings>>{} 10 mm & 20030\\
 \end{itemize}
 \end{itemize}
 Конец списка.
-\subsection{Математические окружения}
-\label{sec:orgf3e492d}
+\section{Математические окружения}
+\label{sec:org5e318af}
 
 Начнем с определения прямоугольного треугольника.
 
@@ -854,19 +856,19 @@ Sim. Shaft + {}<<bearings>>{} 10 mm & 20030\\
 \end{problem}
 
 Вот ссылки на теорему~\ref{thm:triangle} и ссылка на определение~\ref{def:traingle1}.
-\subsection{Добавляем немного ссылок}
-\label{sec:orga71844a}
+\section{Добавляем немного ссылок}
+\label{sec:org2882958}
 
-Смотри статью~\autocite{chizhov2023square} там написано про квадрат Адамара линейных кодов.
-Кроме того, хорошей статьей является источник~\autocite{mora2023}, а книга~\autocite{macwilliams1979} вообще является классикой теории кодирования.
+Смотри статью~\cite{chizhov2023square} там написано про квадрат Адамара линейных кодов.
+Кроме того, хорошей статьей является источник~\cite{mora2023}, а книга~\cite{macwilliams1979} вообще является классикой теории кодирования.
 
-Здесь демонстрируем много ссылок~\autocite{atya1972,dumer1989,kim2019,legeay2012}~--- это ссылки на какие-то источники.
-\section{Работа с листингами и псевдокодом в разных пакетах}
-\label{sec:org59f7ddd}
+Здесь демонстрируем много ссылок~\cite{atya1972,dumer1989,kim2019,legeay2012}~--- это ссылки на какие-то источники.
+\chapter{Работа с листингами и псевдокодом в разных пакетах}
+\label{sec:org4942a2d}
 Ниже идут четыре теста: код Python с русскими комментариями, код C с русскими
 комментариями, псевдокод через \texttt{listings}, псевдокод через \texttt{algorithm2e}.
-\subsection{Python в listings с русскими комментариями}
-\label{sec:org523d2ce}
+\section{Python в listings с русскими комментариями}
+\label{sec:org3412daf}
 
 
 \begin{lstlisting}[language=Python, caption={Тест Python-кода с русскими комментариями}]
@@ -881,8 +883,8 @@ n = 84
 m = 30
 print("НОД =", gcd(n, m))  # Ожидается 6
 \end{lstlisting}
-\subsection{C в listings с русскими комментариями}
-\label{sec:orga52f95b}
+\section{C в listings с русскими комментариями}
+\label{sec:orgf3e1226}
 
 \begin{lstlisting}[language=C,caption={Тест C-кода с русскими комментариями}]
 #include <stdio.h>
@@ -902,8 +904,8 @@ int main(void) {
     return 0;
 }
 \end{lstlisting}
-\subsection{Псевдокод средствами listings}
-\label{sec:org5cb1288}
+\section{Псевдокод средствами listings}
+\label{sec:org7a06d15}
 
 \begin{lstlisting}[style=pseudocode,caption={Псевдокод через listings}]
 (*@\lstInput@*): Отсортированный массив $A[0 \dots n-1]$, значение $x$
@@ -954,8 +956,8 @@ begin
     return $-1$
 end
 \end{lstpseudocode}
-\subsection{Псевдокод средствами algorithm2e}
-\label{sec:org5f76b04}
+\section{Псевдокод средствами algorithm2e}
+\label{sec:org58cc529}
 
 Основная идея бинарного поиска (деления отрезка пополам) описана в алгоритме~\ref{alg:binary-search}.
 
@@ -984,8 +986,8 @@ right $\gets n - 1$\;
 \KwRet $-1$\;
 \caption{\label{alg:binary-search}Бинарный поиск}
 \end{algorithm}
-\subsection{Ещё один тест algorithm2e с русскими комментариями}
-\label{sec:org8ada138}
+\section{Ещё один тест algorithm2e с русскими комментариями}
+\label{sec:org7f4539a}
 
 Алгоритм Евклида~\ref{alg:euclid} позволяет найти наибольший делитель двух чисел или проверить их простоту.
 
@@ -1001,22 +1003,22 @@ right $\gets n - 1$\;
 \KwRet $a$\;
 \caption{\label{alg:euclid}Алгоритм Евклида}
 \end{algorithm}
-\section{Тестируем оформление и работу с библиографией}
-\label{sec:org349516a}
+\chapter{Тестируем оформление и работу с библиографией}
+\label{sec:org6cef2f1}
 
 Теория информации была впервые строго сформулирована в работе
-\autocite{Shannon1948}.
+\cite{Shannon1948}.
 
-Классический учебник по системе \TeX{} можно найти в книге \autocite{Knuth1984}.
+Классический учебник по системе \TeX{} можно найти в книге~\cite{Knuth1984}.
 
-Основы теории алгоритмов изложены в русском учебнике \autocite{aho1979}.
+Основы теории алгоритмов изложены в русском учебнике~\cite{aho1979}.
 
-Для знакомства с теорией кодирования полезна монография \autocite{macwilliams1979}.
+Для знакомства с теорией кодирования полезна монография~\cite{macwilliams1979}.
 
 Эти источники часто используются в математике и информатике.
-\section*{Заключение}
-\label{sec:orgeba9074}
-\addcontentsline{toc}{section}{Заключение}
+\chapter*{Заключение}
+\label{sec:org6441a30}
+\addcontentsline{toc}{chapter}{Заключение}
 
 Основные результаты работы заключаются в следующем.
 \begin{enumerate}
@@ -1035,30 +1037,30 @@ right $\gets n - 1$\;
 Автор также благодарит много разных людей и всех, кто сделал настоящую работу автора возможной.
 \clearpage
 \listoftables
-\addcontentsline{toc}{section}{Список таблиц}
+\addcontentsline{toc}{chapter}{Список таблиц}
 \printbibliography[heading=bibintoc]
 \appendix
-\section{Хорошее приложение}
-\label{sec:org97177ae}
+\chapter{Хорошее приложение}
+\label{sec:org0ebbd6e}
 Это просто хорошее приложение.
-\subsection{Подраздел в первом приложении}
-\label{sec:orgeaba911}
+\section{Подраздел в первом приложении}
+\label{sec:orge7fcd68}
 Подраздел.
-\subsection{Второй подраздел в первом приложении}
-\label{sec:org50bd085}
+\section{Второй подраздел в первом приложении}
+\label{sec:org131bfbf}
 И опять подраздел.
-\subsubsection{Подраздел в подразделе первого приложения}
-\label{sec:org19d3ebd}
+\subsection{Подраздел в подразделе первого приложения}
+\label{sec:orgf93f426}
 
 Подраздел
-\section{Отличное приложение}
-\label{sec:orgc48e988}
+\chapter{Отличное приложение}
+\label{sec:orgf8fc2a7}
 Это отличное приложение, которое демонстрирует важность и нужность расчетов.
-\subsection{Это вторая часть приложения, проверяем как нумеруются подразделы в приложениях}
-\label{sec:org6463d1c}
+\section{Это вторая часть приложения, проверяем как нумеруются подразделы в приложениях}
+\label{sec:org39c0d17}
 
 Подраздел.
-\subsection{Еще подраздел}
-\label{sec:org70d50e3}
+\section{Еще подраздел}
+\label{sec:orgd5724d8}
 Еще один подраздел
 \end{document}
