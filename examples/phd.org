@@ -7,6 +7,7 @@
 #+CITE_EXPORT: bibtex
 #+LATEX_COMPILER: xelatex
 #+OPTIONS: toc:t tags:nil
+#+LATEX_HEADER_EXTRA: \cmcmsugostfontsetup{font=modern}
 #+LATEX_HEADER_EXTRA: \supervisor{%
 #+LATEX_HEADER_EXTRA:   name={канд.физ.-мат.наук, доцент Фамилия~Имя~Отчество}}
 #+LATEX_HEADER_EXTRA: \specialty{%
