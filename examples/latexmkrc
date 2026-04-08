@@ -9,6 +9,8 @@
 # Положите этот файл рядом с main.tex или в ~/.config/latexmk/
 
 ensure_path('TEXINPUTS', './cmcmsuthesis-latexstyles//');
+ensure_path('TEXINPUTS', './cmcmsuthesis//');
+ensure_path('TEXINPUTS', './cmcmsuthesis-latexstyles/cmcmsuthesis//');
 # --- Движок ---
 $pdf_mode   = 1;              # 1 = pdflatex → PDF
 $pdflatex   = 'pdflatex -interaction=nonstopmode -halt-on-error -synctex=1 %O %S';
