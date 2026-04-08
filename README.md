@@ -21,7 +21,7 @@
 \section{Введение}
 Текст работы.
 
-\printbibliography
+\printbibliography[heading=bibintoc]
 \end{document}
 ```
 
@@ -72,7 +72,7 @@
 
 ## Архитектура
 
-Комплект состоит из трёх слоёв пакетов и надстройки классов:
+Комплект состоит из четырёх слоёв пакетов и надстройки классов:
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -81,18 +81,19 @@
 │                    │                             │
 │              cmcmsuthesis                        │
 │         (базовый класс + титульная)              │
-└───────────┬─────────┬──────────┬────────────────┘
-            │         │          │
-     ┌──────▼──┐ ┌────▼────┐ ┌──▼──────────────┐
-     │  gost   │ │  font-  │ │     extra        │
-     │         │ │ selector│ │                  │
-     │ геомет- │ │         │ │ теоремы          │
-     │ рия,    │ │ шрифты, │ │ алгоритмы        │
-     │ заголов-│ │ матема- │ │ листинги         │
-     │ ки, ToC,│ │ тика,   │ │ библиография     │
-     │ списки, │ │ язык    │ │ мат. операторы   │
-     │ подписи │ │         │ │ доп. команды     │
-     └─────────┘ └─────────┘ └─────────────────┘
+└──────┬─────────┬──────────┬──────────┬──────────┘
+       │         │          │          │
+  ┌────▼───┐ ┌───▼─────┐ ┌──▼──────┐ ┌─▼────────┐
+  │  gost  │ │  font-  │ │ fontsets│ │  extra   │
+  │        │ │ selector│ │         │ │          │
+  │геомет- │ │         │ │готовые  │ │теоремы   │
+  │рия,    │ │выбор    │ │наборы   │ │алгоритмы │
+  │заголов-│ │шрифтов, │ │шрифтов  │ │листинги  │
+  │ки, ToC,│ │матема-  │ │(serif + │ │библиогр. │
+  │списки, │ │тика,    │ │sans +   │ │операторы │
+  │подписи │ │язык     │ │mono +   │ │команды   │
+  │        │ │         │ │math)    │ │          │
+  └────────┘ └─────────┘ └─────────┘ └──────────┘
 ```
 
 ### Пакеты
@@ -100,7 +101,8 @@
 | Пакет | Назначение | Документация |
 |---|---|---|
 | **`cmcmsu-gost`** | Оформление по ГОСТ: геометрия страницы, колонтитулы, заголовки, оглавление, списки, подписи рисунков и таблиц, приложения | [Руководство](docs/cmcmsu-gost-manual.md) |
-| **`cmcmsugost-fontselector`** | Выбор шрифтов: 15+ наборов для pdfLaTeX, 20+ наборов для XeLaTeX/LuaLaTeX, математические шрифты, прямые греческие буквы, масштабирование | [Руководство](docs/cmcmsugost-fontselector-manual.md) |
+| **`cmcmsugost-fontselector`** | Низкоуровневый выбор шрифтов: математика, прямые греческие буквы, масштабирование, `microtype` | [Руководство](docs/cmcmsugost-fontselector-manual.md) |
+| **`cmcmsufontsets`** | Готовые наборы шрифтов (serif + sans + mono + math) для pdfLaTeX и XeLaTeX/LuaLaTeX | [Руководство](docs/cmcmsufontsets-manual.md) |
 | **`cmcmsugost-extra`** | Дополнительные модули: теоремы, algorithm2e, listings с кириллицей, biblatex по ГОСТ, русские мат. операторы, удобные команды (`\vect`, `\matr`, `\algo`, …) | [Руководство](docs/cmcmsugost-extra-manual.md) |
 
 Пакеты можно использовать **независимо от классов**, подключая их вручную к любому документу.
@@ -110,7 +112,7 @@
 | Движок | Поддержка |
 |---|---|
 | pdfLaTeX | ✔ полная |
-| XeLaTeX | ✔ полная |
+| XeLaTeX | ✔ полная (рекомендуется) |
 | LuaLaTeX | ✔ полная |
 
 Минимальная версия LaTeX: 2020-10-01.
@@ -127,62 +129,168 @@
 | — | `pt` | PT Serif + PT Sans + PT Mono |
 | — | `ebgaramond` | EB Garamond + Garamond Math |
 | — | `msoffice` | Times New Roman + Arial + Courier New |
+| — | `brillkp`, `brillstix`, `liberbrill` | Наборы на основе Brill Typeface |
 
-Полный список наборов и отдельных шрифтов — в [документации fontselector](docs/cmcmsugost-fontselector-manual.md).
+Полный список наборов и отдельных шрифтов — в [документации fontsets](docs/cmcmsufontsets-manual.md).
+
+> **О шрифтах Brill и Iosevka.** Шрифт Brill распространяется издательством Brill бесплатно для некоммерческого использования и **не входит** в репозиторий — его нужно скачать отдельно (см. раздел «Локальная установка»). Кастомизированный моноширинный шрифт **Iosevka Brill** уже включён в репозиторий в папке [`fonts/iosevka-brill/`](fonts/iosevka-brill/).
 
 ## Готовые примеры
 
-В папке [`examples/`](examples/) — полноценные шаблоны для каждого типа работы в двух форматах: LaTeX и Org-mode. Каждый пример демонстрирует **все возможности** комплекта: теоремы, формулы, алгоритмы, листинги, таблицы, библиографию, приложения и т.д.
+В папке [`examples/`](examples/) — готовые шаблоны для каждого типа работы в двух форматах: LaTeX и Org-mode. Каждый пример демонстрирует **все возможности** комплекта: теоремы, формулы, алгоритмы, листинги, таблицы, библиографию, приложения и т.д. Рядом с каждым `.tex` лежит уже собранный `.pdf`, чтобы можно было сразу посмотреть результат.
 
-| Пример | Тема | LaTeX | Org-mode |
-|---|---|---|---|
-| Курсовая | Численные методы ОДУ | [`coursework/main.tex`](examples/coursework/main.tex) | [`coursework/main.org`](examples/coursework/main.org) |
-| Бакалаврская ВКР | Машинное обучение, NLP | [`bachelor/main.tex`](examples/bachelor/main.tex) | [`bachelor/main.org`](examples/bachelor/main.org) |
-| Магистерская | Алгоритмы на графах | [`master/main.tex`](examples/master/main.tex) | [`master/main.org`](examples/master/main.org) |
-| Кандидатская | Теория кодов, криптография | [`phd/main.tex`](examples/phd/main.tex) | [`phd/main.org`](examples/phd/main.org) |
-| Докторская | Стохастическое управление | [`doctoral/main.tex`](examples/doctoral/main.tex) | [`doctoral/main.org`](examples/doctoral/main.org) |
+| Пример | Тема | LaTeX | PDF | Org-mode |
+|---|---|---|---|---|
+| Курсовая | Численные методы ОДУ | [`coursework.tex`](examples/coursework.tex) | [`coursework.pdf`](examples/coursework.pdf) | [`coursework.org`](examples/coursework.org) |
+| Бакалаврская ВКР | Машинное обучение, NLP | [`bachelor.tex`](examples/bachelor.tex) | [`bachelor.pdf`](examples/bachelor.pdf) | [`bachelor.org`](examples/bachelor.org) |
+| Магистерская | Алгоритмы на графах | [`master.tex`](examples/master.tex) | [`master.pdf`](examples/master.pdf) | [`master.org`](examples/master.org) |
+| Кандидатская | Теория кодов, криптография | [`phd.tex`](examples/phd.tex) | [`phd.pdf`](examples/phd.pdf) | [`phd.org`](examples/phd.org) |
+| Докторская | Стохастическое управление | [`doctoral.tex`](examples/doctoral.tex) | [`doctoral.pdf`](examples/doctoral.pdf) | [`doctoral.org`](examples/doctoral.org) |
+| Статья | Универсальный шаблон статьи | [`article.tex`](examples/article.tex) | [`article.pdf`](examples/article.pdf) | [`article.org`](examples/article.org) |
+| Отчёт | Универсальный шаблон отчёта | [`report.tex`](examples/report.tex) | [`report.pdf`](examples/report.pdf) | [`report.org`](examples/report.org) |
 
-Для работы с Org-mode добавьте [`cmcmsuthesis-org.el`](examples/org-setup/cmcmsuthesis-org.el) в ваш `~/.emacs`.
+Общая библиография: [`examples/refs.bib`](examples/refs.bib). Изображения: [`examples/images/`](examples/images/).
 
-Подробнее — в [README примеров](examples/README.md).
+Для работы с Org-mode добавьте конфигурацию из [`examples/org-setup/`](examples/org-setup/) в ваш `~/.emacs`.
 
-## Установка
+## Локальная установка (рекомендуемый способ)
 
-### Требования
+Проще всего развернуть проект «на месте» — в отдельной рабочей папке, без глобальной установки в `texmf`. Все стили, классы и пример лежат рядом с вашим документом. Ниже — пошаговый сценарий на примере папки `mythesis` для бакалаврской работы.
 
-- TeX Live 2020+ или MiKTeX
-- `latexmk` (рекомендуется, обычно входит в TeX Live)
-- `biber` (для библиографии по ГОСТ)
-
-### Из репозитория (рекомендуется)
+### Шаг 1. Клонируем репозиторий
 
 ```bash
-git clone https://github.com/<user>/cmcmsuthesis-latexstyles.git
+git clone https://github.com/<user>/cmcmsuthesis-latexstyles.git mythesis
+cd mythesis
 ```
 
-**Вариант 1 — в папку проекта.** Скопируйте `.sty`, `.cls` и нужный `latexmkrc-*` файл:
+После клонирования в `mythesis/` уже лежат все нужные `.cls` и `.sty` файлы — LaTeX найдёт их автоматически, поскольку они находятся в текущем каталоге.
+
+### Шаг 2. Копируем нужный пример из `examples/`
+
+Берём из `examples/` шаблон, библиографию и папку с картинками. Например, для бакалаврской работы:
 
 ```bash
-cp cmcmsuthesis-latexstyles/*.sty cmcmsuthesis-latexstyles/*.cls ./
-cp cmcmsuthesis-latexstyles/latexmkrc-xelatex .latexmkrc
+cp examples/bachelor.tex   ./main.tex
+cp examples/refs.bib       ./refs.bib
+cp -r examples/images      ./images
+```
+
+Для другого типа работы замените `bachelor.tex` на `coursework.tex`, `master.tex`, `phd.tex`, `doctoral.tex`, `article.tex` или `report.tex`.
+
+### Шаг 3. Скачиваем шрифты Brill (опционально)
+
+Если вы планируете использовать наборы шрифтов на основе Brill (`brillkp`, `brillstix`, `liberbrill`), скачайте семейство **Brill Typeface** с официальной страницы издательства:
+
+➡ **<https://brill.com/page/fonts/brill-typeface>**
+
+Распакуйте архив и скопируйте `.otf`-файлы в подкаталог `brill/` рабочей папки:
+
+```bash
+mkdir -p brill
+cp /путь/к/распакованному/архиву/*.otf brill/
+```
+
+В итоге должна получиться структура:
+
+```
+mythesis/
+├── brill/
+│   ├── BrillRoman.otf
+│   ├── BrillItalic.otf
+│   ├── BrillBold.otf
+│   └── BrillBoldItalic.otf
+└── ...
+```
+
+XeLaTeX/LuaLaTeX подхватит шрифты из локальной папки автоматически (через `\setmainfont[Path=brill/]{...}` внутри fontset). Если вы используете другой набор шрифтов (например, `libertinus`, `pt`, `modern`), этот шаг можно пропустить.
+
+> **Шаг 3a (опционально).** Шрифт Iosevka Brill уже лежит в [`fonts/iosevka-brill/`](fonts/iosevka-brill/) — копировать его никуда не нужно, репозиторий содержит его «из коробки».
+
+### Шаг 4. Копируем `latexmkrc` в корень проекта
+
+В папке `examples/` лежат два готовых конфига `latexmk`:
+
+| Файл | Движок | Когда выбирать |
+|---|---|---|
+| [`examples/latexmkrc-xelatex`](examples/latexmkrc-xelatex) | **XeLaTeX** | системные и OTF-шрифты, `unicode-math`, **рекомендуется** |
+| [`examples/latexmkrc`](examples/latexmkrc) | pdfLaTeX | пакетные шрифты TeX Live, максимальная совместимость |
+
+Скопируйте нужный файл в корень проекта под именем `.latexmkrc`:
+
+```bash
+# Рекомендуемый вариант — XeLaTeX (более современные шрифты)
+cp examples/latexmkrc-xelatex .latexmkrc
+
+# Альтернативный вариант — pdfLaTeX
+# cp examples/latexmkrc .latexmkrc
+```
+
+### Шаг 5. Собираем PDF с помощью `latexmk`
+
+```bash
 latexmk main.tex
 ```
 
-**Вариант 2 — глобальная установка.**
+`latexmk` сам определит, сколько раз нужно прогнать LaTeX и `biber`, чтобы корректно построились оглавление, перекрёстные ссылки и список литературы.
+
+Готовый файл появится как `main.pdf` в корне проекта.
+
+**Полезные команды:**
+
+```bash
+latexmk -pvc main.tex   # непрерывная сборка: пересобирает при каждом сохранении
+latexmk -c              # удалить вспомогательные файлы (.aux, .log, .toc, ...)
+latexmk -C              # удалить всё, включая main.pdf
+```
+
+### Итоговая структура `mythesis/`
+
+После выполнения всех шагов рабочая папка выглядит так:
+
+```
+mythesis/
+├── .latexmkrc                  ← конфиг сборки (из examples/)
+├── main.tex                    ← ваш документ (из examples/bachelor.tex)
+├── main.pdf                    ← результат сборки
+├── refs.bib                    ← библиография (из examples/)
+├── images/                     ← картинки (из examples/)
+│
+├── brill/                      ← шрифты Brill (скачаны вручную)
+│   └── *.otf
+│
+├── cmcmsuthesis.cls            ← классы и стили (из репозитория)
+├── cmcmsuthesis-bachelor.cls
+├── cmcmsu-gost.sty
+├── cmcmsugost-fontselector.sty
+├── cmcmsufontsets.sty
+├── cmcmsugost-extra.sty
+├── ...
+│
+├── fonts/                      ← Iosevka Brill (из репозитория)
+├── examples/                   ← остальные примеры (можно не трогать)
+├── docs/                       ← документация
+└── README.md
+```
+
+## Альтернативные способы установки
+
+### Глобальная установка в `texmf`
+
+Если вы хотите использовать комплект сразу из многих проектов без копирования файлов:
 
 ```bash
 # Стили и классы
 mkdir -p ~/texmf/tex/latex/cmcmsuthesis
-cp cmcmsuthesis-latexstyles/*.sty cmcmsuthesis-latexstyles/*.cls \
-   ~/texmf/tex/latex/cmcmsuthesis/
+cp *.sty *.cls ~/texmf/tex/latex/cmcmsuthesis/
 mktexlsr
 
-# Конфиг latexmk (глобальный)
+# Глобальный конфиг latexmk
 mkdir -p ~/.config/latexmk
-cp cmcmsuthesis-latexstyles/latexmkrc-xelatex ~/.config/latexmk/latexmkrc
+cp examples/latexmkrc-xelatex ~/.config/latexmk/latexmkrc
 ```
 
-### Проверка
+Проверка:
 
 ```bash
 kpsewhich cmcmsuthesis.cls
@@ -194,11 +302,11 @@ kpsewhich cmcmsuthesis.cls
 cmcmsuthesis-latexstyles/
 │
 ├── README.md                           ← этот файл
-├── latexmkrc-xelatex                   ← конфиг latexmk для XeLaTeX
-├── latexmkrc-pdflatex                  ← конфиг latexmk для pdfLaTeX
+├── LICENSE
 │
 ├── cmcmsu-gost.sty                     ← пакет: оформление по ГОСТ
-├── cmcmsugost-fontselector.sty         ← пакет: шрифты и математика
+├── cmcmsugost-fontselector.sty         ← пакет: низкоуровневый выбор шрифтов
+├── cmcmsufontsets.sty                  ← пакет: готовые наборы шрифтов
 ├── cmcmsugost-extra.sty                ← пакет: доп. модули
 │
 ├── cmcmsuthesis.cls                    ← базовый класс
@@ -209,40 +317,26 @@ cmcmsuthesis-latexstyles/
 ├── cmcmsuthesis-doctoral.cls           ← класс: докторская
 │
 ├── images/                             ← логотипы титульных страниц
-│   ├── cmcmsuthesis-cmc.*
-│   └── cmcmsuthesis-gost.*
 │
-├── docs/                               ← документация
-│   ├── cmcmsu-gost-manual.md           ← пакет gost
-│   ├── cmcmsugost-fontselector-manual.md ← пакет fontselector
-│   ├── cmcmsugost-extra-manual.md      ← пакет extra
-│   ├── cmcmsuthesis-manual.md          ← базовый класс
-│   ├── cmcmsuthesis-cw-manual.md       ← класс курсовой
-│   ├── cmcmsuthesis-bachelor-manual.md ← класс бакалавра
-│   ├── cmcmsuthesis-master-manual.md   ← класс магистра
-│   ├── cmcmsuthesis-phd-manual.md      ← класс кандидатской
-│   └── cmcmsuthesis-doctoral-manual.md ← класс докторской
+├── fonts/                              ← встроенные шрифты
+│   └── iosevka-brill/                  ← Iosevka Brill (моноширинный)
 │
-└── examples/                           ← готовые шаблоны
-    ├── README.md                       ← описание примеров
+├── docs/                               ← документация по пакетам и классам
+│
+└── examples/                           ← готовые шаблоны и сборочные конфиги
+    ├── latexmkrc-xelatex               ← конфиг latexmk (XeLaTeX, рекомендуется)
+    ├── latexmkrc                       ← конфиг latexmk (pdfLaTeX)
     ├── refs.bib                        ← общая библиография
-    ├── org-setup/
-    │   └── cmcmsuthesis-org.el         ← настройка Emacs
-    ├── coursework/
-    │   ├── main.tex
-    │   └── main.org
-    ├── bachelor/
-    │   ├── main.tex
-    │   └── main.org
-    ├── master/
-    │   ├── main.tex
-    │   └── main.org
-    ├── phd/
-    │   ├── main.tex
-    │   └── main.org
-    └── doctoral/
-        ├── main.tex
-        └── main.org
+    ├── images/                         ← картинки для примеров
+    ├── org-setup/                      ← настройки Emacs/Org-mode
+    │
+    ├── coursework.tex / .pdf / .org    ← курсовая
+    ├── bachelor.tex   / .pdf / .org    ← бакалавр
+    ├── master.tex     / .pdf / .org    ← магистр
+    ├── phd.tex        / .pdf / .org    ← кандидатская
+    ├── doctoral.tex   / .pdf / .org    ← докторская
+    ├── article.tex    / .pdf / .org    ← статья
+    └── report.tex     / .pdf / .org    ← отчёт
 ```
 
 ## Документация
@@ -252,74 +346,27 @@ cmcmsuthesis-latexstyles/
 | Пакет | Что делает | Руководство |
 |---|---|---|
 | `cmcmsu-gost` | Геометрия страницы A4, колонтитулы, заголовки 14pt, оглавление с точечными лидерами, списки с тире, подписи рисунков/таблиц с тире, приложения с русскими буквами, настройки `hyperref` | [cmcmsu-gost-manual.md](docs/cmcmsu-gost-manual.md) |
-| `cmcmsugost-fontselector` | Готовые наборы шрифтов (serif + sans + mono + math), масштабирование, прямые греческие (`\symup`), жирные греческие (`\symbf`, `\symbfup`), `\mathcal` old-style, `microtype` | [cmcmsugost-fontselector-manual.md](docs/cmcmsugost-fontselector-manual.md) |
+| `cmcmsugost-fontselector` | Низкоуровневый механизм выбора шрифтов, масштабирование, прямые греческие (`\symup`), жирные греческие (`\symbf`, `\symbfup`), `\mathcal` old-style, `microtype` | [cmcmsugost-fontselector-manual.md](docs/cmcmsugost-fontselector-manual.md) |
+| `cmcmsufontsets` | Готовые наборы шрифтов: `modern`, `libertinus`, `pt`, `ebgaramond`, `msoffice`, `brillkp`, `brillstix`, `liberbrill` и другие — для pdfLaTeX и XeLaTeX/LuaLaTeX | [cmcmsufontsets-manual.md](docs/cmcmsufontsets-manual.md) |
 | `cmcmsugost-extra` | Теоремы (`amsthm`, 9 окружений), `algorithm2e` с русскими подписями, `listings` с кириллицей + стиль `pseudocode` + `lstpseudocode`, `biblatex` по ГОСТ с маппингом полей, русские операторы (tg, ctg, ⩽, ⩾), команды `\vect`, `\matr`, `\algo`, `\compl`, `\crypto` | [cmcmsugost-extra-manual.md](docs/cmcmsugost-extra-manual.md) |
 
 ### Классы
 
 | Класс | Что фиксирует | Руководство |
 |---|---|---|
-| `cmcmsuthesis` | Базовый: загружает все три пакета, метаданные через `pgfkeys`, два стиля титульной (`cmc`/`gost`), цвета ссылок | [cmcmsuthesis-manual.md](docs/cmcmsuthesis-manual.md) |
+| `cmcmsuthesis` | Базовый: загружает все пакеты, метаданные через `pgfkeys`, два стиля титульной (`cmc`/`gost`), цвета ссылок | [cmcmsuthesis-manual.md](docs/cmcmsuthesis-manual.md) |
 | `cmcmsuthesis-cw` | `extarticle` + `cmc` + subtitle = «Курсовая работа» | [cmcmsuthesis-cw-manual.md](docs/cmcmsuthesis-cw-manual.md) |
 | `cmcmsuthesis-bachelor` | `extarticle` + `cmc` + subtitle задаётся пользователем | [cmcmsuthesis-bachelor-manual.md](docs/cmcmsuthesis-bachelor-manual.md) |
 | `cmcmsuthesis-master` | `extarticle` + `cmc` + subtitle = «Магистерская диссертация» | [cmcmsuthesis-master-manual.md](docs/cmcmsuthesis-master-manual.md) |
 | `cmcmsuthesis-phd` | `extreport` + `gost` + полное название МГУ + «…кандидата ф.-м. наук» | [cmcmsuthesis-phd-manual.md](docs/cmcmsuthesis-phd-manual.md) |
 | `cmcmsuthesis-doctoral` | `extreport` + `gost` + полное название МГУ + «…доктора ф.-м. наук» + «Научный консультант» | [cmcmsuthesis-doctoral-manual.md](docs/cmcmsuthesis-doctoral-manual.md) |
 
-## Компиляция
-
-### latexmk (рекомендуется)
-
-Самый удобный способ — [`latexmk`](https://ctan.org/pkg/latexmk). Он сам определяет сколько проходов нужно и в каком порядке запускать `biber`.
-
-В репозитории два готовых конфигурационных файла:
-
-| Файл | Движок | Когда использовать |
-|---|---|---|
-| [`latexmkrc-xelatex`](latexmkrc-xelatex) | XeLaTeX | Системные шрифты (Times New Roman, Arial), OTF-шрифты, `unicode-math` |
-| [`latexmkrc-pdflatex`](latexmkrc-pdflatex) | pdfLaTeX | Пакетные шрифты TeX Live, максимальная совместимость |
-
-**Быстрый старт:**
-
-```bash
-# 1. Скопируйте нужный конфиг в папку проекта
-cp latexmkrc-xelatex .latexmkrc     # для XeLaTeX
-# или
-cp latexmkrc-pdflatex .latexmkrc    # для pdfLaTeX
-
-# 2. Соберите PDF
-latexmk main.tex
-
-# 3. Очистите вспомогательные файлы
-latexmk -c
-
-# 4. Очистите всё, включая PDF
-latexmk -C
-```
-
-**Непрерывная сборка** (пересобирает при каждом сохранении файла):
-
-```bash
-latexmk -pvc main.tex
-```
-
-**Глобальная установка** (чтобы не копировать в каждый проект):
-
-```bash
-# Linux / macOS
-mkdir -p ~/.config/latexmk
-cp latexmkrc-xelatex ~/.config/latexmk/latexmkrc
-
-# Windows
-copy latexmkrc-xelatex %USERPROFILE%\.latexmkrc
-```
-
-### Ручная сборка
+## Ручная сборка (без `latexmk`)
 
 Если `latexmk` недоступен, запустите цепочку вручную:
 
 ```bash
-# XeLaTeX
+# XeLaTeX (рекомендуется)
 xelatex -interaction=nonstopmode -halt-on-error main.tex
 biber main
 xelatex -interaction=nonstopmode -halt-on-error main.tex
@@ -333,196 +380,6 @@ pdflatex -interaction=nonstopmode -halt-on-error main.tex
 ```
 
 Три прохода нужны для корректного построения оглавления, списка таблиц и перекрёстных ссылок.
-
-### Makefile (опционально)
-
-Если вы предпочитаете `make`:
-
-```makefile
-TEX      = main
-ENGINE   = xelatex
-FLAGS    = -interaction=nonstopmode -halt-on-error -synctex=1
-
-.PHONY: all clean distclean watch
-
-all:
-    latexmk -r latexmkrc-$(subst xelatex,xelatex,$(ENGINE)) $(TEX).tex
-
-watch:
-    latexmk -r latexmkrc-$(ENGINE) -pvc $(TEX).tex
-
-clean:
-    latexmk -c
-
-distclean:
-    latexmk -C
-```
-
-### Org-mode (Emacs)
-
-1. Добавьте [`cmcmsuthesis-org.el`](examples/org-setup/cmcmsuthesis-org.el) в ваш `~/.emacs` — он уже содержит настройку цепочки `xelatex → biber → xelatex → xelatex`.
-2. Откройте `.org` файл в Emacs.
-3. `C-c C-e l p` — экспорт в PDF.
-
-### VS Code
-
-Для пользователей VS Code с расширением [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop) добавьте в `settings.json`:
-
-```json
-{
-    "latex-workshop.latex.tools": [
-        {
-            "name": "latexmk-xelatex",
-            "command": "latexmk",
-            "args": ["-r", "latexmkrc-xelatex", "%DOC%"]
-        }
-    ],
-    "latex-workshop.latex.recipes": [
-        {
-            "name": "latexmk (XeLaTeX)",
-            "tools": ["latexmk-xelatex"]
-        }
-    ]
-}
-```
-
-## Минимальные примеры
-
-<details>
-<summary><b>Курсовая работа</b></summary>
-
-```latex
-\documentclass{cmcmsuthesis-cw}
-
-\author{Иванов Иван Иванович}
-\title{Численные методы решения систем линейных уравнений}
-\thesissetup{department = {Кафедра вычислительной математики}}
-\supervisor{name = {канд.~физ.-мат.~наук, доцент Волков~Н.А.}}
-
-\usepackage{biblatex}
-\addbibresource{refs.bib}
-
-\begin{document}
-\maketitle
-\tableofcontents
-\section{Введение}
-...
-\section{Заключение}
-...
-\printbibliography
-\end{document}
-```
-
-</details>
-
-<details>
-<summary><b>Бакалаврская ВКР</b></summary>
-
-```latex
-\documentclass[font=pt]{cmcmsuthesis-bachelor}
-
-\author{Петрова Мария Сергеевна}
-\title{Методы машинного обучения для анализа временных рядов}
-\subtitle{Выпускная квалификационная работа бакалавра}
-\thesissetup{department = {Кафедра математических методов прогнозирования}}
-\supervisor{name = {д-р~физ.-мат.~наук, проф. Сидоров~А.Б.}}
-
-\usepackage{biblatex}
-\addbibresource{refs.bib}
-
-\begin{document}
-\maketitle
-\tableofcontents
-\section{Введение}
-...
-\section{Заключение}
-...
-\printbibliography
-\end{document}
-```
-
-</details>
-
-<details>
-<summary><b>Магистерская диссертация</b></summary>
-
-```latex
-\documentclass[font=libertinus]{cmcmsuthesis-master}
-
-\author{Смирнова Елена Андреевна}
-\title{Алгоритмы поиска кратчайших путей в больших графах}
-\thesissetup{department = {Кафедра математической кибернетики}}
-\supervisor{name = {д-р~физ.-мат.~наук, проф. Иванов~И.И.}}
-
-\usepackage{biblatex}
-\addbibresource{refs.bib}
-
-\begin{document}
-\maketitle
-\tableofcontents
-\section{Введение}
-...
-\section{Заключение}
-...
-\printbibliography
-\end{document}
-```
-
-</details>
-
-<details>
-<summary><b>Кандидатская диссертация</b></summary>
-
-```latex
-\documentclass[font=stix]{cmcmsuthesis-phd}
-
-\author{Сидоров Алексей Михайлович}
-\title{Произведение Шура--Адамара линейных кодов}
-\supervisor{name = {д-р~физ.-мат.~наук, проф. Чижов~И.В.}}
-\specialty{code = {1.2.3}, name = {теоретическая информатика}}
-
-\usepackage{biblatex}
-\addbibresource{refs.bib}
-
-\begin{document}
-\maketitle
-\tableofcontents
-\chapter{Введение}
-...
-\chapter{Заключение}
-...
-\printbibliography
-\end{document}
-```
-
-</details>
-
-<details>
-<summary><b>Докторская диссертация</b></summary>
-
-```latex
-\documentclass[font=ebgaramond]{cmcmsuthesis-doctoral}
-
-\author{Петров Сергей Николаевич}
-\title{Теория устойчивости стохастических систем}
-\supervisor{name = {академик РАН, проф. Иванов~И.И.}}
-\specialty{code = {1.1.5}, name = {математическая физика}}
-
-\usepackage{biblatex}
-\addbibresource{refs.bib}
-
-\begin{document}
-\maketitle
-\tableofcontents
-\chapter{Введение}
-...
-\chapter{Заключение}
-...
-\printbibliography
-\end{document}
-```
-
-</details>
 
 ## Возможности, демонстрируемые в примерах
 
@@ -540,7 +397,7 @@ distclean:
 
 **Таблицы** — простая с линейками, `booktabs` с выравниванием, `longtable`.
 
-**Изображения** — обычная вставка, вставка с масштабом (закомментированы, раскомментировать при наличии файлов).
+**Изображения** — обычная вставка, вставка с масштабом.
 
 **Списки** — нумерованный (4 уровня), ненумерованный (4 уровня), `beginpenalty`.
 
@@ -552,9 +409,9 @@ distclean:
 
 Проект вдохновлён шаблоном [Russian-Phd-LaTeX-Dissertation-Template](https://github.com/AndreyAkinshin/Russian-Phd-LaTeX-Dissertation-Template) Андрея Акиньшина и соавторов. Их работа стала отправной точкой и источником множества идей по оформлению диссертаций в LaTeX по российским стандартам. Мы выражаем искреннюю благодарность всем участникам этого проекта за огромный вклад в русскоязычное LaTeX-сообщество.
 
-Благодарим Renzhi Li (Belleve Invis) и контрибьюторов проекта [Iosevka](https://typeof.net/Iosevka/) за превосходный моноширинный шрифт с открытым исходным кодом. Кастомизированный вариант Iosevka Brill используется в комплекте как моноширинный шрифт в наборах на основе шрифта Brill.
+Благодарим Renzhi Li (Belleve Invis) и контрибьюторов проекта [Iosevka](https://typeof.net/Iosevka/) за превосходный моноширинный шрифт с открытым исходным кодом. Кастомизированный вариант **Iosevka Brill** включён в комплект (см. [`fonts/iosevka-brill/`](fonts/iosevka-brill/)) и используется как моноширинный шрифт в наборах на основе шрифта Brill.
 
-Благодарим издательство [Brill](https://brill.com/page/fonts/brill-typeface) (Лейден) за предоставление академического шрифта Brill Typeface для бесплатного некоммерческого использования. Шрифт охватывает около 7000 глифов — полную кириллицу, политонический греческий, МФА — и используется в комплекте в наборах `brillkp`, `brillstix` и `liberbrill`.
+Благодарим издательство [Brill](https://brill.com/page/fonts/brill-typeface) (Лейден) за предоставление академического шрифта **Brill Typeface** для бесплатного некоммерческого использования. Шрифт охватывает около 7000 глифов — полную кириллицу, политонический греческий, МФА — и используется в комплекте в наборах `brillkp`, `brillstix` и `liberbrill`.
 
 ## Лицензия
 
