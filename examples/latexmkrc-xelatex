@@ -11,6 +11,8 @@
 ensure_path('TEXINPUTS', './cmcmsuthesis-latexstyles//');
 ensure_path('TEXINPUTS', './cmcmsuthesis//');
 ensure_path('TEXINPUTS', './cmcmsuthesis-latexstyles/cmcmsuthesis//');
+ensure_path('OSFONTDIR', './cmcmsuthesis-latexstyles/fonts//');
+ensure_path('OSFONTDIR', './brill//');
 
 # --- Движок ---
 $pdf_mode = 5;                # 5 = xelatex → PDF
