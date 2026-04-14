@@ -1,0 +1,410 @@
+% cmcmsugost-fontselector.sty
+\NeedsTeXFormat{LaTeX2e}[2020-10-01]
+\ProvidesPackage{cmcmsugost-fontselector}[2026/03/21 v0.2 font and language selector]
+
+\makeatletter
+
+\RequirePackage{iftex}
+\RequirePackage{kvoptions}
+\RequirePackage{etoolbox}
+
+\SetupKeyvalOptions{
+    family = cmcmsugostfont,
+    prefix = cmcmsugostfont@
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% font - либо название настроек для группы шрифтов, либо pdflatex
+%%      - шрифт,
+%%      - либо шрифт с засечками (только для XeLaTeX/LuaLaTeX),
+%%      - пример: Times New Roman
+%% mathfont - математический шрифт (LaTeX/XeLaTeX/LuaLaTeX)
+%% mathfontscale - коэффициент масштабирования для математического
+%%                - шрифта, применимо только для XeLaTeX/LuaLaTeX
+%% fontscale - коэффициент масштабирования для шрифта serif
+%% sans  - шрифт без засечек, sans serif (только XeLaTeX/LuaLaTeX)
+%%       - это шрифты обычно используются в презентациях, пример
+%%       - Arial, PType Sans и т.п., также нужны для команд \textsf
+%% sansscale - коэффициент масштабирования для шрифта sans
+%% mono  - шрифт моноширинный (только для XeLaTeX/LuaLaTeX)
+%%       - это шрифты обычно используются для набора кода
+%%       - и листингов, пример Courier, Inconsolata, JetBrains Mono
+%% monoscale - коэффициент масштабирования для шрифта mono
+%% lang  - язык документа (по умолчанию russian);
+%%       - загружается только если babel/polyglossia ещё не загружены
+%% rumath  - русская математическая традиция (upgreek + флаг для
+%%         - операторов в extra), по умолчанию true
+%% upgreek - прямые греческие буквы, по умолчанию false
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\DeclareStringOption[]{font}
+\DeclareStringOption[1]{fontscale}
+
+\DeclareStringOption[]{mathfont}
+\DeclareStringOption[1]{mathfontscale}
+
+\DeclareStringOption[]{sans}
+\DeclareStringOption[1]{sansscale}
+
+\DeclareStringOption[]{mono}
+\DeclareStringOption[1]{monoscale}
+
+\DeclareStringOption[russian]{lang}
+
+\DeclareBoolOption[false]{upgreek}
+\DeclareVoidOption{upgreekon}{\cmcmsugostfont@upgreektrue}
+\DeclareVoidOption{upgreekoff}{\cmcmsugostfont@upgreekfalse}
+
+\DeclareBoolOption[false]{mathcalold}
+\DeclareVoidOption{mathcaloldon}{\cmcmsugostfont@mathcaloldtrue}
+\DeclareVoidOption{mathcaloldoff}{\cmcmsugostfont@mathcaloldfalse}
+
+\DeclareBoolOption[true]{microtype}
+\DeclareVoidOption{microtypeon}{\cmcmsugostfont@microtypetrue}
+\DeclareVoidOption{microtypeoff}{\cmcmsugostfont@microtypefalse}
+
+
+\ProcessKeyvalOptions*
+
+% ================================================================
+% Setup-команда
+% ================================================================
+\RequirePackage{keyval}
+\define@key{cmcmsugostfontsetup}{upgreek}[true]{%
+    \ifstrequal{#1}{true}{\cmcmsugostfont@upgreektrue}{\cmcmsugostfont@upgreekfalse}%
+}
+\define@key{cmcmsugostfontsetup}{lang}[russian]{%
+    \def\cmcmsugostfont@lang{#1}%
+}
+\define@key{cmcmsugostfontsetup}{font}[]{%
+    \def\cmcmsugostfont@font{#1}%
+}
+\define@key{cmcmsugostfontsetup}{fontscale}[1]{%
+    \def\cmcmsugostfont@fontscale{#1}%
+}
+\define@key{cmcmsugostfontsetup}{mathfont}[]{%
+    \def\cmcmsugostfont@mathfont{#1}%
+}
+\define@key{cmcmsugostfontsetup}{mathfontscale}[1]{%
+    \def\cmcmsugostfont@mathfontscale{#1}%
+}
+\define@key{cmcmsugostfontsetup}{sans}[]{%
+    \def\cmcmsugostfont@sans{#1}%
+}
+\define@key{cmcmsugostfontsetup}{sansscale}[1]{%
+    \def\cmcmsugostfont@sansscale{#1}%
+}
+\define@key{cmcmsugostfontsetup}{mono}[]{%
+    \def\cmcmsugostfont@mono{#1}%
+}
+\define@key{cmcmsugostfontsetup}{monoscale}[1]{%
+    \def\cmcmsugostfont@monoscale{#1}%
+}
+\define@key{cmcmsugostfontsetup}{mathcalold}[false]{%
+    \ifstrequal{#1}{true}{\cmcmsugostfont@mathcaloldtrue}{\cmcmsugostfont@mathcaloldfalse}%
+}
+
+\define@key{cmcmsugostfontsetup}{microtype}[true]{%
+    \ifstrequal{#1}{true}{\cmcmsugostfont@microtypetrue}{\cmcmsugostfont@microtypefalse}%
+}
+
+\newcommand{\cmcmsugostfontsetup}[1]{%
+    \setkeys{cmcmsugostfontsetup}{#1}%
+}
+
+% ================================================================
+% Загрузка кодировок, языка и математической инфраструктуры
+% (перенесено из cmcmsu-gost — fontselector отвечает за весь
+%  шрифтовой стек)
+%
+% Правильный порядок:
+%   pdfLaTeX:  inputenc → fontenc → babel → mathtools → amssymb → шрифты
+%   XeTeX/Lua: babel → mathtools → amssymb → шрифты (unicode-math/fontspec
+%              загружаются внутри команд отдельных шрифтов)
+%
+% Условная загрузка: если пользователь уже загрузил — не перезатираем.
+% ================================================================
+
+% --- 1. Кодировки (pdfLaTeX: ДО babel, иначе babel ругается) ---
+\ifPDFTeX
+    \@ifpackageloaded{fontenc}{}{%
+        \RequirePackage[utf8]{inputenc}%
+        \RequirePackage[T1,T2A]{fontenc}%
+    }%
+\fi
+
+% --- 2. Язык ---
+\@ifpackageloaded{babel}{}{%
+    \@ifpackageloaded{polyglossia}{}{%
+        \RequirePackage[english,\cmcmsugostfont@lang]{babel}%
+    }%
+}
+
+% --- 3. Математическая инфраструктура ---
+\ifPDFTeX
+    \@ifpackageloaded{mathtools}{}{%
+        \RequirePackage{mathtools}%
+    }%
+    \@ifpackageloaded{amssymb}{}{%
+        \RequirePackage{amssymb}%
+    }%
+\else
+    \@ifpackageloaded{mathtools}{}{%
+        \RequirePackage{mathtools}%
+    }%
+    \@ifpackageloaded{amssymb}{}{%
+        \RequirePackage{amssymb}%
+    }%
+    % fontspec загружается внутри команд шрифтов через
+    % \RequirePackage{unicode-math} — здесь не грузим,
+    % чтобы не нарушить порядок опций (math-style=french и т.п.)
+\fi
+
+% ================================================================
+% ProvideSymbf — обеспечение команд \symbf, \symbfit,
+% \symup, \symbfup для pdfLaTeX (в unicode-math они встроены)
+% ================================================================
+\newcommand{\cmcmsugostfont@ProvideSymbf}{%
+    \@ifundefined{symbf}{%
+        \newcommand{\symbf}[1]{%
+            \ensuremath{\boldsymbol{##1}}}%
+    }{}%
+    \@ifundefined{symbfit}{%
+        \newcommand{\symbfit}[1]{%
+            \ensuremath{\boldsymbol{##1}}}%
+    }{}%
+    \@ifundefined{symup}{%
+        \ifPDFTeX%
+            %% При использовании UPGREEK и NEWTXMATH
+            %% портятся большие греческие буквы,
+            %% поэтому UPGREEK нужно грузить раньше.
+            %% Мы не контролируем это, поэтому чистим определения.
+            \@ifpackageloaded{upgreek}{%
+                % уже загружен — ничего не делаем
+            }{%
+                \@ifpackageloaded{newtxmath}{%
+                    % newtxmath уже загружен ДО нас —
+                    \let\cmcmsugostfont@Gamma\Gamma
+                    \let\cmcmsugostfont@Delta\Delta
+                    \let\cmcmsugostfont@Theta\Theta
+                    \let\cmcmsugostfont@Lambda\Lambda
+                    \let\cmcmsugostfont@Xi\Xi
+                    \let\cmcmsugostfont@Pi\Pi
+                    \let\cmcmsugostfont@Sigma\Sigma
+                    \let\cmcmsugostfont@Upsilon\Upsilon
+                    \let\cmcmsugostfont@Phi\Phi
+                    \let\cmcmsugostfont@Psi\Psi
+                    \let\cmcmsugostfont@Omega\Omega
+                    % загружаем upgreek
+                    \RequirePackage{upgreek}%
+                    % и восстанавливаем греческие:
+                    \let\Gamma\cmcmsugostfont@Gamma%
+                    \let\Delta\cmcmsugostfont@Delta%
+                    \let\Theta\cmcmsugostfont@Theta%
+                    \let\Lambda\cmcmsugostfont@Lambda%
+                    \let\Xi\cmcmsugostfont@Xi%
+                    \let\Pi\cmcmsugostfont@Pi%
+                    \let\Sigma\cmcmsugostfont@Sigma%
+                    \let\Upsilon\cmcmsugostfont@Upsilon%
+                    \let\Phi\cmcmsugostfont@Phi%
+                    \let\Psi\cmcmsugostfont@Psi%
+                    \let\Omega\cmcmsugostfont@Omega%
+                }{%
+                    % newtxmath ещё не загружен —
+                    \RequirePackage{upgreek}%
+                }%
+            }%
+        \fi
+        \newcommand{\symup}[1]{%
+            \begingroup
+            \edef\symup@name{\expandafter\@gobble\string##1}%
+            \ifcsname up\symup@name\endcsname
+                \csname up\symup@name\endcsname
+            \else
+                \mathrm{##1}%
+            \fi
+            \endgroup
+        }%
+    }{}%
+    \@ifundefined{symbfup}{%
+        \newcommand{\symbfup}[1]{%
+            \ensuremath{\boldsymbol{\symup{##1}}}}%
+    }{}%
+}
+
+% ================================================================
+% Upright Greek (шрифтовые настройки — остаются в fontselector)
+% ================================================================
+
+% ------------------------------------------------
+% Upright Greek helpers (split into pre-font and post-font phases)
+% ------------------------------------------------
+
+%% Phase 1 (before font dispatcher):
+%%   pdfLaTeX  — load upgreek package
+%%   XeLaTeX   — PassOptionsToPackage{math-style=french}{unicode-math}
+\newcommand{\cmcmsugostfont@upgreek@preload}{%
+    \ifPDFTeX
+        \@ifundefined{upalpha}{\RequirePackage{upgreek}}{}%
+    \else
+        \PassOptionsToPackage{math-style=french}{unicode-math}%
+    \fi
+}
+
+%% Phase 2 (after font dispatcher, i.e. after fonts are loaded):
+%%   pdfLaTeX  — remap Greek letters to upright variants
+%%   XeLaTeX   — nothing (math-style=french already took effect)
+\newcommand{\cmcmsugostfont@upgreek@remap}{%
+    \ifPDFTeX
+        \let\alpha\upalpha%
+        \let\beta\upbeta%
+        \let\gamma\upgamma%
+        \let\delta\updelta%
+        \let\epsilon\upepsilon%
+        \let\varepsilon\upvarepsilon%
+        \let\theta\uptheta%
+        \let\vartheta\upvartheta%
+        \let\lambda\uplambda%
+        \let\mu\upmu%
+        \let\pi\uppi%
+        \let\varpi\upvarpi%
+        \let\rho\uprho%
+        \let\varrho\upvarrho%
+        \let\sigma\upsigma%
+        \let\varsigma\upvarsigma%
+        \let\phi\upphi%
+        \let\varphi\upvarphi%
+        \let\omega\upomega%
+        \let\Gamma\Upgamma%
+        \let\Delta\Updelta%
+        \let\Theta\Uptheta%
+        \let\Lambda\Uplambda%
+        \let\Xi\Upxi%
+        \let\Pi\Uppi%
+        \let\Sigma\Upsigma%
+        \let\Upsilon\Upupsilon%
+        \let\Phi\Upphi%
+        \let\Psi\Uppsi%
+        \let\Omega\Upomega%
+    \fi
+}
+
+%% Legacy alias (kept for compatibility if called elsewhere)
+\newcommand{\cmcmsugostfont@upgreek@apply}{%
+    \cmcmsugostfont@upgreek@preload%
+    \cmcmsugostfont@upgreek@remap%
+}
+
+%% Set mathcal
+\newcommand{\cmcmsugostfont@SetMathCalOldStyle}{
+    \@ifpackageloaded{unicode-math}{}{
+        \RequirePackage{unicode-math}
+    }
+    \setmathfont[range=\mathcal]{STIXTwoMath-Regular.otf}
+}
+
+\RequirePackage{cmcmsufontsets}
+
+\newcommand{\cmcmsugostfont@setfont}[3][1]{%
+    % #1 - fontscale, #2 - series, #3 - font name
+    \typeout{Setting font: scale = '#1', series='#2', font name = '#3'}
+    \ifPDFTeX%
+        \newcommand{\cmcmsugostfont@setfont@command}{%
+            \ifx\relax#2\relax
+                cmcmsugostfont@tex@#3%
+            \else
+                cmcmsugostfont@tex@#2@#3%
+            \fi
+        }
+        \@ifundefined{\cmcmsugostfont@setfont@command}{%
+            \PackageError{cmcmsugost-fontselector.sty}{%
+                Unknown font or font
+                set '#3' in TeX mode}{}
+        }{
+            \typeout{Run command '\cmcmsugostfont@setfont@command'}
+            \expandafter\csname%
+            \cmcmsugostfont@setfont@command\endcsname%
+        }
+    \else
+        \newcommand{\cmcmsugostfont@setfont@command}{%
+            \ifx\relax#2\relax
+                cmcmsugostfont@xetex@#3%
+            \else
+                cmcmsugostfont@xetex@#2@#3%
+            \fi
+        }
+        \@ifundefined{\cmcmsugostfont@setfont@command}{%
+            \PackageError{cmcmsugost-fontselector.sty}{%
+                Unknown font or font
+                set '#3' in XeTeX/LuaTeX mode}{}
+        }{
+            \typeout{%
+                Run command '\cmcmsugostfont@setfont@command{#1}'}
+            \expandafter\csname%
+            \cmcmsugostfont@setfont@command\endcsname{#1}%
+        }
+    \fi
+    \let\cmcmsugostfont@setfont@command\relax
+}
+
+
+% ================================================================
+% Отложенная загрузка: upgreek, PassOptionsToPackage, диспетчер
+% шрифтов и ProvideSymbf — всё выполняется в конце преамбулы,
+% чтобы \cmcmsugostfontsetup{...} успел изменить опции.
+%
+% Порядок:
+%   1. upgreek@preload — грузит upgreek (pdfLaTeX) или
+%      PassOptionsToPackage (XeLaTeX) ДО шрифтов
+%   2. Диспетчер шрифтов — грузит шрифтовые пакеты
+%   3. upgreek@remap — переопределяет греческие буквы ПОСЛЕ шрифтов
+%   4. ProvideSymbf — обеспечивает \symbf и др. ПОСЛЕ шрифтов
+% ================================================================
+\AtEndPreamble{%
+    %% 1. Pre-font: upgreek / math-style=french (до загрузки шрифтов)
+    \ifcmcmsugostfont@upgreek%
+        \cmcmsugostfont@upgreek@preload%
+    \fi
+    %% 2. Диспетчер загрузки шрифтов
+    \ifPDFTeX\else%
+        \@ifpackageloaded{unicode-math}{}{
+            \RequirePackage{unicode-math}
+        }
+    \fi
+    \cmcmsugostfont@setfont[\cmcmsugostfont@fontscale]{}{%
+        \cmcmsugostfont@font}
+    \cmcmsugostfont@setfont[%
+        \cmcmsugostfont@mathfontscale]{mathfont}{%
+        \cmcmsugostfont@mathfont}
+    \cmcmsugostfont@setfont[\cmcmsugostfont@sansscale]{sans}{%
+        \cmcmsugostfont@sans}
+    \cmcmsugostfont@setfont[\cmcmsugostfont@monoscale]{mono}{%
+        \cmcmsugostfont@mono}
+
+    \ifcmcmsugostfont@microtype%
+        \ifPDFTeX%
+            \RequirePackage[%
+                protrusion=true,
+                expansion=true]{microtype}
+        \else
+            \RequirePackage[%
+                protrusion=true,
+                expansion=false]{microtype}
+        \fi
+    \else
+        \RequirePackage[%
+            protrusion=true,
+            expansion=false]{microtype}
+    \fi
+
+    %% 3. Post-font: remap Greek letters (pdfLaTeX only, после загрузки шрифтов)
+    \ifcmcmsugostfont@upgreek%
+        \cmcmsugostfont@upgreek@remap%
+    \fi
+    %% 4. ProvideSymbf (после загрузки шрифтов)
+    \cmcmsugostfont@ProvideSymbf%
+}
+
+
+\makeatother
+\endinput

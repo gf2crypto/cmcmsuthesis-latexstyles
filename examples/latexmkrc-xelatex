@@ -1,0 +1,41 @@
+# latexmkrc — конфигурация latexmk для XeLaTeX + Biber
+#
+# Использование:
+#   latexmk              — собрать PDF
+#   latexmk -c           — очистить вспомогательные файлы
+#   latexmk -C           — очистить всё, включая PDF
+#   latexmk -pvc         — непрерывная сборка (watch mode)
+#
+# Положите этот файл рядом с main.tex или в ~/.config/latexmk/
+
+ensure_path('TEXINPUTS', './cmcmsuthesis-latexstyles//');
+ensure_path('TEXINPUTS', './cmcmsuthesis//');
+ensure_path('TEXINPUTS', './cmcmsuthesis-latexstyles/cmcmsuthesis//');
+ensure_path('OSFONTDIR', './cmcmsuthesis-latexstyles/fonts//');
+ensure_path('OSFONTDIR', './brill//');
+
+# --- Движок ---
+$pdf_mode = 5;                # 5 = xelatex → PDF
+$xelatex  = 'xelatex -interaction=nonstopmode -halt-on-error -synctex=1 %O %S';
+
+# --- Библиография ---
+$biber    = 'biber --validate-datamodel %O %S';
+
+# --- Количество проходов ---
+$max_repeat = 5;
+
+# --- Очистка ---
+# Дополнительные расширения, генерируемые пакетами комплекта
+$clean_ext = 'bbl bcf blg run.xml synctex.gz loa';
+
+# --- Глоссарий / список алгоритмов (algorithm2e) ---
+# algorithm2e пишет в .loa — latexmk должен знать об этом
+add_cus_dep('loa', 'loa', 0, 'do_nothing');
+sub do_nothing { return 0; }
+
+# --- Предпросмотр ---
+# Раскомментируйте для автоматического открытия PDF:
+# $preview_mode = 1;
+# $pdf_previewer = 'open %S';         # macOS
+# $pdf_previewer = 'xdg-open %S';     # Linux
+# $pdf_previewer = 'start %S';        # Windows

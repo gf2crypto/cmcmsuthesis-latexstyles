@@ -1,0 +1,668 @@
+% cmcmsugost-extra.sty
+\NeedsTeXFormat{LaTeX2e}[2020-10-01]
+\ProvidesPackage{cmcmsugost-extra}[2026/03/21 v0.2 extra packages]
+
+
+\makeatletter
+
+\RequirePackage{iftex}
+\RequirePackage{kvoptions}
+\RequirePackage{etoolbox}
+
+\SetupKeyvalOptions{
+    family = cmcmsugostextra,
+    prefix = cmcmsugostextra@
+}
+
+\DeclareBoolOption[true]{thm}
+\DeclareVoidOption{thmon}{\cmcmsugostextra@thmtrue}
+\DeclareVoidOption{thmoff}{\cmcmsugostextra@thmfalse}
+
+%%% alg=off (no algorithms)
+%%% alg=2e -> loading algorithm2e
+\DeclareStringOption[2e]{alg}[2e]
+\def\cmcmsugostextra@algoff{off}
+\def\cmcmsugostextra@algtwoe{2e}
+
+\DeclareBoolOption[true]{listings}
+\DeclareVoidOption{listingson}{\cmcmsugostextra@listingstrue}
+\DeclareVoidOption{listingsoff}{\cmcmsugostextra@listingsfalse}
+
+\DeclareBoolOption[true]{extramath}
+\DeclareVoidOption{extramathon}{\cmcmsugostextra@extramathtrue}
+\DeclareVoidOption{extramathoff}{\cmcmsugostextra@extramathfalse}
+
+\DeclareBoolOption[true]{biber}
+\DeclareVoidOption{biberon}{\cmcmsugostextra@bibertrue}
+\DeclareVoidOption{biberoff}{\cmcmsugostextra@biberfalse}
+
+%%% rumathop — русская традиция математических операторов
+%%% (\tan→tg, \le→\leqslant и т.п.)
+%%% По умолчанию false; автоматически включается если в fontselector
+%%% установлен rumath=true.
+\DeclareBoolOption[false]{rumathop}
+\DeclareVoidOption{rumathopon}{\cmcmsugostextra@rumathoptrue}
+\DeclareVoidOption{rumathopoff}{\cmcmsugostextra@rumathopfalse}
+
+\ProcessKeyvalOptions*
+
+% ================================================================
+% Setup-команда
+% ================================================================
+\RequirePackage{keyval}
+\define@key{cmcmsugostextrasetup}{thm}[true]{%
+    \ifstrequal{#1}{true}{\cmcmsugostextra@thmtrue}{\cmcmsugostextra@thmfalse}%
+}
+\define@key{cmcmsugostextrasetup}{listings}[true]{%
+    \ifstrequal{#1}{true}{\cmcmsugostextra@listingstrue}{\cmcmsugostextra@listingsfalse}%
+}
+\define@key{cmcmsugostextrasetup}{extramath}[true]{%
+    \ifstrequal{#1}{true}{\cmcmsugostextra@extramathtrue}{\cmcmsugostextra@extramathfalse}%
+}
+\define@key{cmcmsugostextrasetup}{biber}[true]{%
+    \ifstrequal{#1}{true}{\cmcmsugostextra@bibertrue}{\cmcmsugostextra@biberfalse}%
+}
+\define@key{cmcmsugostextrasetup}{rumathop}[true]{%
+    \ifstrequal{#1}{true}{\cmcmsugostextra@rumathoptrue}{\cmcmsugostextra@rumathopfalse}%
+}
+\define@key{cmcmsugostextrasetup}{alg}[2e]{%
+    \def\cmcmsugostextra@alg{#1}%
+}
+\newcommand{\cmcmsugostextrasetup}[1]{%
+    \setkeys{cmcmsugostextrasetup}{#1}%
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Translations
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{translator}
+\uselanguage{Russian}  % default language is Russian
+\languagepath{Russian}
+
+\newtranslation[to=Russian]{Outline}{План}
+\newtranslation[to=Russian]{Definition}{Определение}
+\newtranslation[to=Russian]{Remark}{Замечание}
+\newtranslation[to=Russian]{Theorem}{Теорема}
+\newtranslation[to=Russian]{Lemma}{Лемма}
+\newtranslation[to=Russian]{Proposition}{Утверждение}
+\newtranslation[to=Russian]{Assertion}{Утверждение}
+\newtranslation[to=Russian]{Statement}{Утверждение}
+\newtranslation[to=Russian]{Problem}{Проблема}
+\newtranslation[to=Russian]{Task}{Задача}
+\newtranslation[to=Russian]{Excercise}{Упражнение}
+\newtranslation[to=Russian]{Question}{Вопрос}
+\newtranslation[to=Russian]{Corollary}{Следствие}
+\newtranslation[to=Russian]{Input}{Вход}
+\newtranslation[to=Russian]{Output}{Выход}
+\newtranslation[to=Russian]{Algorithm}{Алгоритм}
+\newtranslation[to=Russian]{algorithm}{алгоритм}
+\newtranslation[to=Russian]{List of algorithms}{Список алгоритмов}
+\newtranslation[to=Russian]{Listing}{Алгоритм}
+\newtranslation[to=Russian]{Bibliography}{Список литературы}
+\newtranslation[to=Russian]{UDK}{УДК}
+\newtranslation[to=Russian]{Keywords}{Ключевые слова}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcommand{\cmcmsugostextra@SetTheorems}{
+    \RequirePackage{amsthm}
+    \@ifundefined{c@chapter}
+    {%
+        % Если нет глав: нумерация по section
+        \newtheorem{theorem}{Теорема}[section]
+        \newtheorem{lemma}{Лемма}[section]
+        \newtheorem{proposition}{Утверждение}[section]
+        \newtheorem{corollary}{Следствие}[section]
+
+        \theoremstyle{definition}
+        \newtheorem{definition}{Определение}[section]
+        \newtheorem{example}{Пример}[section]
+        \newtheorem{problem}{Задача}[section]
+
+        \theoremstyle{remark}
+        \newtheorem{remark}{Замечание}[section]
+    }
+    {%
+        % Если есть главы: нумерация по chapter
+        \newtheorem{theorem}{Теорема}[chapter]
+        \newtheorem{lemma}{Лемма}[chapter]
+        \newtheorem{proposition}{Утверждение}[chapter]
+        \newtheorem{corollary}{Следствие}[chapter]
+
+        \theoremstyle{definition}
+        \newtheorem{definition}{Определение}[chapter]
+        \newtheorem{example}{Пример}[chapter]
+        \newtheorem{problem}{Задача}[chapter]
+
+        \theoremstyle{remark}
+        \newtheorem{remark}{Замечание}[chapter]
+    }
+}
+
+\newcommand{\cmcmsugostextra@SetAlgorithmE}{
+    \RequirePackage[%
+        linesnumbered,
+        titlenumbered
+    ]{algorithm2e}
+    \RequirePackage{xcolor}
+    \definecolor{AlgoRule}{gray}{0.35}
+    \definecolor{AlgoNumbers}{gray}{0.45}
+    \definecolor{AlgoText}{gray}{0.05}
+    \definecolor{AlgoComment}{gray}{0.65}
+    \SetKwInput{KwData}{\translate{Input}}
+    \SetKwInput{KwInput}{\translate{Input}}
+    \SetKwInput{KwOutput}{\translate{Output}}
+    \SetKwInput{KwResult}{\translate{Output}}
+    \SetAlgorithmName{\translate{Algorithm}}{
+        \translate{algorithm}}{\translate{List of algorithms}}
+    \SetKwComment{Comment}{// }{}
+    \SetAlgoNlRelativeSize{0} % номера строк того же размера
+    \newcommand{\cmcmsugostextra@AlgoNlSty}[1]{%
+        \fontsize{12pt}{14pt}\selectfont\color{AlgoNumbers}##1%
+    }
+    \SetNlSty{cmcmsugostextra@AlgoNlSty}{}{}%
+    \SetAlgoCaptionLayout{centerline}
+    \SetAlgoInsideSkip{smallskip}
+    \SetAlgoSkip{smallskip}
+    \SetAlgoVlined% вертикальные линии блоков (как в книгах)
+
+    \SetAlCapFnt{\fontsize{12pt}{14pt}\selectfont}
+    \SetAlCapNameFnt{\fontsize{12pt}{14pt}\selectfont}
+
+    \newcommand{\cmcmsugostextra@AlgoTextSty}[1]{%
+        \fontsize{12pt}{14pt}\selectfont\ttfamily\color{AlgoText}##1%
+    }
+    \SetAlFnt{\cmcmsugostextra@AlgoTextSty}
+
+    \newcommand{\cmcmsugostextra@AlgoCommentStyle}[1]{%
+        \ttfamily\color{AlgoComment}##1%
+    }%
+    \SetCommentSty{cmcmsugostextra@AlgoCommentStyle}%
+    \SetArgSty{cmcmsugostextra@AlgoTextSty}
+    \SetAlCapNameFnt{\normalfont}
+    \SetAlCapFnt{\normalfont}
+    \SetAlgoCaptionSeparator{~---\ }
+    \RequirePackage{chngcntr}
+    \@ifundefined{c@chapter}{%
+        \counterwithin{algocf}{section}
+        \renewcommand{\thealgocf}{\thesection.\arabic{algocf}}
+    }{%
+        \counterwithin{algocf}{chapter}
+        \renewcommand{\thealgocf}{\thechapter.\arabic{algocf}}
+    }
+}
+
+\newcommand{\cmcmsugostextra@SetListings}{
+\RequirePackage{listings}
+\RequirePackage{calc}
+% Ширина текста минус ширина надписи 999
+\newlength{\twless}
+\newlength{\lmarg}
+\setlength{\lmarg}{\widthof{999}}   % ширина надписи 999
+\setlength{\twless}{\textwidth-\lmarg}
+\RequirePackage{xcolor}
+% --- Нейтральные серые тона для печати и экрана ---
+\definecolor{ListingRule}{gray}{0.35}      % рамка / левая линия
+\definecolor{ListingNumbers}{gray}{0.45}   % номера строк
+\definecolor{ListingText}{gray}{0.10}      % основной текст
+\definecolor{ListingBackground}{gray}{1}% едва заметный фон
+\definecolor{ListingEmph}{gray}{0.35}      % ключевые слова — просто чёрные
+\definecolor{ListingComment}{gray}{0.65}   % комментарии — серые
+\definecolor{ListingString}{gray}{0.45}    % строки — тёмно-серые
+
+\lstdefinestyle{blackandwhite}{
+extendedchars=true,
+numbers=left,
+numberstyle=\fontsize{12pt}{14pt}\selectfont\color{ListingNumbers},
+firstnumber=1,
+stepnumber=1,
+lineskip=1pt,
+numbersep=8pt,
+backgroundcolor=\color{ListingBackground},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+frame=leftline,
+framerule=0.8pt,
+rulecolor=\color{ListingRule},
+tabsize=2,
+captionpos=b,
+breaklines=true,
+breakatwhitespace=false,
+breakautoindent=true, postbreak=\mbox{\textcolor{ListingNumbers}{$\hookrightarrow$}\space},
+title=\lstname,
+basicstyle=\fontsize{12pt}{14pt}\selectfont\ttfamily\color{ListingText},
+keywordstyle=\color{ListingEmph},
+commentstyle=\color{ListingComment},
+stringstyle=\color{ListingString},
+escapeinside={\%*}{*)},
+morekeywords={*,...},
+inputencoding=utf8,
+xleftmargin=\lmarg,
+keepspaces=true,
+columns=fullflexible,
+upquote=true,
+texcl=true,
+literate={Ö}{{\"O}}1
+{Ä}{{\"A}}1
+{Ü}{{\"U}}1
+{ß}{{\ss}}1
+{ü}{{\"u}}1
+{ä}{{\"a}}1
+{ö}{{\"o}}1
+{~}{{\textasciitilde}}1
+{а}{{\selectfont\char224}}1
+{б}{{\selectfont\char225}}1
+{в}{{\selectfont\char226}}1
+{г}{{\selectfont\char227}}1
+{д}{{\selectfont\char228}}1
+{е}{{\selectfont\char229}}1
+{ё}{{\"e}}1
+{ж}{{\selectfont\char230}}1
+{з}{{\selectfont\char231}}1
+{и}{{\selectfont\char232}}1
+{й}{{\selectfont\char233}}1
+{к}{{\selectfont\char234}}1
+{л}{{\selectfont\char235}}1
+{м}{{\selectfont\char236}}1
+{н}{{\selectfont\char237}}1
+{о}{{\selectfont\char238}}1
+{п}{{\selectfont\char239}}1
+{р}{{\selectfont\char240}}1
+{с}{{\selectfont\char241}}1
+{т}{{\selectfont\char242}}1
+{у}{{\selectfont\char243}}1
+{ф}{{\selectfont\char244}}1
+{х}{{\selectfont\char245}}1
+{ц}{{\selectfont\char246}}1
+{ч}{{\selectfont\char247}}1
+{ш}{{\selectfont\char248}}1
+{щ}{{\selectfont\char249}}1
+{ъ}{{\selectfont\char250}}1
+{ы}{{\selectfont\char251}}1
+{ь}{{\selectfont\char252}}1
+{э}{{\selectfont\char253}}1
+{ю}{{\selectfont\char254}}1
+{я}{{\selectfont\char255}}1
+{А}{{\selectfont\char192}}1
+{Б}{{\selectfont\char193}}1
+{В}{{\selectfont\char194}}1
+{Г}{{\selectfont\char195}}1
+{Д}{{\selectfont\char196}}1
+{Е}{{\selectfont\char197}}1
+{Ё}{{\"E}}1
+{Ж}{{\selectfont\char198}}1
+{З}{{\selectfont\char199}}1
+{И}{{\selectfont\char200}}1
+{Й}{{\selectfont\char201}}1
+{К}{{\selectfont\char202}}1
+{Л}{{\selectfont\char203}}1
+{М}{{\selectfont\char204}}1
+{Н}{{\selectfont\char205}}1
+{О}{{\selectfont\char206}}1
+{П}{{\selectfont\char207}}1
+{Р}{{\selectfont\char208}}1
+{С}{{\selectfont\char209}}1
+{Т}{{\selectfont\char210}}1
+{У}{{\selectfont\char211}}1
+{Ф}{{\selectfont\char212}}1
+{Х}{{\selectfont\char213}}1
+{Ц}{{\selectfont\char214}}1
+{Ч}{{\selectfont\char215}}1
+{Ш}{{\selectfont\char216}}1
+{Щ}{{\selectfont\char217}}1
+{Ъ}{{\selectfont\char218}}1
+{Ы}{{\selectfont\char219}}1
+{Ь}{{\selectfont\char220}}1
+{Э}{{\selectfont\char221}}1
+{Ю}{{\selectfont\char222}}1
+{Я}{{\selectfont\char223}}1
+{і}{{\selectfont\char105}}1
+{ї}{{\selectfont\char168}}1
+{є}{{\selectfont\char185}}1
+{ґ}{{\selectfont\char160}}1
+{І}{{\selectfont\char73}}1
+{Ї}{{\selectfont\char136}}1
+{Є}{{\selectfont\char153}}1
+{Ґ}{{\selectfont\char128}}1
+}%
+
+\lstset{style=blackandwhite}
+
+%%% Listing for pseudocodes
+\lstdefinelanguage{pseudocode}{
+    morekeywords={
+            if,then,else,elseif,endif,
+            for,to,do,endfor,
+            while,endwhile,
+            repeat,until,
+            return,break,continue,
+            function,procedure,
+            input,output,
+            Input, Output,
+            and,or,not,
+            begin, end,
+            nil
+        },
+    sensitive=true,
+    morecomment=[l]{//},
+    morecomment=[l]{\#},
+    morestring=[b]"
+}
+
+\def\cmcmsugostextra@KeywordStylePseudocode{%
+    \normalfont\fontsize{12pt}{14pt}\selectfont\bfseries\color{black}%
+}
+
+\lstdefinestyle{pseudocode}{
+language=pseudocode,
+style=blackandwhite,
+keywordstyle=\cmcmsugostextra@KeywordStylePseudocode,
+literate={Ö}{{\"O}}1
+{Ä}{{\"A}}1
+{Ü}{{\"U}}1
+{ß}{{\ss}}1
+{ü}{{\"u}}1
+{ä}{{\"a}}1
+{ö}{{\"o}}1
+{~}{{\textasciitilde}}1
+{а}{{\selectfont\char224}}1
+{б}{{\selectfont\char225}}1
+{в}{{\selectfont\char226}}1
+{г}{{\selectfont\char227}}1
+{д}{{\selectfont\char228}}1
+{е}{{\selectfont\char229}}1
+{ё}{{\"e}}1
+{ж}{{\selectfont\char230}}1
+{з}{{\selectfont\char231}}1
+{и}{{\selectfont\char232}}1
+{й}{{\selectfont\char233}}1
+{к}{{\selectfont\char234}}1
+{л}{{\selectfont\char235}}1
+{м}{{\selectfont\char236}}1
+{н}{{\selectfont\char237}}1
+{о}{{\selectfont\char238}}1
+{п}{{\selectfont\char239}}1
+{р}{{\selectfont\char240}}1
+{с}{{\selectfont\char241}}1
+{т}{{\selectfont\char242}}1
+{у}{{\selectfont\char243}}1
+{ф}{{\selectfont\char244}}1
+{х}{{\selectfont\char245}}1
+{ц}{{\selectfont\char246}}1
+{ч}{{\selectfont\char247}}1
+{ш}{{\selectfont\char248}}1
+{щ}{{\selectfont\char249}}1
+{ъ}{{\selectfont\char250}}1
+{ы}{{\selectfont\char251}}1
+{ь}{{\selectfont\char252}}1
+{э}{{\selectfont\char253}}1
+{ю}{{\selectfont\char254}}1
+{я}{{\selectfont\char255}}1
+{А}{{\selectfont\char192}}1
+{Б}{{\selectfont\char193}}1
+{В}{{\selectfont\char194}}1
+{Г}{{\selectfont\char195}}1
+{Д}{{\selectfont\char196}}1
+{Е}{{\selectfont\char197}}1
+{Ё}{{\"E}}1
+{Ж}{{\selectfont\char198}}1
+{З}{{\selectfont\char199}}1
+{И}{{\selectfont\char200}}1
+{Й}{{\selectfont\char201}}1
+{К}{{\selectfont\char202}}1
+{Л}{{\selectfont\char203}}1
+{М}{{\selectfont\char204}}1
+{Н}{{\selectfont\char205}}1
+{О}{{\selectfont\char206}}1
+{П}{{\selectfont\char207}}1
+{Р}{{\selectfont\char208}}1
+{С}{{\selectfont\char209}}1
+{Т}{{\selectfont\char210}}1
+{У}{{\selectfont\char211}}1
+{Ф}{{\selectfont\char212}}1
+{Х}{{\selectfont\char213}}1
+{Ц}{{\selectfont\char214}}1
+{Ч}{{\selectfont\char215}}1
+{Ш}{{\selectfont\char216}}1
+{Щ}{{\selectfont\char217}}1
+{Ъ}{{\selectfont\char218}}1
+{Ы}{{\selectfont\char219}}1
+{Ь}{{\selectfont\char220}}1
+{Э}{{\selectfont\char221}}1
+{Ю}{{\selectfont\char222}}1
+{Я}{{\selectfont\char223}}1
+{і}{{\selectfont\char105}}1
+{ї}{{\selectfont\char168}}1
+{є}{{\selectfont\char185}}1
+{ґ}{{\selectfont\char160}}1
+{І}{{\selectfont\char73}}1
+{Ї}{{\selectfont\char136}}1
+{Є}{{\selectfont\char153}}1
+{Ґ}{{\selectfont\char128}}1,
+escapeinside={(*@}{@*)},
+mathescape = true
+}%
+\newcommand{\lstInput}{%
+    \cmcmsugostextra@KeywordStylePseudocode\translate{Input}%
+}
+\newcommand{\lstOutput}{%
+    \cmcmsugostextra@KeywordStylePseudocode\translate{Output}%
+}
+\renewcommand{\lstlistingname}{\translate{Listing}}
+\RequirePackage{caption}
+\DeclareCaptionLabelSeparator{listingsep}{~---\ }%
+\captionsetup[lstlisting]{%
+    format=plain,
+    font=normal,
+    skip=\baselineskip,
+    parskip=0pt,
+    singlelinecheck=true,
+    justification=centerlast,
+    labelsep=listingsep
+}%
+\RequirePackage{chngcntr}
+\@ifundefined{c@chapter}{%
+    \AtBeginDocument{
+        \counterwithin{lstlisting}{section}
+        \renewcommand{\thelstlisting}{\thesection.\arabic{lstlisting}}
+    }}{%
+    \AtBeginDocument{
+        \counterwithin{lstlisting}{chapter}
+        \renewcommand{\thelstlisting}{\thechapter.\arabic{lstlisting}}
+    }
+}
+\ifx\cmcmsugostextra@alg\cmcmsugostextra@algtwoe%
+    \lstnewenvironment{lstpseudocode}[1][]%
+    {%
+        % listings внутри этого окружения будет считать себя "алгоритмом"
+        \let\c@lstlisting\c@algocf%
+        \let\thelstlisting\thealgocf%
+        \let\p@lstlisting\p@algocf%
+        % подпись и имя
+        \let\lstlistingname\algorithmcfname%
+        % писать не в list of listings, а в list of algorithms
+        \def\ext@lstlisting{loa}%
+        % если нужны float-возможности listings, можно и это подменить
+        \let\ftype@lstlisting\ftype@algocf%
+        \@ifundefined{theHalgocf}
+        {\def\theHlstlisting{alg.\thealgocf}}
+        {\edef\theHlstlisting{alg.\theHalgocf}}
+        \lstset{style=pseudocode, ##1}%
+    }%
+    {}
+\fi
+}%
+
+\newcommand{\cmcmsugostextra@SetBibLaTeX}{
+    \@ifpackageloaded{biblatex}{%
+        \typeout{Loading BIBLATEX and Patching IT}
+        % # Исправление случая неподдержки знака номера в pdflatex
+        \DefineBibliographyStrings{russian}{number={\textnumero}}
+        \DeclareSourcemap{ % модификация bib-файла перед тем, как им займётся biblatex
+            \maps{
+                \map{% используем media=text по умолчанию
+                    \step[fieldset=media, fieldvalue=text]
+                }
+                \map{% перекидываем значения поля language в поле langid, которым пользуется biblatex
+                    \step[fieldsource=language, fieldset=langid, origfieldval, final]
+                    \step[fieldset=language, null]
+                }
+                \map{% перекидываем значения поля numpages в поле pagetotal, которым пользуется biblatex
+                    \step[fieldsource=numpages, fieldset=pagetotal, origfieldval, final]
+                    \step[fieldset=numpages, null]
+                }
+                \map{% перекидываем значения поля pagestotal в поле pagetotal, которым пользуется biblatex
+                    \step[fieldsource=pagestotal, fieldset=pagetotal, origfieldval, final]
+                    \step[fieldset=pagestotal, null]
+                }
+                \map[overwrite]{% если есть shortjournal, используем его вместо journal
+                    \step[fieldsource=shortjournal, final]
+                    \step[fieldset=journal, origfieldval]
+                    \step[fieldset=shortjournal, null]
+                }
+                \map[overwrite]{% если есть shortbooktitle, используем его вместо booktitle
+                    \step[fieldsource=shortbooktitle, final]
+                    \step[fieldset=booktitle, origfieldval]
+                    \step[fieldset=shortbooktitle, null]
+                }
+                \map[overwrite]{% если в поле medium написано "Электронный ресурс", устанавливаем media=eresource
+                    \step[fieldsource=medium,
+                        match=\regexp{Электронный\s+ресурс},
+                        final]
+                    \step[fieldset=media, fieldvalue=eresource]
+                    \step[fieldset=medium, null]
+                }
+                \map[overwrite]{% стираем значения всех полей issn
+                    \step[fieldset=issn, null]
+                }
+                \map[overwrite]{% стираем значения поля abstract, поскольку им не пользуемся, а там бывают проблемные символы
+                    \step[fieldsource=abstract]
+                    \step[fieldset=abstract, null]
+                }
+                \map[overwrite]{% переделка формата записи даты обращения
+                    \step[fieldsource=urldate,
+                        match=\regexp{([0-9]{2})\.([0-9]{2})\.([0-9]{4})},
+                        replace={$3-$2-$1$4},
+                        final]
+                }
+                \map[overwrite]{% стираем ключевые слова
+                    \step[fieldsource=keywords]
+                    \step[fieldset=keywords, null]
+                }
+                \map[overwrite]{% для типа online перекидываем howpublished в organization
+                    \step[typesource=online, typetarget=online, final]
+                    \step[fieldsource=howpublished, fieldset=organization, origfieldval]
+                    \step[fieldset=howpublished, null]
+                }
+            }
+        }
+
+        % # В списке литературы обозначение одной буквой диапазона страниц англоязычного источника %%%
+        \DefineBibliographyStrings{english}{%
+            pages = {p\adddot} %заглавность буквы затем по месту определяется работой самого biblatex
+        }
+        % # Set higher penalty for breaking in number, dates and pages ranges
+        \setcounter{abbrvpenalty}{10000} % default is \hyphenpenalty which is 12
+        % # Set higher penalty for breaking in names
+        \setcounter{highnamepenalty}{10000}
+        \setcounter{lownamepenalty}{10000}
+    }{}
+}
+
+% ================================================================
+% Русская традиция начертания математических операторов
+% (перенесено из fontselector — это мат. операторы, не шрифты)
+% ================================================================
+\newcommand{\cmcmsugostextra@mathruop@apply}{%
+    \AtBeginDocument{%
+        %%% Русская традиция начертания математических функций
+        \renewcommand{\tan}{\operatorname{tg}}%
+        \renewcommand{\cot}{\operatorname{ctg}}%
+        \renewcommand{\csc}{\operatorname{cosec}}%
+        \let\le\leqslant%
+        \let\leq\leqslant%
+        \let\ge\geqslant%
+        \let\geq\geqslant%
+        \let\phi\varphi%
+        \let\epsilon\varepsilon%
+        \let\kappa\varkappa%
+        \let\emptyset\varnothing%
+    }%
+}
+
+% ================================================================
+% Extra Math: пользовательские команды для набора
+% (symbf/symup/symbfup определены в fontselector)
+% ================================================================
+\newcommand{\cmcmsugostextra@SetExtraMath}{%
+    \newcommand{\vect}[1]{\symbfit{##1}}
+    \newcommand{\matr}[1]{\symbfit{##1}}
+    \newcommand{\code}[1]{\mathcal{##1}}
+    \newcommand{\str}[1]{\symup{##1}}
+    \newcommand{\elt}[1]{\symup{##1}}
+    \newcommand{\crypto}[1]{\mathsf{##1}}
+    \newcommand{\algo}[1]{\mathsf{##1}}
+    \newcommand{\compl}[1]{\mathsf{##1}}
+    \DeclareMathOperator{\Ex}{\mathsf{E}}
+    \newcommand\scalemath[2]{%
+        \scalebox{##1}{%
+            \mbox{\ensuremath{\displaystyle ##2}}}}
+}
+
+% ================================================================
+% Применение модулей
+% ================================================================
+\AtEndPreamble{
+    \ifcmcmsugostextra@thm%
+        \cmcmsugostextra@SetTheorems%
+    \fi
+
+    \ifcmcmsugostextra@listings%
+        \cmcmsugostextra@SetListings%
+    \fi
+
+    \ifcmcmsugostextra@extramath%
+        \cmcmsugostextra@SetExtraMath%
+    \fi
+
+    % Русские математические операторы + rmathbr
+    \ifcmcmsugostextra@rumathop%
+        \RequirePackage{rmathbr}%
+        \cmcmsugostextra@mathruop@apply%
+    \fi
+
+
+    \ifcmcmsugostextra@biber%
+        \cmcmsugostextra@SetBibLaTeX%
+    \fi
+
+    \ifx\cmcmsugostextra@alg\cmcmsugostextra@algtwoe%
+        \cmcmsugostextra@SetAlgorithmE%
+    \fi
+}
+
+\ifcmcmsugostextra@biber%
+    \PassOptionsToPackage{
+        backend=biber,
+        bibencoding=utf8,
+        sorting=none,
+        style=gost-numeric,
+        autolang=other,
+        clearlang=true,
+        defernumbers=true,
+        sortcites=true,
+        doi=false,
+        isbn=false,
+    }{biblatex}
+    \@ifpackageloaded{csquotes}{
+    }{
+        \RequirePackage{csquotes}
+    }
+\fi
+
+
+\makeatother
+\endinput

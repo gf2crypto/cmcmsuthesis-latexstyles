@@ -1,0 +1,1081 @@
+% cmcmsufontsets.sty
+\NeedsTeXFormat{LaTeX2e}[2020-10-01]
+\ProvidesPackage{cmcmsufontsets}[2026/03/26 v0.1 fonts sets]
+
+
+\makeatletter
+%% #################################################################
+%%  TeX Fonts
+%% #################################################################
+
+%% Defaults
+\newcommand{\cmcmsugostfont@tex@}{}
+\newcommand{\cmcmsugostfont@tex@mono@}{}
+\newcommand{\cmcmsugostfont@tex@sans@}{}
+\newcommand{\cmcmsugostfont@tex@mathfont@}{}
+%% =================================================================
+%%     Font Set
+%% =================================================================
+
+\newcommand{\cmcmsugostfont@tex@sans}{%
+    \renewcommand{\familydefault}{\sfdefault}%
+}
+
+\newcommand{\cmcmsugostfont@tex@temporatx}{
+    \cmcmsugostfont@tex@tempora%
+    \cmcmsugostfont@tex@mathfont@newtx%
+}
+
+\newcommand{\cmcmsugostfont@tex@heros}{
+    \cmcmsugostfont@tex@sans@heros%
+    \cmcmsugostfont@tex@mathfont@newtx%
+}
+
+\newcommand{\cmcmsugostfont@tex@paratypetx}{
+    \RequirePackage{paratype}
+    \cmcmsugostfont@tex@mathfont@newtx%
+}
+
+\newcommand{\cmcmsugostfont@tex@heurfour}{
+    \cmcmsugostfont@tex@heuristica%
+    \cmcmsugostfont@tex@mathfont@fourier%
+}
+\newcommand{\cmcmsugostfont@tex@libertinusp}{
+    \PassOptionsToPackage{mono}{libertinus}
+    \cmcmsugostfont@tex@libertinus%
+    \cmcmsugostfont@tex@mono@paratype%
+    \cmcmsugostfont@tex@mathfont@libertinus%
+}
+
+\newcommand{\cmcmsugostfont@tex@dejavutx}{
+    \cmcmsugostfont@tex@dejavu%
+    \cmcmsugostfont@tex@mathfont@newtx%
+}
+
+\newcommand{\cmcmsugostfont@tex@xdesign}{
+    \cmcmsugostfont@tex@xcharter%
+    \PassOptionsToPackage{charter,expert}{mathdesign}
+    \cmcmsugostfont@tex@mathfont@mathdesign%
+}
+
+\newcommand{\cmcmsugostfont@tex@old}{%
+    \cmcmsugostfont@tex@cm%
+}
+
+\newcommand{\cmcmsugostfont@tex@modern}{%
+    \cmcmsugostfont@tex@temporatx%
+}
+
+\newcommand{\cmcmsugostfont@tex@libert}{%
+    \cmcmsugostfont@tex@libertinusp%
+}
+
+\newcommand{\cmcmsugostfont@tex@fashion}{%
+    \cmcmsugostfont@tex@xdesign%
+}
+
+
+
+%% ================================================================
+%%     Text
+%% ================================================================
+
+\newcommand{\cmcmsugostfont@tex@tempora}{
+    \RequirePackage{tempora}
+}
+
+\newcommand{\cmcmsugostfont@tex@bonum}{
+    \RequirePackage{tgbonum}
+}
+
+\newcommand{\cmcmsugostfont@tex@termes}{
+    \RequirePackage{tgtermes}
+}
+
+\newcommand{\cmcmsugostfont@tex@pagella}{
+    \RequirePackage{tgpagella}
+}
+
+\newcommand{\cmcmsugostfont@tex@schola}{
+    \RequirePackage{tgschola}
+}
+
+\newcommand{\cmcmsugostfont@tex@tgtermes}{
+    \RequirePackage{tgtermes}
+}
+
+\newcommand{\cmcmsugostfont@tex@ptserif}{
+    \RequirePackage{PTSerif}
+}
+
+\newcommand{\cmcmsugostfont@tex@paratype}{
+    \RequirePackage{paratype}
+}
+
+\newcommand{\cmcmsugostfont@tex@heuristica}{
+    \RequirePackage{heuristica}
+}
+
+\newcommand{\cmcmsugostfont@tex@oldstandard}{
+    \RequirePackage{oldstandard}
+}
+
+\newcommand{\cmcmsugostfont@tex@libertinus}{
+    \RequirePackage{libertinus}
+}
+
+\newcommand{\cmcmsugostfont@tex@noto}{
+    \RequirePackage{noto}
+}
+
+\newcommand{\cmcmsugostfont@tex@dejavu}{
+    \RequirePackage{dejavu}
+}
+
+\newcommand{\cmcmsugostfont@tex@xcharter}{
+    \RequirePackage{XCharter}
+}
+
+\newcommand{\cmcmsugostfont@tex@cochineal}{
+    \RequirePackage{cochineal}
+}
+
+\newcommand{\cmcmsugostfont@tex@newtx}{
+    \RequirePackage{newtxtext}
+}
+
+
+%% ================================================================
+%%     Sans
+%% ================================================================
+
+\newcommand{\cmcmsugostfont@tex@sans@adventor}{
+    \RequirePackage{tgadventor}
+}
+
+\newcommand{\cmcmsugostfont@tex@sans@heros}{
+    \RequirePackage{tgheros}
+}
+
+\newcommand{\cmcmsugostfont@tex@sans@paratype}{
+    \RequirePackage{PTSans}
+}
+
+\newcommand{\cmcmsugostfont@tex@sans@fira}{
+    \RequirePackage{FiraSans}
+}
+
+\newcommand{\cmcmsugostfont@tex@sans@source}{
+    \RequirePackage{sourcesanspro}
+}
+
+%% ================================================================
+%%     Mono
+%% ================================================================
+
+\newcommand{\cmcmsugostfont@tex@mono@cursor}{
+    \RequirePackage{tgcursor}
+}
+
+\newcommand{\cmcmsugostfont@tex@mono@paratype}{
+    \RequirePackage{PTMono}
+}
+
+
+%% ================================================================
+%%     Math
+%% ================================================================
+
+\newcommand{\cmcmsugostfont@tex@mathfont@newtx}{
+    \RequirePackage{newtxmath}
+    %% Patch to prevent openbox error
+    \AddToHook{package/amsthm/before}{%
+        \@ifpackageloaded{newtxmath}{
+            \let\openbox\undefined%
+        }
+    }
+}
+
+\newcommand{\cmcmsugostfont@tex@mathfont@pazo}{
+    \RequirePackage{mathpazo}
+}
+
+\newcommand{\cmcmsugostfont@tex@mathfont@newpx}{
+    \RequirePackage{newpxmath}
+    %% Patch to prevent openbox error
+    \AddToHook{package/amsthm/before}{%
+        \@ifpackageloaded{newpxmath}{
+            \let\openbox\undefined%
+        }
+    }
+}
+
+\newcommand{\cmcmsugostfont@tex@mathfont@eulervm}{
+    \RequirePackage{eulervm}
+}
+
+
+\newcommand{\cmcmsugostfont@tex@mathfont@fourier}{
+    \RequirePackage{fourier}
+}
+
+\newcommand{\cmcmsugostfont@tex@mathfont@kpfonts}{
+    \RequirePackage{kpfonts}
+}
+
+\newcommand{\cmcmsugostfont@tex@mathfont@stix}{
+    \RequirePackage{stix2}
+}
+
+\newcommand{\cmcmsugostfont@tex@mathfont@mathdesign}{
+    \RequirePackage{mathdesign}
+}
+
+\newcommand{\cmcmsugostfont@tex@mathfont@libertinus}{
+    \RequirePackage{libertinust1math}
+}
+
+%% ################################################################
+
+
+%% ################################################################
+%%  XeTeX Fonts
+%% ################################################################
+
+%% ================================================================
+%%     Default
+%% ================================================================
+\newcommand{\cmcmsugostfont@xetex@}[1]{%
+    \cmcmsugostfont@xetex@default{#1}
+}
+\newcommand{\cmcmsugostfont@xetex@sans@}[1]{}
+\newcommand{\cmcmsugostfont@xetex@mono@}[1]{}
+\newcommand{\cmcmsugostfont@xetex@mathfont@}[1]{}
+
+%% ################################################################
+%%  SECTION 1 — MAIN (SERIF) FONTS  \cmcmsugostfont@xetex@<n>[1]
+%% ################################################################
+
+%% ----------------------------------------------------------------
+%%  PT Serif  (Paratype — best Cyrillic glyphs in TeX Live, TTF)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@ptserif}[1]{%
+    \RequirePackage{unicode-math}
+    \setmainfont[
+        BoldFont        = PTF75F.ttf,
+        ItalicFont      = PTF56F.ttf,
+        BoldItalicFont  = PTF76F.ttf,
+        Scale           = #1,
+    ]{PTF55F.ttf}%
+}
+
+%% ----------------------------------------------------------------
+%%  DejaVu Serif  (broad Unicode, full Cyrillic, TTF)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@dejavuserif}[1]{%
+    \RequirePackage{unicode-math}
+    \setmainfont[
+        BoldFont        = DejaVuSerif-Bold.ttf,
+        ItalicFont      = DejaVuSerif-Italic.ttf,
+        BoldItalicFont  = DejaVuSerif-BoldItalic.ttf,
+        Scale           = #1
+    ]{DejaVuSerif.ttf}%
+    \newfontfamily\cyrillicfont[
+        BoldFont        = DejaVuSerif-Bold.ttf,
+        ItalicFont      = DejaVuSerif-Italic.ttf,
+        BoldItalicFont  = DejaVuSerif-BoldItalic.ttf,
+        Scale           = #1
+    ]{DejaVuSerif.ttf}%
+}
+
+%% ----------------------------------------------------------------
+%%  NewComputerModern  (CM-style, full Cyrillic+Greek+IPA, OTF)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@newcmserif}[1]{%
+    \RequirePackage{unicode-math}
+    \setmainfont[
+        BoldFont        = NewCM10-Bold.otf,
+        ItalicFont      = NewCM10-BookItalic.otf,
+        BoldItalicFont  = NewCM10-BoldItalic.otf,
+        Scale           = #1
+    ]{NewCM10-Book.otf}%
+}
+
+%% ----------------------------------------------------------------
+%%  STIX Two Text  (Times/STIX, full Cyrillic, max math symbols)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@stixtwo}[1]{%
+    \RequirePackage{unicode-math}
+    \setmainfont[
+        BoldFont        = STIXTwoText-Bold.otf,
+        ItalicFont      = STIXTwoText-Italic.otf,
+        BoldItalicFont  = STIXTwoText-BoldItalic.otf,
+        Scale           = #1,
+    ]{STIXTwoText-Regular.otf}%
+}
+
+%% ----------------------------------------------------------------
+%%  Libertinus Serif  (modern fork of Libertine, full Cyrillic, active dev)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@libertinusserif}[1]{%
+    \RequirePackage{unicode-math}
+    \setmainfont[
+        BoldFont        = LibertinusSerif-Bold.otf,
+        ItalicFont      = LibertinusSerif-Italic.otf,
+        BoldItalicFont  = LibertinusSerif-BoldItalic.otf,
+        Scale           = #1,
+        Numbers         = OldStyle
+    ]{LibertinusSerif-Regular.otf}%
+}
+
+%% ----------------------------------------------------------------
+%%  Alegreya  (humanist serif, rich OpenType, full Cyrillic)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@alegreyaserif}[1]{%
+    \RequirePackage{unicode-math}
+    \setmainfont[
+        BoldFont        = Alegreya-Bold.otf,
+        ItalicFont      = Alegreya-Italic.otf,
+        BoldItalicFont  = Alegreya-BoldItalic.otf,
+        Scale           = #1,
+        Ligatures       = TeX,
+        Numbers         = {Lining,Tabular}
+    ]{Alegreya-Regular.otf}%
+}
+
+%% ----------------------------------------------------------------
+%%  EB Garamond  (historical Garamond, full Cyrillic)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@ebgaramondserif}[1]{%
+    \RequirePackage{unicode-math}
+    \setmainfont[
+        BoldFont        = EBGaramond-Bold.otf,
+        ItalicFont      = EBGaramond-Italic.otf,
+        BoldItalicFont  = EBGaramond-BoldItalic.otf,
+        Scale           = #1,
+        Ligatures       = TeX,
+        Numbers         = {Lining,Tabular}
+    ]{EBGaramond-Regular.otf}%
+}
+
+%% ----------------------------------------------------------------
+%%  Domitian  (Palatino replacement, full Cyrillic)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@domitian}[1]{%
+    \RequirePackage{unicode-math}
+    \setmainfont[
+        BoldFont        = Domitian-Bold.otf,
+        ItalicFont      = Domitian-Italic.otf,
+        BoldItalicFont  = Domitian-BoldItalic.otf,
+        Scale           = #1
+    ]{Domitian-Roman.otf}%
+}
+
+%% ----------------------------------------------------------------
+%%  Gentium Plus  (wide Unicode: Cyrillic+Greek+IPA, TTF)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@gentiumplusserif}[1]{%
+    \RequirePackage{unicode-math}
+    \setmainfont[
+        BoldFont        = GentiumPlus-Bold.ttf,
+        ItalicFont      = GentiumPlus-Italic.ttf,
+        BoldItalicFont  = GentiumPlus-BoldItalic.ttf,
+        Scale           = #1
+    ]{GentiumPlus-Regular.ttf}%
+}
+
+%% ----------------------------------------------------------------
+%%  Tinos  (metrically compatible with Times New Roman, full Cyrillic, TTF)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@tinos}[1]{%
+    \RequirePackage{unicode-math}
+    \setmainfont[
+        BoldFont        = Tinos-Bold.ttf,
+        ItalicFont      = Tinos-Italic.ttf,
+        BoldItalicFont  = Tinos-BoldItalic.ttf,
+        Scale           = #1
+    ]{Tinos-Regular.ttf}%
+}
+
+%% ----------------------------------------------------------------
+%%  Times New Roman  (системный шрифт macOS/Windows, требует лицензии)
+%%  NOTE: доступен только если установлен в системе
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@timesnewroman}[1]{%
+    \RequirePackage{unicode-math}
+    \setmainfont[
+        Scale           = #1
+    ]{Times New Roman}%
+}
+
+%% ----------------------------------------------------------------
+%%  Brill  (academic publisher font, ~7000 glyphs, Cyrillic+Greek+IPA)
+%%  NOTE: not in TeX Live — download from brill.com (free non-commercial)
+%%  Install: cp Brill-*.ttf ~/Library/texmf/fonts/truetype/brill/ && mktexlsr
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@brill}[1]{%
+    \RequirePackage{unicode-math}
+    \setmainfont[
+        BoldFont        = Brill-Bold.ttf,
+        ItalicFont      = Brill-Italic.ttf,
+        BoldItalicFont  = Brill-BoldItalic.ttf,
+        Scale           = #1,
+        Ligatures       = TeX,
+        Numbers         = {Lining,Tabular}
+    ]{Brill-Roman.ttf}%
+}
+
+%% ################################################################
+%%  SECTION 2 — SANS-SERIF FONTS  \cmcmsugostfont@xetex@sans@<n>[1]
+%% ################################################################
+
+%% ----------------------------------------------------------------
+%%  Source Sans 3 Pro
+%%  NOTE: доступен только если установлен в LaTeX
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@sans@source}[1]{%
+    \setsansfont[
+        BoldFont        = SourceSans3-Bold.ttf,
+        ItalicFont      = SourceSans3-Italic.ttf,
+        BoldItalicFont  = SourceSans3-BoldItalic.ttf,
+        Scale           = #1
+    ]{SourceSans3-Regular.ttf}%
+}
+
+
+%% ----------------------------------------------------------------
+%%  Arial  (системный sans macOS/Windows, требует лицензии)
+%%  NOTE: доступен только если установлен в системе
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@sans@arial}[1]{%
+    \setsansfont[
+        Scale           = #1
+    ]{Arial}%
+}
+
+%% ----------------------------------------------------------------
+%%  PT Sans  (Paratype — best Cyrillic sans in TeX Live, TTF)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@sans@ptsans}[1]{%
+    \setsansfont[
+        BoldFont        = PTS75F.ttf,
+        ItalicFont      = PTS56F.ttf,
+        BoldItalicFont  = PTS76F.ttf,
+        Scale           = #1
+    ]{PTS55F.ttf}%
+}
+
+%% ----------------------------------------------------------------
+%%  PT Sans Narrow  (Paratype — condensed variant, full Cyrillic)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@sans@ptsansnarrow}[1]{%
+    \setsansfont[
+        BoldFont        = PTN77F.ttf,
+        %% NOTE: PT Sans Narrow has no Italic/BoldItalic — Regular/Bold substituted
+        ItalicFont      = PTN57F.ttf,
+        BoldItalicFont  = PTN77F.ttf,
+        Scale           = #1
+    ]{PTN57F.ttf}%
+}
+
+%% ----------------------------------------------------------------
+%%  PT Sans Caption  (Paratype — optimised for small sizes)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@sans@ptsanscaption}[1]{%
+    \setsansfont[
+        BoldFont        = PTC75F.ttf,
+        %% NOTE: PT Sans Caption has no Italic/BoldItalic — Regular/Bold substituted
+        ItalicFont      = PTC55F.ttf,
+        BoldItalicFont  = PTC75F.ttf,
+        Scale           = #1
+    ]{PTC55F.ttf}%
+}
+
+%% ----------------------------------------------------------------
+%%  DejaVu Sans  (broad Unicode, full Cyrillic, TTF)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@sans@dejavusans}[1]{%
+    \setsansfont[
+        BoldFont        = DejaVuSans-Bold.ttf,
+        ItalicFont      = DejaVuSans-Oblique.ttf,
+        BoldItalicFont  = DejaVuSans-BoldOblique.ttf,
+        Scale           = #1
+    ]{DejaVuSans.ttf}%
+    \newfontfamily\cyrillicfontsf[
+        BoldFont        = DejaVuSans-Bold.ttf,
+        ItalicFont      = DejaVuSans-Oblique.ttf,
+        BoldItalicFont  = DejaVuSans-BoldOblique.ttf,
+        Scale           = #1
+    ]{DejaVuSans.ttf}%
+}
+
+%% ----------------------------------------------------------------
+%%  NewCM Sans  (CM-style sans, full Cyrillic+Greek+IPA)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@sans@newcm}[1]{%
+    \setsansfont[
+        BoldFont        = NewCMSans10-Bold.otf,
+        ItalicFont      = NewCMSans10-Oblique.otf,
+        BoldItalicFont  = NewCMSans10-BoldOblique.otf,
+        Scale           = #1
+    ]{NewCMSans10-Book.otf}%
+}
+
+%% ----------------------------------------------------------------
+%%  Libertinus Sans  (modern fork of Biolinum, пара к Libertinus Serif)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@sans@libertinussans}[1]{%
+    %% Libertinus Sans: нет BoldItalic — подставляем Bold
+    \setsansfont[
+        BoldFont        = LibertinusSans-Bold.otf,
+        ItalicFont      = LibertinusSans-Italic.otf,
+        BoldItalicFont  = LibertinusSans-Bold.otf,
+        Scale           = #1
+    ]{LibertinusSans-Regular.otf}%
+}
+
+%% ----------------------------------------------------------------
+%%  Alegreya Sans  (humanist sans, pair to Alegreya, full Cyrillic)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@sans@alegreyasans}[1]{%
+    \setsansfont[
+        BoldFont        = AlegreyaSans-Bold.otf,
+        ItalicFont      = AlegreyaSans-Italic.otf,
+        BoldItalicFont  = AlegreyaSans-BoldItalic.otf,
+        Scale           = #1
+    ]{AlegreyaSans-Regular.otf}%
+}
+
+%% ----------------------------------------------------------------
+%%  Montserrat  (geometric sans, full Cyrillic, many weights)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@sans@montserrat}[1]{%
+    \setsansfont[
+        BoldFont        = Montserrat-Bold.otf,
+        ItalicFont      = Montserrat-Italic.otf,
+        BoldItalicFont  = Montserrat-BoldItalic.otf,
+        Scale           = #1
+    ]{Montserrat-Regular.otf}%
+}
+
+
+%% ----------------------------------------------------------------
+%%  Fira Sans  (Mozilla, full Cyrillic, many weights)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@sans@firasans}[1]{%
+    \setsansfont[
+        BoldFont        = FiraSans-Bold.otf,
+        ItalicFont      = FiraSans-Italic.otf,
+        BoldItalicFont  = FiraSans-BoldItalic.otf,
+        Scale           = #1
+    ]{FiraSans-Light.otf}%
+}
+
+%% ----------------------------------------------------------------
+%%  Lato  (humanist sans, full Cyrillic, TTF)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@sans@lato}[1]{%
+    \setsansfont[
+        BoldFont        = Lato-Bold.ttf,
+        ItalicFont      = Lato-Italic.ttf,
+        BoldItalicFont  = Lato-BoldItalic.ttf,
+        Scale           = #1
+    ]{Lato-Regular.ttf}%
+}
+
+%% ----------------------------------------------------------------
+%%  Arimo  (metrically compatible with Arial, full Cyrillic, TTF)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@sans@arimo}[1]{%
+    \setsansfont[
+        BoldFont        = Arimo-Bold.ttf,
+        ItalicFont      = Arimo-Italic.ttf,
+        BoldItalicFont  = Arimo-BoldItalic.ttf,
+        Scale           = #1
+    ]{Arimo-Regular.ttf}%
+}
+
+
+%% ################################################################
+%%  SECTION 3 — MONOSPACED FONTS  \cmcmsugostfont@xetex@mono@<n>[1]
+%% ################################################################
+
+
+%% ----------------------------------------------------------------
+%%  Iosevka, модифицированная для Brill
+%%  NOTE: доступен только если установлен в системе
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@mono@iosevkabrill}[1]{%
+    \setmonofont[
+        BoldFont        = IosevkaBrill-Bold.ttf,
+        ItalicFont      = IosevkaBrill-Italic.ttf,
+        BoldItalicFont  = IosevkaBrill-BoldItalic.ttf,
+        Scale           = #1
+    ]{IosevkaBrill-Regular.ttf}%
+}
+%% ----------------------------------------------------------------
+%%  Courier New  (системный mono macOS/Windows, требует лицензии)
+%%  NOTE: доступен только если установлен в системе
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@mono@couriernew}[1]{%
+    \setmonofont[
+        Scale           = #1
+    ]{Courier New}%
+}
+
+%% ----------------------------------------------------------------
+%%  DejaVu Sans Mono  (broad Unicode, full Cyrillic, TTF)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@mono@dejavumono}[1]{%
+    \setmonofont[
+        BoldFont        = DejaVuSansMono-Bold.ttf,
+        ItalicFont      = DejaVuSansMono-Oblique.ttf,
+        BoldItalicFont  = DejaVuSansMono-BoldOblique.ttf,
+        Scale           = #1
+    ]{DejaVuSansMono.ttf}%
+    \newfontfamily\cyrillicfonttt[
+        BoldFont        = DejaVuSansMono-Bold.ttf,
+        ItalicFont      = DejaVuSansMono-Oblique.ttf,
+        BoldItalicFont  = DejaVuSansMono-BoldOblique.ttf,
+        Scale           = #1
+    ]{DejaVuSansMono.ttf}%
+}
+
+%% ----------------------------------------------------------------
+%%  PT Mono  (Paratype — best Cyrillic mono, pair to PT family, TTF)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@mono@ptmono}[1]{%
+    \setmonofont[
+        BoldFont        = PTM75F.ttf,
+        %% NOTE: PT Mono has no Italic/BoldItalic — Regular/Bold substituted
+        ItalicFont      = PTM55F.ttf,
+        BoldItalicFont  = PTM75F.ttf,
+        Scale           = #1
+    ]{PTM55F.ttf}%
+    \newfontfamily\cyrillicfonttt[
+        BoldFont        = PTM75F.ttf,
+        ItalicFont      = PTM55F.ttf,
+        BoldItalicFont  = PTM75F.ttf,
+        Scale           = #1
+    ]{PTM55F.ttf}%
+}
+
+%% ----------------------------------------------------------------
+%%  NewCM Mono  (CM-style mono, full Cyrillic+Greek+IPA)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@mono@newcm}[1]{%
+    \setmonofont[
+        BoldFont        = NewCMMono10-Bold.otf,
+        ItalicFont      = NewCMMono10-Italic.otf,
+        BoldItalicFont  = NewCMMono10-BoldOblique.otf,
+        Scale           = #1
+    ]{NewCMMono10-Book.otf}%
+}
+
+%% ----------------------------------------------------------------
+%%  JetBrains Mono  (programmer's mono, excellent Cyrillic, ligatures)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@mono@jetbrainsmono}[1]{%
+    %% jetbrainsmono — алиас из пакета jetbrainsmono-otf (.fontspec файл)
+    %% Без лигатур. Для версии с лигатурами заменить на {jetbrainscode}
+    \setmonofont[
+        Scale           = #1,
+        Contextuals     = AlternateOff
+    ]{jetbrainsmono}%
+    %% polyglossia требует явного \cyrillicfonttt для шрифтов без Cyrillic OT script tag
+    \newfontfamily\cyrillicfonttt[
+        Scale           = #1,
+        Contextuals     = AlternateOff
+    ]{jetbrainsmono}%
+}
+
+%% ----------------------------------------------------------------
+%%  Julia Mono  (widest Unicode coverage of any mono in TeX Live)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@mono@juliamono}[1]{%
+    %% Используем пакет juliamono (tlmgr install juliamono, ~23MB)
+    \PassOptionsToPackage{Scale=#1}{juliamono}%
+    \RequirePackage{juliamono}%
+    %% polyglossia требует явного \cyrillicfonttt
+    \newfontfamily\cyrillicfonttt[
+        Scale           = #1,
+        FakeStretch     = 0.92,
+        Extension       = .ttf,
+        UprightFont     = JuliaMono-Regular,
+        BoldFont        = JuliaMono-Bold,
+        ItalicFont      = JuliaMono-RegularItalic,
+        BoldItalicFont  = JuliaMono-BoldItalic
+    ]{JuliaMono}%
+}
+
+%% ----------------------------------------------------------------
+%%  Source Code Pro  (Adobe, full Cyrillic, professional quality)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@mono@sourcecodepro}[1]{%
+    \PassOptionsToPackage{scale=#1}{sourcecodepro}%
+    \RequirePackage{sourcecodepro}%
+}
+
+%% ################################################################
+%%  SECTION 4 — MATH FONTS  \cmcmsugostfont@xetex@mathfont@<n>[1]
+%%  All require \usepackage{unicode-math} loaded before calling.
+%%  #1 = Scale factor (numeric, e.g. 1 — math fonts rarely rescaled)
+%% ################################################################
+
+%% ----------------------------------------------------------------
+%%  Latin Modern Math  (CM-style Unicode math, de-facto standard)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@mathfont@lmmath}[1]{%
+    \RequirePackage{unicode-math}
+    \setmathfont[
+        Scale   = #1
+    ]{latinmodern-math.otf}%
+}
+
+%% ----------------------------------------------------------------
+%%  Libertinus Math  (modern, actively developed, pair to Libertine)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@mathfont@libertinusmath}[1]{%
+    \RequirePackage{unicode-math}
+    \setmathfont[
+        Scale   = #1
+    ]{LibertinusMath-Regular.otf}%
+}
+
+%% ----------------------------------------------------------------
+%%  STIX Two Math  (maximum symbol coverage of all Unicode Math fonts)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@mathfont@stixmath}[1]{%
+    \RequirePackage{unicode-math}
+    \setmathfont[
+        Scale   = #1
+    ]{STIXTwoMath-Regular.otf}%
+}
+
+%% ----------------------------------------------------------------
+%%  NewCM Math Book  (CM-style, wide Unicode math)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@mathfont@newcm}[1]{%
+    \typeout{Loading NewCMMath font}
+    \RequirePackage{unicode-math}
+    \setmathfont[
+        Scale   = #1
+    ]{NewCMMath-Book.otf}%
+}
+
+%% ----------------------------------------------------------------
+%%  Garamond Math  (Garamond-style, elegant)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@mathfont@garamondmath}[1]{%
+    \RequirePackage{unicode-math}
+    \setmathfont[
+        Scale   = #1
+    ]{Garamond-Math.otf}%
+}
+
+%% ----------------------------------------------------------------
+%%  Fira Math  (sans-serif math — unique in TeX Live)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@mathfont@firamath}[1]{%
+    \RequirePackage{unicode-math}
+    \setmathfont[
+        Scale   = #1
+    ]{FiraMath-Regular.otf}%
+    \setmathfont{texgyredejavu-math.otf}[
+        Scale = 1.05,
+        range = {
+                \top,        % U+22A4
+                \vdots,      % U+22EE
+                \ddots,      % U+22F1
+                \setminus,   % U+2216
+                \star,       % U+22C6
+                \bigcup,     % U+22C3
+            }
+    ]
+}
+
+%% ----------------------------------------------------------------
+%%  kpfonts-otf Math  (rich symbol set, OTF version)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@mathfont@kpmath}[1]{%
+    \RequirePackage{unicode-math}
+    \setmathfont[
+        Scale   = #1
+    ]{KpMath-Regular.otf}%
+}
+
+%% ################################################################
+%%  SECTION 5 — FONT SETS  \cmcmsugostfont@xetex@<n>
+%%  No argument — scale values chosen for optimal visual harmony.
+%% ################################################################
+
+\newcommand{\cmcmsugostfont@xetex@sans}[1]{%
+    \renewcommand{\familydefault}{\sfdefault}%
+}
+
+%% ----------------------------------------------------------------
+%%  default  — NewComputerModern (single coherent family)
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@default}[1]{%
+    \typeout{Loading DEFAULT FONTS (NewComputerModern via fontsetup)}%
+    \RequirePackage[default]{fontsetup}%
+}
+
+%% ----------------------------------------------------------------
+%%  newcm  — NewComputerModern full set (manual, book weight)
+%%  FIX: было cmcmsugostfont@xetex@newcm → исправлено на newcmserif
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@newcm}[1]{%
+    \typeout{Loading NewComputerModern font set}%
+    \cmcmsugostfont@xetex@newcmserif{1}%
+    \cmcmsugostfont@xetex@sans@newcm{1}%
+    \cmcmsugostfont@xetex@mono@newcm{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@newcm{1}%
+}
+
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@libertinus}[1]{%
+    \typeout{Loading Libertinus font set}%
+    \cmcmsugostfont@xetex@libertinusserif{1}%
+    \cmcmsugostfont@xetex@sans@libertinussans{1}%
+    \cmcmsugostfont@xetex@mono@sourcecodepro{1}%
+    \cmcmsugostfont@xetex@mathfont@libertinusmath{1}%
+}
+
+%% ----------------------------------------------------------------
+%%  ptserif  — PT Serif + PT Sans + PT Mono + STIX Math
+%%  Best Cyrillic glyphs, Paratype family
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@pt}[1]{%
+    \typeout{Loading PT Serif font set}%
+    \cmcmsugostfont@xetex@ptserif{1}%
+    \cmcmsugostfont@xetex@sans@ptsans{1}%
+    \cmcmsugostfont@xetex@mono@ptmono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@stixmath{1}%
+}
+
+%% ----------------------------------------------------------------
+%%  dejavu  — DeJaVu Serif, Sans, Mono, STIX2 Math
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@dejavu}[1]{%
+    \typeout{Loading DeJaVu font set}%
+    \cmcmsugostfont@xetex@dejavuserif{1}%
+    \cmcmsugostfont@xetex@sans@dejavusans{1}%
+    \cmcmsugostfont@xetex@mono@dejavumono{1}%
+    \cmcmsugostfont@xetex@mathfont@stixmath{1}%
+}
+
+%% ----------------------------------------------------------------
+%%  roboto  — Tinos + Fira Sans + DejaVu Mono + Fira Math
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@roboto}[1]{%
+    \typeout{Loading Roboto-style font set (Tinos+Fira Sans)}%
+    \cmcmsugostfont@xetex@tinos{1}%
+    \cmcmsugostfont@xetex@sans@firasans{1}%
+    \cmcmsugostfont@xetex@mono@dejavumono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@firamath{1}%
+}
+
+\newcommand{\cmcmsugostfont@xetex@fira}[1]{%
+    \typeout{Loading Fira-style font set (Fira Sans + JetBrains)}%
+    \cmcmsugostfont@xetex@sans{1}%
+    \cmcmsugostfont@xetex@sans@firasans{1}%
+    \cmcmsugostfont@xetex@mono@jetbrainsmono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@firamath{1}%
+}
+
+
+%% ----------------------------------------------------------------
+%%  ptsans  — PT Sans (main) + PT Sans Narrow (headings) + PT Mono + STIX Math
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@ptsans}[1]{%
+    \typeout{Loading PT Sans font set}%
+    \cmcmsugostfont@xetex@sans@ptsans{1}%
+    \RequirePackage{unicode-math}
+    \setmainfont[
+        BoldFont        = PTS75F.ttf,
+        ItalicFont      = PTS56F.ttf,
+        BoldItalicFont  = PTS76F.ttf
+    ]{PTS55F.ttf}%
+    \cmcmsugostfont@xetex@sans@ptsansnarrow{1}%
+    \cmcmsugostfont@xetex@mono@ptmono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@stixmath{1}%
+}
+
+%% ----------------------------------------------------------------
+%%  alegreya  — Alegreya + Alegreya Sans + Source Code Pro + Garamond Math
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@alegreya}[1]{%
+    \typeout{Loading Alegreya font set}%
+    \cmcmsugostfont@xetex@alegreyaserif{1}%
+    \cmcmsugostfont@xetex@sans@alegreyasans{1}%
+    \cmcmsugostfont@xetex@mono@sourcecodepro{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@garamondmath{1}%
+}
+
+%% ----------------------------------------------------------------
+%%  cormorant  — EB Garamond + Alegreya Sans + DejaVu Mono + Garamond Math
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@cormorant}[1]{%
+    \typeout{Loading Cormorant font set}%
+    \cmcmsugostfont@xetex@ebgaramond{1}%
+    \cmcmsugostfont@xetex@sans@alegreyasans{0.98}%
+    \cmcmsugostfont@xetex@mono@dejavumono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@garamondmath{1}%
+}
+
+%% ----------------------------------------------------------------
+%%  merriweather  — EB Garamond + NewCM Sans + DejaVu Mono + STIX Math
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@merriweather}[1]{%
+    \typeout{Loading Merriweather font set}%
+    \cmcmsugostfont@xetex@ebgaramond{1}%
+    \cmcmsugostfont@xetex@sans@newcm{1}%
+    \cmcmsugostfont@xetex@mono@dejavumono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@stixmath{1}%
+}
+
+%% ----------------------------------------------------------------
+%%  source  — Domitian + Fira Sans + DejaVu Mono + STIX Math
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@source}[1]{%
+    \typeout{Loading Adobe Source font set}%
+    \cmcmsugostfont@xetex@domitian{1}%
+    \cmcmsugostfont@xetex@sans@firasans{1}%
+    \cmcmsugostfont@xetex@mono@dejavumono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@stixmath{1}%
+}
+
+%% ----------------------------------------------------------------
+%%  crimsonpro  — Alegreya + NewCM Sans + DejaVu Mono + Garamond Math
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@crimsonpro}[1]{%
+    \typeout{Loading Crimson Pro font set}%
+    \cmcmsugostfont@xetex@alegreya{1}%
+    \cmcmsugostfont@xetex@sans@newcm{1.02}%
+    \cmcmsugostfont@xetex@mono@dejavumono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@garamondmath{1}%
+}
+
+%% ----------------------------------------------------------------
+%%  ebgaramond  — EB Garamond + NewCM Sans + DejaVu Mono + Garamond Math
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@ebgaramond}[1]{%
+    \typeout{Loading EB Garamond font set}%
+    \cmcmsugostfont@xetex@ebgaramondserif{1}%
+    \cmcmsugostfont@xetex@sans@newcm{1}%
+    \cmcmsugostfont@xetex@mono@dejavumono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@garamondmath{1}%
+}
+
+%% ----------------------------------------------------------------
+%%  gentiumplus  — Gentium Plus + NewCM Sans + DejaVu Mono + NewCM Math
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@gentiumplus}[1]{%
+    \typeout{Loading Gentium Plus font set}%
+    \cmcmsugostfont@xetex@gentiumplusserif{1}%
+    \cmcmsugostfont@xetex@sans@newcm{1.02}%
+    \cmcmsugostfont@xetex@mono@dejavumono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@newcm{1}%
+}
+
+\newcommand{\cmcmsugostfont@xetex@stix}[1]{%
+    \typeout{Loading STIX2 font set}%
+    \cmcmsugostfont@xetex@stixtwo{1}%
+    \cmcmsugostfont@xetex@sans@newcm{1}%
+    \cmcmsugostfont@xetex@mono@jetbrainsmono{0.9}
+    \cmcmsugostfont@xetex@mathfont@stixmath{1}%
+}
+
+
+%% ----------------------------------------------------------------
+%%  playfair  — Domitian + Fira Sans + DejaVu Mono + NewCM Math
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@playfair}[1]{%
+    \typeout{Loading Playfair Display font set}%
+    \cmcmsugostfont@xetex@domitian{1}%
+    \cmcmsugostfont@xetex@sans@firasans{1}%
+    \cmcmsugostfont@xetex@mono@dejavumono{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@newcm{1}%
+}
+
+\newcommand{\cmcmsugostfont@xetex@old}[1]{%
+    \cmcmsugostfont@xetex@default{#1}%
+}
+
+\newcommand{\cmcmsugostfont@xetex@modern}[1]{%
+    \cmcmsugostfont@xetex@stix{#1}%
+}
+
+\newcommand{\cmcmsugostfont@xetex@libert}[1]{%
+    \cmcmsugostfont@xetex@libertinus{#1}%
+}
+
+\newcommand{\cmcmsugostfont@xetex@fashion}[1]{%
+    \cmcmsugostfont@xetex@ebgaramond{#1}%
+}
+
+%% ################################################################
+%%
+%%  Brill — академический шрифт издательства Brill (Лейден).
+%%  Гуманистическая антиква, ~7000 глифов, полная кириллица,
+%%  политонический греческий, МФА, старостильные цифры, small caps.
+%%  Скачать бесплатно: brill.com/about/brill-fonts
+%%  Установка: cp Brill-*.ttf ~/Library/texmf/fonts/truetype/brill/
+%%             mktexlsr
+%%
+%% ################################################################
+
+\newcommand{\cmcmsugostfont@xetex@brillkp}[1]{%
+    \typeout{Loading Brill KP: Brill + KPMath + Alegreya Sans + Iosevka}%
+    \cmcmsugostfont@xetex@brill{1}%
+    \cmcmsugostfont@xetex@sans@alegreyasans{0.98}%
+    \cmcmsugostfont@xetex@mono@iosevkabrill{MatchLowercase}%
+    % \cmcmsugostfont@xetex@mono@sourcecodepro{MatchLowercase}
+    \cmcmsugostfont@xetex@mathfont@kpmath{MatchLowercase}%
+    \cmcmsugostfont@SetMathCalOldStyle%
+}
+
+\newcommand{\cmcmsugostfont@xetex@brillstix}[1]{%
+    \typeout{Loading Brill STIX: Brill + STIX2 Math + Alegreya Sans + Iosevka}%
+    \cmcmsugostfont@xetex@brill{1}%
+    \cmcmsugostfont@xetex@sans@alegreyasans{0.98}%
+    \cmcmsugostfont@xetex@mono@iosevkabrill{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@stixmath{MatchLowercase}
+}
+
+\newcommand{\cmcmsugostfont@xetex@liberbrill}[1]{%
+    \typeout{Loading Brill Libertinus: Brill + Libertinus Math + Alegreya Sans + Iosevka}%
+    \cmcmsugostfont@xetex@brill{1}%
+    \cmcmsugostfont@xetex@sans@alegreyasans{0.98}%
+    \cmcmsugostfont@xetex@mono@iosevkabrill{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@libertinusmath{MatchLowercase}
+    \cmcmsugostfont@SetMathCalOldStyle%
+}
+
+\newcommand{\cmcmsugostfont@xetex@brillcm}[1]{%
+    \typeout{Loading Brill Libertinus: Brill + New Computer Modern + Alegreya Sans + Iosevka}%
+    \cmcmsugostfont@xetex@brill{1}%
+    \cmcmsugostfont@xetex@sans@alegreyasans{0.98}%
+    \cmcmsugostfont@xetex@mono@iosevkabrill{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@newcm{MatchLowercase}
+    \cmcmsugostfont@SetMathCalOldStyle%
+}
+
+
+%% ----------------------------------------------------------------
+%%  msoffice  — Times New Roman + Arial + Courier New
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@msoffice}[1]{%
+    \RequirePackage{unicode-math}
+    \typeout{Loading Office Classic set (Times New Roman + Arial + Courier New)}%
+    \typeout{NOTE: requires MS Core Fonts installed in the system}%
+    \cmcmsugostfont@xetex@timesnewroman{1}%
+    \cmcmsugostfont@xetex@sans@arial{1}%
+    \cmcmsugostfont@xetex@mono@couriernew{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@stixmath{1}
+}
+
+%% ################################################################
+\makeatother
+\endinput
