@@ -1077,6 +1077,25 @@
     \cmcmsugostfont@xetex@mathfont@stixmath{1}
 }
 
+
+
+%% ----------------------------------------------------------------
+%%  brill  — Brill + Math Brill
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@brillo}[1]{
+    \RequirePackage{unicode-math}
+    \typeout{Loading Brill Original set (Brill + Brill Math + Alegreya Sans + Iosevka)}%
+    \cmcmsugostfont@xetex@brill{1}%
+    \cmcmsugostfont@xetex@sans@alegreyasans{0.98}%
+    \cmcmsugostfont@xetex@mono@iosevkabrill{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@newcm{MatchLowercase}
+    \setmathfont[range=up]{Brill-Roman.ttf}
+    \setmathfont[range=it]{Brill-Italic.ttf}
+    \setmathfont[range=bfup]{Brill-Bold.ttf}
+    \setmathfont[range=bfit]{Brill-BoldItalic.ttf}
+    \cmcmsugostfont@SetMathCalOldStyle%
+}
+
 %% ################################################################
 \makeatother
 \endinput
