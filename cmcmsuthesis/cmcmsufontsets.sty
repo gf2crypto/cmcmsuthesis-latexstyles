@@ -189,11 +189,11 @@
 \newcommand{\cmcmsugostfont@tex@mathfont@newtx}{
     \RequirePackage{newtxmath}
     %% Patch to prevent openbox error
-    \AddToHook{package/amsthm/before}{%
-        \@ifpackageloaded{newtxmath}{
-            \let\openbox\undefined%
-        }
-    }
+    % \AddToHook{package/amsthm/before}{%
+    %     \@ifpackageloaded{newtxmath}{
+    %         \let\openbox\undefined%
+    %     }
+    % }
 }
 
 \newcommand{\cmcmsugostfont@tex@mathfont@pazo}{
