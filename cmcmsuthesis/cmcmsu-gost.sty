@@ -237,8 +237,9 @@
     }%
     \ifcmcmsugost@haschapter
         \renewcommand{\cftchappresnum}{Глава\ }
-        \renewcommand{\cftchapaftersnum}{.\space}
-        \settowidth{\cftchapnumwidth}{Глава 10.\ }
+        \renewcommand{\cftchapaftersnum}{.}
+        \settowidth{\cftchapnumwidth}{%
+            \normalfont\cftchapfont Глава\ 88.\space}%
         \renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}%
         \renewcommand{\cftchappagefont}{\normalfont}%
     \fi
