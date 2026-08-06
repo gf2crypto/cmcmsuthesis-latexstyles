@@ -805,6 +805,17 @@
     ]{KpMath-Regular.otf}%
 }
 
+%% ----------------------------------------------------------------
+%%  TeX Gyre Termes Math
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@mathfont@texgyretermes}[1]{%
+    \RequirePackage{unicode-math}
+    \setmathfont{texgyretermes-math.otf}[
+        Scale = #1
+    ]
+}
+
+
 %% ################################################################
 %%  SECTION 5 — FONT SETS  \cmcmsugostfont@xetex@<n>
 %%  No argument — scale values chosen for optimal visual harmony.
@@ -1067,6 +1078,20 @@
 %% ----------------------------------------------------------------
 %%  msoffice  — Times New Roman + Arial + Courier New
 %% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@msofficestyx}[1]{%
+    \RequirePackage{unicode-math}
+    \typeout{Loading Office Classic set (Times New Roman + Arial + Courier New)}%
+    \typeout{NOTE: requires MS Core Fonts installed in the system}%
+    \cmcmsugostfont@xetex@timesnewroman{1}%
+    \cmcmsugostfont@xetex@sans@arial{1}%
+    \cmcmsugostfont@xetex@mono@couriernew{MatchLowercase}%
+    \cmcmsugostfont@xetex@mathfont@stixmath{MatchLowercase}
+    \cmcmsugostfont@SetMathCalOldStyle%
+}
+
+%% ----------------------------------------------------------------
+%%  msofficeg  — MsOffice Fonts + TeX Gyre Termes Math
+%% ----------------------------------------------------------------
 \newcommand{\cmcmsugostfont@xetex@msoffice}[1]{%
     \RequirePackage{unicode-math}
     \typeout{Loading Office Classic set (Times New Roman + Arial + Courier New)}%
@@ -1074,9 +1099,9 @@
     \cmcmsugostfont@xetex@timesnewroman{1}%
     \cmcmsugostfont@xetex@sans@arial{1}%
     \cmcmsugostfont@xetex@mono@couriernew{MatchLowercase}%
-    \cmcmsugostfont@xetex@mathfont@stixmath{1}
+    \cmcmsugostfont@xetex@mathfont@texgyretermes{MatchLowercase}
+    \cmcmsugostfont@SetMathCalOldStyle%
 }
-
 
 
 %% ----------------------------------------------------------------
