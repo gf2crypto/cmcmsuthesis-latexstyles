@@ -167,13 +167,13 @@
 
 % User-facing command: \thesisset{key=value, ...}
 % Keys can be short (relative to /cmcmsu/thesis) or full-path.
-\newcommand{\thesissetup}[1]{\pgfkeys{/cmcmsu/thesis, #1}}
+\newcommand{\thesissetup}[1]{\pgfkeys{/cmcmsu/thesis,#1}}
 
 % \supervisor{name={канд.физ.-мат.наук, доцент Фамилия~Имя~Отчество}, prefix={Научный руководитель}}
-\newcommand{\supervisor}[1]{\pgfkeys{/cmcmsu/thesis/supervisor, #1}}
+\newcommand{\supervisor}[1]{\pgfkeys{/cmcmsu/thesis/supervisor,#1}}
 
 % \specialty{code={1.2.3}, name={теоретическая информатика, кибернетика}}
-\newcommand{\specialty}[1]{\pgfkeys{/cmcmsu/thesis/specialty, #1}}
+\newcommand{\specialty}[1]{\pgfkeys{/cmcmsu/thesis/specialty,#1}}
 
 %
 \newcommand{\subtitle}[1]{\pgfkeys{/cmcmsu/thesis/subtitle=#1}}
