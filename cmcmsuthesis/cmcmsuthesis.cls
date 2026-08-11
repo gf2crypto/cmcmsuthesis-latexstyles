@@ -98,7 +98,7 @@
 % Публичная команда (для пользователей)
 \newcommand{\IfGraphicExists}[3]{%
     % #1 = имя файла, #2 = true, #3 = false
-    \cmcmsu@checkgraphic{#1}%
+    \cmcmsu@checkgraphicpath{#1}%
     \ifcmcmsu@graphicexists #2\else #3\fi
 }
 
