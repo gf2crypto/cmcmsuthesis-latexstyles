@@ -187,13 +187,11 @@
 %% ================================================================
 
 \newcommand{\cmcmsugostfont@tex@mathfont@newtx}{
-    \RequirePackage{newtxmath}
-    %% Patch to prevent openbox error
-    % \AddToHook{package/amsthm/before}{%
-    %     \@ifpackageloaded{newtxmath}{
-    %         \let\openbox\undefined%
-    %     }
-    % }
+    % Patch to prevent openbox error
+    \AddToHook{package/amsthm/before}{%
+        \@ifpackageloaded{newtxmath}{\let\openbox\undefined}{}%
+    }%
+    \RequirePackage[#1]{newtxmath}%
 }
 
 \newcommand{\cmcmsugostfont@tex@mathfont@pazo}{
@@ -201,13 +199,11 @@
 }
 
 \newcommand{\cmcmsugostfont@tex@mathfont@newpx}{
-    \RequirePackage{newpxmath}
-    %% Patch to prevent openbox error
+    % Patch to prevent openbox error
     \AddToHook{package/amsthm/before}{%
-        \@ifpackageloaded{newpxmath}{
-            \let\openbox\undefined%
-        }
-    }
+        \@ifpackageloaded{newpxmath}{\let\openbox\undefined}{}%
+    }%
+    \RequirePackage[#1]{newpxmath}%
 }
 
 \newcommand{\cmcmsugostfont@tex@mathfont@eulervm}{
