@@ -770,6 +770,28 @@
 }
 
 %% ----------------------------------------------------------------
+%%  Tex Gyre Pagella Math
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@mathfont@pagella}[1]{%
+    \typeout{MATH FONT: Loading TeX Gyre Pagella Math}
+    \RequirePackage{unicode-math}
+    \setmathfont[
+        Scale   = #1
+    ]{texgyrepagella-math.otf}%
+}
+
+%% ----------------------------------------------------------------
+%%  Erewhon Math
+%% ----------------------------------------------------------------
+\newcommand{\cmcmsugostfont@xetex@mathfont@erewhon}[1]{%
+    \typeout{MATH FONT: Loading Erewhon Math}
+    \RequirePackage{unicode-math}
+    \setmathfont[
+        Scale   = #1
+    ]{Erewhon-Math.otf}%
+}
+
+%% ----------------------------------------------------------------
 %%  Fira Math  (sans-serif math — unique in TeX Live)
 %% ----------------------------------------------------------------
 \newcommand{\cmcmsugostfont@xetex@mathfont@firamath}[1]{%
