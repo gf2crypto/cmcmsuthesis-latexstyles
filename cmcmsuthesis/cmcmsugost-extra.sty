@@ -187,6 +187,8 @@
     \SetAlCapFnt{\normalfont}
     \SetAlgoCaptionSeparator{~---\ }
     \RequirePackage{chngcntr}
+    \SetKw{Break}{break}
+    \SetKw{Continue}{continue}
     \@ifundefined{c@chapter}{%
         \counterwithin{algocf}{section}
         \renewcommand{\thealgocf}{\thesection.\arabic{algocf}}
