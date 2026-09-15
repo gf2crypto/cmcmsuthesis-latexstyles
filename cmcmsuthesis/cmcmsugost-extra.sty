@@ -165,7 +165,10 @@
         \fontsize{12pt}{14pt}\selectfont\color{AlgoNumbers}##1%
     }
     \SetNlSty{cmcmsugostextra@AlgoNlSty}{}{}%
-    \SetAlgoCaptionLayout{centerline}
+    \newcommand{\cmcmsugostextra@AlgoCapLayout}[1]{%
+        \parbox{\hsize}{\centering ##1}%
+    }
+    \SetAlgoCaptionLayout{cmcmsugostextra@AlgoCapLayout}
     \SetAlgoInsideSkip{smallskip}
     \SetAlgoSkip{smallskip}
     \SetAlgoVlined% вертикальные линии блоков (как в книгах)
