@@ -1,6 +1,6 @@
 % cmcmsugost-extra.sty
 \NeedsTeXFormat{LaTeX2e}[2020-10-01]
-\ProvidesPackage{cmcmsugost-extra}[2026/03/21 v0.2 extra packages]
+\ProvidesPackage{cmcmsugost-extra}[2026/10/24 v0.3 extra packages]
 
 
 \makeatletter
@@ -67,6 +67,13 @@
 }
 \define@key{cmcmsugostextrasetup}{alg}[2e]{%
     \def\cmcmsugostextra@alg{#1}%
+}
+%%% codefont — шрифт кода в листингах и algorithm2e.
+%%% По умолчанию 12pt (под 14pt-текст диссертации);
+%%% в статье удобнее относительный размер: codefont=\small
+\newcommand{\cmcmsugostextra@codefont}{\fontsize{12pt}{14pt}\selectfont}
+\define@key{cmcmsugostextrasetup}{codefont}{%
+    \def\cmcmsugostextra@codefont{#1}%
 }
 \newcommand{\cmcmsugostextrasetup}[1]{%
     \setkeys{cmcmsugostextrasetup}{#1}%
@@ -164,7 +171,7 @@
     \SetKwComment{Comment}{// }{}
     \SetAlgoNlRelativeSize{0} % номера строк того же размера
     \newcommand{\cmcmsugostextra@AlgoNlSty}[1]{%
-        \fontsize{12pt}{14pt}\selectfont\color{AlgoNumbers}##1%
+        \cmcmsugostextra@codefont\color{AlgoNumbers}##1%
     }
     \SetNlSty{cmcmsugostextra@AlgoNlSty}{}{}%
     \newcommand{\cmcmsugostextra@AlgoCapLayout}[1]{%
@@ -175,11 +182,11 @@
     \SetAlgoSkip{smallskip}
     \SetAlgoVlined% вертикальные линии блоков (как в книгах)
 
-    \SetAlCapFnt{\fontsize{12pt}{14pt}\selectfont}
-    \SetAlCapNameFnt{\fontsize{12pt}{14pt}\selectfont}
+    \SetAlCapFnt{\cmcmsugostextra@codefont}
+    \SetAlCapNameFnt{\cmcmsugostextra@codefont}
 
     \newcommand{\cmcmsugostextra@AlgoTextSty}[1]{%
-        \fontsize{12pt}{14pt}\selectfont\ttfamily\color{AlgoText}##1%
+        \cmcmsugostextra@codefont\ttfamily\color{AlgoText}##1%
     }
     \SetAlFnt{\cmcmsugostextra@AlgoTextSty}
 
@@ -224,7 +231,7 @@
 \lstdefinestyle{blackandwhite}{
 extendedchars=true,
 numbers=left,
-numberstyle=\fontsize{12pt}{14pt}\selectfont\color{ListingNumbers},
+numberstyle=\cmcmsugostextra@codefont\color{ListingNumbers},
 firstnumber=1,
 stepnumber=1,
 lineskip=1pt,
@@ -242,7 +249,7 @@ breaklines=true,
 breakatwhitespace=false,
 breakautoindent=true, postbreak=\mbox{\textcolor{ListingNumbers}{$\hookrightarrow$}\space},
 title=\lstname,
-basicstyle=\fontsize{12pt}{14pt}\selectfont\ttfamily\color{ListingText},
+basicstyle=\cmcmsugostextra@codefont\ttfamily\color{ListingText},
 keywordstyle=\color{ListingEmph},
 commentstyle=\color{ListingComment},
 stringstyle=\color{ListingString},
@@ -362,7 +369,7 @@ literate={Ö}{{\"O}}1
 }
 
 \def\cmcmsugostextra@KeywordStylePseudocode{%
-    \normalfont\fontsize{12pt}{14pt}\selectfont\bfseries\color{black}%
+    \normalfont\cmcmsugostextra@codefont\bfseries\color{black}%
 }
 
 \lstdefinestyle{pseudocode}{
