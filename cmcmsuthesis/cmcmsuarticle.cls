@@ -41,6 +41,12 @@
 %%                 аннотацию (после русской / в конце / нигде)
 %% baselinestretch - межстрочный множитель (1, 1.5, 2, ...)
 %% lineno        - нумерация строк (для рецензирования)
+%% runninghead   - none | title | full: колонтитул
+%%                 none  - только номер страницы (по умолчанию);
+%%                 title - краткое название на каждой странице;
+%%                 full  - авторы и название (при нехватке места
+%%                         чередуются по четности страницы)
+%%                 Можно задать и через \articlesetup{runninghead=...}
 %% rumathop, biber, listings, alg - передаются в cmcmsugost-extra
 %% draft         - черновик (без microtype, draft у extarticle)
 %% Прочие опции (twoside, a4paper, leqno, ...) уходят в extarticle.
@@ -61,6 +67,7 @@
 \DeclareStringOption[after]{enblock}
 \DeclareStringOption[1]{baselinestretch}
 \DeclareBoolOption[false]{lineno}
+\DeclareStringOption[none]{runninghead}
 
 \DeclareBoolOption[true]{rumathop}
 \DeclareBoolOption[true]{biber}
@@ -339,6 +346,7 @@
     enshortauthors .tl_gset:N = \g__cmcmsuart_enshortauthors_tl ,
     funding        .tl_gset:N = \g__cmcmsuart_funding_tl ,
     enfunding      .tl_gset:N = \g__cmcmsuart_enfunding_tl ,
+    runninghead    .tl_gset:N = \cmcmsuart@runninghead ,
 }
 \NewDocumentCommand \articlesetup { m }
 { \keys_set:nn { cmcmsuart / setup } {#1} }
@@ -660,21 +668,94 @@
 \newcommand{\enkeywordsname}{Keywords}
 \newcommand{\ruabstractname}{Аннотация}
 
-\pagestyle{fancy}
-\fancyhf{}
-\if@twoside
-    \fancyhead[LE]{\small\itshape\cmcmsuart@headauthors}
-    \fancyhead[RO]{\small\itshape\cmcmsuart@headtitle}
-\else
-    \fancyhead[L]{\small\itshape\cmcmsuart@headauthors}
-    \fancyhead[R]{\small\itshape\cmcmsuart@headtitle}
-\fi
-\fancyfoot[C]{\thepage}
-\renewcommand{\headrulewidth}{0.4pt}
+% Колонтитул собирается в одну строку шириной \headwidth.
+%  - twoside: авторы на четных страницах, название на нечетных;
+%  - oneside: авторы слева, название справа, а если вместе они
+%    не помещаются, то чередуются по четности страницы;
+%  - слишком длинная часть обрезается с многоточием
+%    (задайте shorttitle / shortauthors в \articlesetup).
+\RequirePackage[fit]{truncate}
+\renewcommand{\TruncateMarker}{\,\ldots}
+\newcommand{\cmcmsuart@headfont}{\small\itshape}
+\newlength{\cmcmsuart@headgap}
+\setlength{\cmcmsuart@headgap}{2em}
+\newif\ifcmcmsuart@headwarned
+
+\newcommand{\cmcmsuart@headpart}[1]{%
+    \sbox\z@{\cmcmsuart@headfont#1}%
+    \ifdim\wd\z@>\headwidth
+        \ifcmcmsuart@headwarned\else
+            \global\cmcmsuart@headwarnedtrue
+            \ClassWarningNoLine{cmcmsuarticle}{%
+                Running head is too long and was truncated.\MessageBreak
+                Set shorttitle/shortauthors in \string\articlesetup}%
+        \fi
+        \truncate{\headwidth}{\cmcmsuart@headfont#1}%
+    \else
+        \usebox\z@
+    \fi
+}
+% runninghead=title: краткое название справа (в twoside - снаружи)
+\newcommand{\cmcmsuart@headline@title}{%
+    \if@twoside
+        \ifodd\value{page}%
+            \hfill\cmcmsuart@headpart{\cmcmsuart@headtitle}%
+        \else
+            \cmcmsuart@headpart{\cmcmsuart@headtitle}\hfill
+        \fi
+    \else
+        \hfill\cmcmsuart@headpart{\cmcmsuart@headtitle}%
+    \fi
+}
+% runninghead=full: авторы и название
+\newcommand{\cmcmsuart@headline@full}{%
+    \if@twoside
+        \ifodd\value{page}%
+            \hfill\cmcmsuart@headpart{\cmcmsuart@headtitle}%
+        \else
+            \cmcmsuart@headpart{\cmcmsuart@headauthors}\hfill
+        \fi
+    \else
+        \sbox\z@{\cmcmsuart@headfont\cmcmsuart@headauthors}%
+        \sbox\tw@{\cmcmsuart@headfont\cmcmsuart@headtitle}%
+        \ifdim\dimexpr\wd\z@+\wd\tw@+\cmcmsuart@headgap\relax>\headwidth
+            \ifodd\value{page}%
+                \hfill\cmcmsuart@headpart{\cmcmsuart@headtitle}%
+            \else
+                \cmcmsuart@headpart{\cmcmsuart@headauthors}\hfill
+            \fi
+        \else
+            \usebox\z@\hfill\usebox\tw@
+        \fi
+    \fi
+}
+
 \fancypagestyle{plain}{%
     \fancyhf{}%
     \fancyfoot[C]{\thepage}%
     \renewcommand{\headrulewidth}{0pt}%
+}
+\fancypagestyle{cmcmsuart@running}{%
+    \fancyhf{}%
+    \fancyhead[C]{\makebox[\headwidth][s]{\cmcmsuart@headline}}%
+    \fancyfoot[C]{\thepage}%
+    \renewcommand{\headrulewidth}{0.4pt}%
+}
+% Стиль выбирается в начале документа, чтобы учесть \articlesetup
+\AtBeginDocument{%
+    \ifcsname cmcmsuart@headline@\cmcmsuart@runninghead\endcsname
+        \expandafter\let\expandafter\cmcmsuart@headline
+        \csname cmcmsuart@headline@\cmcmsuart@runninghead\endcsname
+        \pagestyle{cmcmsuart@running}%
+    \else
+        \def\cmcmsuart@tmp{none}%
+        \ifx\cmcmsuart@runninghead\cmcmsuart@tmp\else
+            \ClassError{cmcmsuarticle}{%
+                Unknown runninghead '\cmcmsuart@runninghead'}{%
+                Valid values are: none, title, full}%
+        \fi
+        \pagestyle{plain}%
+    \fi
 }
 \AtEndPreamble{\setlength{\headheight}{1.2\baselineskip}}
 
